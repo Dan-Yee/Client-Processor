@@ -1,3 +1,4 @@
+.vs/*
 bin/*
 obj/*
-appsettigs.Development
+appsettings.Development
