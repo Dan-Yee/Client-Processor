@@ -2,15 +2,20 @@
 using DotNetEnv;
 using Npgsql;
 using Google.Protobuf.WellKnownTypes;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Server.Services
 {
     public class EmployeeService : Employee.EmployeeBase
     {
-        private ILogger<EmployeeService> _logger;
-        public EmployeeService(ILogger<EmployeeService> logger)
+        private static string GetHashedString(string input)
         {
-            _logger = logger;
+            using (var sha512 = SHA512.Create())
+            {
+                var hashedBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(input));
+                return Convert.ToBase64String(hashedBytes);
+            }
         }
 
         /// <summary>
@@ -61,7 +66,7 @@ namespace Server.Services
                         new() {Value = employeeInfo.FirstName},
                         new() {Value = employeeInfo.LastName},
                         new() {Value = employeeInfo.Credentials.Username},
-                        new() {Value = employeeInfo.Credentials.Password}
+                        new() {Value = GetHashedString(employeeInfo.Credentials.Password)}
                     }
                 };
                 conn.Open();
@@ -118,7 +123,7 @@ namespace Server.Services
                         (reader["last_name"].ToString()).Equals(info.LastName) &&
                         (reader["first_name"].ToString()).Equals(info.FirstName) &&
                         (reader["employee_username"].ToString()).Equals(info.Credentials.Username) &&
-                        (reader["employee_password"].ToString()).Equals(info.Credentials.Password));
+                        (reader["employee_password"].ToString()).Equals(GetHashedString(info.Credentials.Password)));
                 }
                 conn.Close();
 
@@ -138,7 +143,7 @@ namespace Server.Services
                         new() {Value = info.FirstName},
                         new() {Value = info.LastName},
                         new() {Value = info.Credentials.Username},
-                        new() {Value = info.Credentials.Password},
+                        new() {Value = GetHashedString(info.Credentials.Password)},
                         new() {Value = info.EmployeeId}
                     }
                     };
@@ -240,7 +245,7 @@ namespace Server.Services
                 expectedPassword = (command.ExecuteScalar() == null) ? string.Empty : command.ExecuteScalar().ToString();
                 conn.Close();
             }
-            return password == expectedPassword;
+            return GetHashedString(password).Equals(expectedPassword);
         }
     }
 }
