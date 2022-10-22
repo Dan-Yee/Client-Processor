@@ -150,7 +150,6 @@ static void listAllEmployees(AllEmployeesInfo info)
         Console.WriteLine("First Name: " + employee.FirstName);
         Console.WriteLine("Last Name: " + employee.LastName);
         Console.WriteLine("Username: " + employee.Credentials.Username);
-        Console.WriteLine("Password: " + employee.Credentials.Password);
         Console.WriteLine();
     }
     Console.WriteLine("----------< End All Employees >----------");
