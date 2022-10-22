@@ -90,20 +90,50 @@ namespace Server.Services
         private static bool UpdateEmployeeRecord(EmployeeInfo info)
         {
             NpgsqlCommand command;
+            NpgsqlDataReader reader;
             string query;
             int status;
+            bool needUpdate = true;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "UPDATE Employees SET " +
-                    "first_name = $1, " +
-                    "last_name = $2, " +
-                    "employee_username = $3, " +
-                    "employee_password = $4 " +
-                    "WHERE employee_id = $5;";
+                /*
+                 * Check if an update is necessary. 
+                 * If all the information sent from the Client is the same as all the data currently stored, UPDATE is not necessary.
+                 */
+                query = "SELECT * FROM Employees WHERE employee_id = $1;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
+                    {
+                        new() {Value = info.EmployeeId}
+                    }
+                };
+                conn.Open();
+                reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    needUpdate = !((reader["first_name"].ToString()).Equals(info.FirstName) &&
+                        (reader["last_name"].ToString()).Equals(info.LastName) &&
+                        (reader["first_name"].ToString()).Equals(info.FirstName) &&
+                        (reader["employee_username"].ToString()).Equals(info.Credentials.Username) &&
+                        (reader["employee_password"].ToString()).Equals(info.Credentials.Password));
+                }
+                conn.Close();
+
+                // if some information received from the Client side did not match what was stored in the database, update the database.
+                if (needUpdate)
+                {
+                    query = "UPDATE Employees SET " +
+                        "first_name = $1, " +
+                        "last_name = $2, " +
+                        "employee_username = $3, " +
+                        "employee_password = $4 " +
+                        "WHERE employee_id = $5;";
+                    command = new NpgsqlCommand(@query, conn)
+                    {
+                        Parameters =
                     {
                         new() {Value = info.FirstName},
                         new() {Value = info.LastName},
@@ -111,12 +141,16 @@ namespace Server.Services
                         new() {Value = info.Credentials.Password},
                         new() {Value = info.EmployeeId}
                     }
-                };
-                conn.Open();
-                status = command.ExecuteNonQuery();
-                conn.Close();
+                    };
+                    conn.Open();
+                    status = command.ExecuteNonQuery();
+                    conn.Close();
+                    return status == 1;                                             // UPDATE returns the number of rows affected. This operation expects 1 to be considered successful.
+                } else
+                {
+                    return true;                                                    // No UPDATE was needed. The operation would be considered successful.
+                }
             }
-            return status == 1;                                             // UPDATE returns the number of rows affected. This operation expects 1 to be consid
         } 
 
         /*
