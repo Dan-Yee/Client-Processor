@@ -51,6 +51,14 @@ do
             }
             break;
         case 2:             // updating an existing employee
+            var updateResponse = client.updateEmployee(getUpdatedInfo());
+            if(updateResponse.IsSuccessfulOperation)
+            {
+                Console.WriteLine("Successfully updated Employee information.\n");
+            } else
+            {
+                Console.WriteLine("Error updating Employee information.\n");
+            }
             break;
         case 3:             // listing all employees
             listAllEmployees(client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty()));
@@ -59,7 +67,7 @@ do
             continueProgram = true;
             break;
         default:
-            Console.WriteLine("ERROR: Action Not Recognized");
+            Console.WriteLine("ERROR: Action Not Recognized\n");
             break;
     }
 } while (!continueProgram);
@@ -95,6 +103,36 @@ static EmployeeInfo getNewInfo()
     };
     var employeeInfo = new EmployeeInfo
     {
+        FirstName = newFirstName,
+        LastName = newLastName,
+        Credentials = newCredentials
+    };
+    return employeeInfo;
+}
+
+static EmployeeInfo getUpdatedInfo()
+{
+    Console.WriteLine("Enter Updated Employee Information:");
+    Console.Write("Employee ID: ");
+    string? employeeID = Console.ReadLine();
+    int id = int.Parse(employeeID);
+    Console.Write("First Name: ");
+    string? newFirstName = Console.ReadLine();
+    Console.Write("Last Name: ");
+    string? newLastName = Console.ReadLine();
+    Console.Write("Username: ");
+    string? newUsername = Console.ReadLine();
+    Console.Write("Password: ");
+    string? newPassword = Console.ReadLine();
+
+    var newCredentials = new LoginCredentials
+    {
+        Username = newUsername,
+        Password = newPassword
+    };
+    var employeeInfo = new EmployeeInfo
+    {
+        EmployeeId = id,
         FirstName = newFirstName,
         LastName = newLastName,
         Credentials = newCredentials
