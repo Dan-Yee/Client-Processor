@@ -44,7 +44,7 @@ namespace Server.Services
         /// Method <c>CreateNewEmployee</c> inserts a new record into Employees table in the database
         /// </summary>
         /// <param name="employeeInfo">An object containing the first name, last name, username, and password of the new employee</param>
-        /// <returns><c>true</c> if the insert operation was successful. <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if the INSERT operation was successful. <c>false</c> otherwise.</returns>
         private static bool CreateNewEmployee(EmployeeInfo employeeInfo)
         {
             NpgsqlCommand command;
@@ -68,9 +68,57 @@ namespace Server.Services
                 status = command.ExecuteNonQuery();
                 conn.Close();
             }
-            return status == 1;                                             // Status of 1 means successful query execution
+            return status == 1;                                             // INSERT returns the number of rows affected. This operation expects 1 to be successful.
         }
-        
+
+        /*
+         * Implementation of the updateEmployee RPC for updating information about an employee.
+         * Request contains the employee's first name, last name, username and password - all of which can be changed as needed.
+         */
+        public override Task<ServiceStatus> updateEmployee(EmployeeInfo request, ServerCallContext context)
+        {
+            ServiceStatus status = new();
+            status.IsSuccessfulOperation = UpdateEmployeeRecord(request);
+            return Task.FromResult(status);
+        }
+
+        /// <summary>
+        /// Method <c>UpdateEmployeeRecord</c> takes in an object of EmployeeInfo and executes a UPDATE to the database to change the record of a specific employee.
+        /// </summary>
+        /// <param name="info">An object containing the employee's id, first name, last name, username, and password. Any of these fields, except for ID, can be changed.</param>
+        /// <returns><c>true</c> if the UPDATE operation was successful. <c>false</c> otherwise.</returns>
+        private static bool UpdateEmployeeRecord(EmployeeInfo info)
+        {
+            NpgsqlCommand command;
+            string query;
+            int status;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "UPDATE Employees SET " +
+                    "first_name = $1, " +
+                    "last_name = $2, " +
+                    "employee_username = $3, " +
+                    "employee_password = $4 " +
+                    "WHERE employee_id = $5;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = info.FirstName},
+                        new() {Value = info.LastName},
+                        new() {Value = info.Credentials.Username},
+                        new() {Value = info.Credentials.Password},
+                        new() {Value = info.EmployeeId}
+                    }
+                };
+                conn.Open();
+                status = command.ExecuteNonQuery();
+                conn.Close();
+            }
+            return status == 1;                                             // UPDATE returns the number of rows affected. This operation expects 1 to be consid
+        } 
+
         /*
          * Implementation of the getEmployees RPC for getting information about all employees stored in the database.
          */
