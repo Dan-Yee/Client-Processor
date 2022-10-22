@@ -9,6 +9,11 @@ namespace Server.Services
 {
     public class EmployeeService : Employee.EmployeeBase
     {
+        /// <summary>
+        /// Method <c>GetHashedString</c> takes a string input and returns the base64 encoded hashed string.
+        /// </summary>
+        /// <param name="input">The plaintext string to be hashed</param>
+        /// <returns>The base64 encoded string after it has been hashed</returns>
         private static string GetHashedString(string input)
         {
             using (var sha512 = SHA512.Create())
@@ -34,10 +39,12 @@ namespace Server.Services
             return new NpgsqlConnection(@connectionString);
         }
 
-        /*
-         * Implementation of the newEmployee RPC for adding a new employee.
-         * Request contains the first name, last name, username, and password for the new employee.
-         */
+        /// <summary>
+        /// Implementation of the newEmployee RPC for adding a new employee
+        /// </summary>
+        /// <param name="request">An object containing the first name, last name, username, and password for the new employee.</param>
+        /// <param name="context"></param>
+        /// <returns><c>true</c> if the operation was successful. <c>false</c> otherwise.</returns>
         public override Task<ServiceStatus> newEmployee(EmployeeInfo request, ServerCallContext context)
         {
             ServiceStatus status = new();
@@ -76,10 +83,12 @@ namespace Server.Services
             return status == 1;                                             // INSERT returns the number of rows affected. This operation expects 1 to be successful.
         }
 
-        /*
-         * Implementation of the updateEmployee RPC for updating information about an employee.
-         * Request contains the employee's first name, last name, username and password - all of which can be changed as needed.
-         */
+        /// <summary>
+        /// Implementation of the updateEmployee RPC for updating information about an employee.
+        /// </summary>
+        /// <param name="request">An object containing the updated employee's first name, last name, username, and password - all of them (or none) can be changed as needed</param>
+        /// <param name="context"></param>
+        /// <returns><c>true</c> if the operation was successful. <c>false</c> otherwise.</returns>
         public override Task<ServiceStatus> updateEmployee(EmployeeInfo request, ServerCallContext context)
         {
             ServiceStatus status = new();
@@ -158,9 +167,12 @@ namespace Server.Services
             }
         } 
 
-        /*
-         * Implementation of the getEmployees RPC for getting information about all employees stored in the database.
-         */
+        /// <summary>
+        /// Implementation of the getEmployees RPC for getting information about all employees stored in the database.
+        /// </summary>
+        /// <param name="request">Empty. This RPC call does not require input parameters.</param>
+        /// <param name="context"></param>
+        /// <returns>An object containing any number of objects where each of the sub-objects represents information about an Employee record in the database</returns>
         public override Task<AllEmployeesInfo> getEmployees(Empty request, ServerCallContext context)
         {
             return Task.FromResult(SelectAllEmployees());
@@ -208,10 +220,12 @@ namespace Server.Services
             return allEmployees;
         }
 
-        /*
-         * Implementation of the doLogin RPC for verifying login credentials.
-         * Request contains the username and password being verified for login.
-         */
+        /// <summary>
+        /// Implementation of the doLogin RPC for verifying login credentials.
+        /// </summary>
+        /// <param name="request">An object containing the username and password being verified for login.</param>
+        /// <param name="context"></param>
+        /// <returns><c>true</c> if the credentials are valid. <c>false</c> otherwise.</returns>
         public override Task<LoginStatus> doLogin(LoginCredentials request, ServerCallContext context)
         {
             LoginStatus status = new();
