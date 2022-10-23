@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ClientApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ClientApp.Views.AdminLoginView"
+		x:DataType="vm:AdminLoginViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ClientApp">
+
+	<Design.DataContext>
+		<vm:AdminLoginViewModel/>
+	</Design.DataContext>
+
+	<StackPanel HorizontalAlignment="Center" Spacing="20" VerticalAlignment="Top" Margin="0,50,0,0">
+		<TextBlock Text="Admin Login" FontSize="30.0"/>
+		<TextBlock Text="Username" HorizontalAlignment="Center" FontSize="20" Margin="0,50,0,0"/>
+		<TextBox Text="{CompiledBinding AdminUserName}"/>
+		<TextBlock Text="Password" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
+		<TextBox PasswordChar="*" Text="{CompiledBinding AdminPassword}"/>
+		<Button x:Name="adminLoginBtn" Command="{Binding AdminLoginCommand}" Content="Login" HorizontalAlignment="Center" Margin="0,30,0,0" Width="100" HorizontalContentAlignment="Center"/>
+		<Button x:Name="homeBtn" Command="{Binding ToHomePageCommand}" Content="Home" HorizontalAlignment="Center" Margin="0,30,0,0" Width="100" HorizontalContentAlignment="Center"/>
+	</StackPanel>
+</Window>

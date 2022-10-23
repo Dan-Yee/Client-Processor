@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ClientApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ClientApp.Views.LoginPage"
+		x:DataType="vm:LoginPageViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ClientApp">
+
+	<Design.DataContext>
+		<vm:LoginPageViewModel/>
+	</Design.DataContext>
+	
+	<StackPanel HorizontalAlignment="Center" Spacing="20" VerticalAlignment="Top" Margin="0,50,0,0">
+		<TextBlock Text="Login!" FontSize="30.0"/>
+		<TextBlock Text="Username" HorizontalAlignment="Center" FontSize="20" Margin="0,50,0,0"/>
+		<TextBox Text="{CompiledBinding UserName}"/>
+		<TextBlock Text="Password" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
+		<TextBox PasswordChar="*" Text="{CompiledBinding Password}"/>
+		<Button x:Name="loginBtn" Command="{Binding LoginCommand}" Content="Login" HorizontalAlignment="Center" Margin="0,30,0,0" Width="100" HorizontalContentAlignment="Center"/>
+	</StackPanel>
+</Window>
