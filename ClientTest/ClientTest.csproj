@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\client.proto" />
     <None Remove="Protos\employee.proto" />
+    <None Remove="Protos\shared.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\client.proto">
+      <GrpcServices>Client</GrpcServices>
+    </Protobuf>
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\shared.proto">
+      <GrpcServices>Client</GrpcServices>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

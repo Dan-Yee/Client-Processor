@@ -2,7 +2,90 @@
 using Server;
 
 var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-var client = new Employee.EmployeeClient(channel);
+var client = new Client.ClientClient(channel);
+
+bool continueProgram = false;
+do
+{
+    displayActions();
+    Console.Write("Your Choice: ");
+    string? input = Console.ReadLine();
+    int inputValue = int.Parse(input);
+    Console.WriteLine();
+
+    switch(inputValue)
+    {
+        case 1:
+            var createResponse = client.newClient(getNewInfo());
+            if(createResponse.IsSuccessfulOperation)
+            {
+                Console.WriteLine("Successfully created a new Client.\n");
+            } else
+            {
+                Console.WriteLine("Error creating a new Client.\n");
+            }
+            break;
+        case 2:
+            listAllClients(client.getClients(new Google.Protobuf.WellKnownTypes.Empty()));
+            break;
+        case 3:
+            continueProgram = true;
+            break;
+        default:
+            Console.WriteLine("Error: Action not recognized.\n");
+            break;
+    }
+} while (!continueProgram);
+
+static void displayActions()
+{
+    Console.WriteLine("Select An Action:");
+    Console.WriteLine("\t(1) Create New Client");
+    Console.WriteLine("\t(2) List All Clients");
+    Console.WriteLine("\t(3) Quit");
+}
+
+static ClientInfo getNewInfo()
+{
+    Console.WriteLine("Enter New Client Information:");
+    Console.Write("First Name: ");
+    string? newFirstName = Console.ReadLine();
+    Console.Write("Last Name: ");
+    string? newLastName = Console.ReadLine();
+    Console.Write("Phone Number: ");
+    string? phoneNumber = Console.ReadLine();
+    Console.Write("Email: ");
+    string? email = Console.ReadLine();
+
+    var clientInfo = new ClientInfo
+    {
+        FirstName = newFirstName,
+        LastName = newLastName,
+        PhoneNumber = phoneNumber,
+        Email = email
+    };
+    return clientInfo;
+}
+
+static void listAllClients(AllClients info)
+{
+    Console.WriteLine("----------< Begin All Clients >----------");
+    Console.WriteLine();
+    foreach (ClientInfo client in info.Clients)
+    {
+        Console.WriteLine("Client ID: " + client.ClientId);
+        Console.WriteLine("First Name: " + client.FirstName);
+        Console.WriteLine("Last Name: " + client.LastName);
+        Console.WriteLine("Phone Number: " + client.PhoneNumber);
+        Console.WriteLine("Email: " + client.Email);
+        Console.WriteLine();
+    }
+    Console.WriteLine("----------< End All Clients >----------");
+    Console.WriteLine();
+}
+
+// <BELOW> TESTS FOR EMPLOYEE SERVICES <BELOW>
+/*var client = new Employee.EmployeeClient(channel);
 
 bool isSuccessfulLogin = false;
 do
@@ -154,4 +237,4 @@ static void listAllEmployees(AllEmployeesInfo info)
     }
     Console.WriteLine("----------< End All Employees >----------");
     Console.WriteLine();
-}
+}*/

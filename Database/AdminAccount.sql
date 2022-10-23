@@ -1,0 +1,2 @@
+-- Creates an admin account with the username "admin" and password "adminPassword"
+INSERT INTO Employees (first_name, last_name, employee_username, employee_password) VALUES ('Admin', 'Admin', 'admin', 'lIJvR6zSgRXAIxCJu4c0kUU0SsfrdG9fdHKtL2ySIAxF1VXJ1MZ7oMICnLgo4uGUEW80wRj0roFrUdMe2v/79g==');

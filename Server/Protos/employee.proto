@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "google/protobuf/empty.proto";
+import "Protos/shared.proto";
 
 option csharp_namespace = "Server";
 
@@ -31,9 +32,4 @@ message EmployeeInfo {
 
 message AllEmployeesInfo {
 	repeated EmployeeInfo employees = 1;
-}
-
-// record for storing the status of the RPC operation
-message ServiceStatus {
-	bool isSuccessfulOperation = 1;
 }
