@@ -32,7 +32,6 @@
 			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
@@ -44,12 +43,10 @@
 		<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeFirstName}"/>
 		<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
 		<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeLastName}"/>
-		<TextBlock Grid.Row="3" Grid.Column="0" Text="Insurance" HorizontalAlignment="Center" FontSize="20"/>
-		<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeInsuranceCompany}"/>
-		<TextBlock Grid.Row="4" Grid.Column="0" Text="Phone Number" HorizontalAlignment="Center" FontSize="20"/>
-		<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeePhoneNumber}"/>
-		<TextBlock Grid.Row="5" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
-		<TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeEmail}"/>
-		<Button Grid.Row="6" Grid.Column="1" x:Name="EmployeeRegisterBtn"  Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Username" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeUserName}"/>
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="Password" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeePassword}"/>
+		<Button Grid.Row="5" Grid.Column="1" x:Name="EmployeeRegisterBtn"  Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
 	</Grid>
 </Window>

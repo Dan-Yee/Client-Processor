@@ -1,4 +1,6 @@
-﻿using ClientApp.Views;
+﻿using ClientApp.Models;
+using ClientApp.Views;
+using Grpc.Net.Client;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -6,24 +8,31 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Grpc.Net.Client;
+using Server;
+using DynamicData;
 
 namespace ClientApp.ViewModels
 {
     public class AdminHomeViewModel : ReactiveObject
     {
         AdminHomeView _adminHomeView;
-        private ObservableCollection<string> _employees = new();
+        private ObservableCollection<Models.Employee> _employees = new();
+
         public AdminHomeViewModel(AdminHomeView adminHomeView)
         {
             _adminHomeView = adminHomeView;
-            var employees = new ObservableCollection<string>
+            // localhost for testing purposes
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");
+            var client = new Server.Employee.EmployeeClient(channel);
+            AllEmployeesInfo info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
+            foreach (EmployeeInfo e in info.Employees)
             {
-                "Employee1",
-                "Employee2"
-            };
-            Employees = employees;
+                _employees.Add(new Models.Employee(e.EmployeeId,e.FirstName,e.LastName,e.Credentials.Username));
+            }
+            Employees = _employees;
         }
-        public ObservableCollection<string> Employees
+        public ObservableCollection<Models.Employee> Employees
         {
             get => _employees;
             set
@@ -31,6 +40,7 @@ namespace ClientApp.ViewModels
                 this.RaiseAndSetIfChanged(ref _employees, value);
             }
         }
+
 
         public void GoToHomeFromAdminHomeCommand()
         {

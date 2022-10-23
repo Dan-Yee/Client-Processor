@@ -12,15 +12,18 @@ namespace ClientApp.Models
         public string FirstName{ get; }
         public string LastName{ get; }
         public string UserName{ get; }
-        private readonly string Password;
 
-        public Employee(int id,string firstName,string lastName,string userName,string password)
+        public Employee(int id,string firstName,string lastName,string userName)
         {
             ID = id;
             FirstName = firstName;
             LastName = lastName;
             UserName = userName;
-            Password = password;
+        }
+        public override string ToString()
+        {
+            return FirstName + " " + LastName;
         }
     }
+
 }

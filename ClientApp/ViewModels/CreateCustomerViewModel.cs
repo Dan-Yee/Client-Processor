@@ -1,6 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using ClientApp.Views;
+using Grpc.Net.Client;
+using Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,7 +57,7 @@ namespace ClientApp.ViewModels
             }
         }
 
-        private string _insuranceCompany = string.Empty;
+        /*private string _insuranceCompany = string.Empty;
 
         public string InsuranceCompany
         {
@@ -72,7 +74,7 @@ namespace ClientApp.ViewModels
 
             }
         }
-
+        */
         private string _phoneNumber = string.Empty;
 
         public string PhoneNumber
@@ -110,12 +112,22 @@ namespace ClientApp.ViewModels
         }
         public void RegisterCommand()
         {
-            //Do magic here
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
+            var client = new Client.ClientClient(channel);
+
+            var clientInfo = new ClientInfo
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                PhoneNumber = PhoneNumber,
+                Email = Email
+            };
+            var createResponse = client.newClient(clientInfo);
+
             new HomePage().Show();
             _createCustomerPage.Close();
-            var didStuffMsg = MessageBox.Avalonia.MessageBoxManager
-    .GetMessageBoxStandardWindow("title", "Clicked");
-            didStuffMsg.Show();
+            
         }
     }
 }

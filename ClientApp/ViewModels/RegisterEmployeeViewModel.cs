@@ -1,4 +1,6 @@
 ﻿using ClientApp.Views;
+using Grpc.Net.Client;
+using Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,62 +53,63 @@ namespace ClientApp.ViewModels
             }
         }
 
-        private string _employeeInsuranceCompany = string.Empty;
+        private string _employeeUserName = string.Empty;
 
-        public string EmployeeInsuranceCompany
+        public string EmployeeUserName
         {
 
             get
             {
-                return _employeeInsuranceCompany;
+                return _employeeUserName;
             }
 
             set
             {
-                _employeeInsuranceCompany = value;
-                OnPropertyChanged(nameof(EmployeeInsuranceCompany));
+                _employeeUserName = value;
+                OnPropertyChanged(nameof(EmployeeUserName));
 
             }
         }
 
-        private string _employeePhoneNumber = string.Empty;
+        private string _employeePassword = string.Empty;
 
-        public string EmployeePhoneNumber
+        public string EmployeePassword
         {
 
             get
             {
-                return _employeePhoneNumber;
+                return _employeePassword;
             }
 
             set
             {
-                _employeePhoneNumber = value;
-                OnPropertyChanged(nameof(EmployeePhoneNumber));
+                _employeePassword = value;
+                OnPropertyChanged(nameof(EmployeePassword));
 
             }
         }
 
-        private string _employeeEmail = string.Empty;
-
-        public string EmployeeEmail
-        {
-
-            get
-            {
-                return _employeeEmail;
-            }
-
-            set
-            {
-                _employeeEmail = value;
-                OnPropertyChanged(nameof(EmployeeEmail));
-
-            }
-        }
+        
 
         public void EmployeeRegisterCommand()
         {
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
+            var employee = new Server.Employee.EmployeeClient(channel);
+            var loginCredentials = new LoginCredentials 
+            {
+                Username = EmployeeUserName,
+                Password = EmployeePassword
+            };
+
+            var employeeInfo = new EmployeeInfo
+            {
+                FirstName = EmployeeFirstName,
+                LastName = EmployeeLastName,
+                Credentials = loginCredentials,
+                
+            };
+            var createResponse = employee.newEmployee(employeeInfo);
+
             new AdminHomeView().Show();
             _registerEmployeeView.Close();
         }

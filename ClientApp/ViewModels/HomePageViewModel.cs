@@ -19,29 +19,23 @@ namespace ClientApp.ViewModels
     {
 
         //private ObservableCollection<string> _items = new();
-        private ObservableCollection<string> _items = new();
+        private ObservableCollection<Customer> _items = new();
 
         private HomePage _homePage;
         public HomePageViewModel(HomePage hp)
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            //var client = new Server.Employee.EmployeeClient(channel);
+            // localhost for testing purposes
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");
             var client = new Client.ClientClient(channel);
-
-            //var ClientApp = new Server.ClientApp.ClientAppClient(channel);
-            //ClientApp.getClientApps(new Google.Protobuf.WellKnownTypes.Empty());
-            _homePage = hp;
-            var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager
-    .GetMessageBoxStandardWindow("title", "works");
-            loginSuccessMessage.Show();
-            /*
-            var items = new ObservableCollection<string>
+            
+            AllClients info = client.getClients(new Google.Protobuf.WellKnownTypes.Empty());
+            foreach (ClientInfo c in info.Clients)
             {
-                "Customer1",
-                "Customer2"
-            };
-            Items = items;
-            */
+                _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
+            }
+            Items = _items;
+
+            _homePage = hp;
         }
 
         //Binded onclick event
@@ -56,8 +50,8 @@ namespace ClientApp.ViewModels
             new AdminLoginView().Show();
             _homePage.Close();
         }
-        /*
-        public ObservableCollection<string> Items
+        
+        public ObservableCollection<Customer> Items
         {
             get => _items;
             set
@@ -65,6 +59,6 @@ namespace ClientApp.ViewModels
                 this.RaiseAndSetIfChanged(ref _items, value);
             }
         }
-        */
+        
     }
 }

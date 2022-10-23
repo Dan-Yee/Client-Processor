@@ -8,19 +8,25 @@ namespace ClientApp.Models
 {
     public class Customer
     {
-        public int Employee_ID { get; }
+        public int Client_ID { get; }
         public string FirstName { get; }
         public string LastName { get; }
-        public string UserName { get; }
-        private readonly string Password;
+        public string PhoneNumber { get; }
+        public string Email { get; }
+        
 
-        public Customer(int employee_ID, string firstName, string lastName, string userName, string password)
+        public Customer(int client_ID, string firstName, string lastName, string phonenumber, string email)
         {
-            Employee_ID = employee_ID;
+            Client_ID = client_ID;
             FirstName = firstName;
             LastName = lastName;
-            UserName = userName;
-            Password = password;
+            PhoneNumber = phonenumber;
+            Email = email;
+        }
+
+        public override string ToString()
+        {
+            return FirstName + " " + LastName;
         }
     }
 }
