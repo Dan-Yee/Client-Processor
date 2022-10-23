@@ -1,0 +1,24 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "Protos/shared.proto";
+
+option csharp_namespace = "Server";
+
+service ClientApp {
+	rpc newClientApp(ClientAppInfo) returns (ServiceStatus);										// rpc to create a new ClientApp in the database
+	rpc getClientApps(google.protobuf.Empty) returns (AllClientApps);								// rpc to get all ClientApps currently stored in the database.
+}
+
+// record for storing information about one ClientApp
+message ClientAppInfo {
+	optional int32 ClientApp_id = 1;
+	string first_name = 2;
+	string last_name = 3;
+	string phone_number = 4;
+	optional string email = 5;
+}
+
+// record that represents 0 or more ClientApps
+message AllClientApps {
+	repeated ClientAppInfo ClientApps = 1;
+}

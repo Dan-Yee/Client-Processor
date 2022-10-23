@@ -1,0 +1,55 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		x:Name="MyPage2"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ClientApp.Views.RegisterEmployeeView"
+		xmlns:vm="using:ClientApp.ViewModels"
+		xmlns:views="clr-namespace:ClientApp.Views"
+		x:DataType="vm:RegisterEmployeeViewModel"
+        Title="Register employee view">
+
+	<Design.DataContext>
+		<vm:RegisterEmployeeViewModel/>
+	</Design.DataContext>
+	<Window.Styles>
+		<Style Selector="RowDefinition">
+			<Setter Property="Height" Value="auto"/>
+		</Style>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Height" Value="50"/>
+		</Style>
+	</Window.Styles>
+	<Grid HorizontalAlignment="Center" >
+		<Grid.RowDefinitions>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<TextBlock Grid.Row="0" Grid.Column="1" Text="Employee Registration" FontSize="20"/>
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeFirstName}"/>
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeLastName}"/>
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Insurance" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeInsuranceCompany}"/>
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="Phone Number" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeePhoneNumber}"/>
+		<TextBlock Grid.Row="5" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
+		<TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeEmail}"/>
+		<Button Grid.Row="6" Grid.Column="1" x:Name="EmployeeRegisterBtn"  Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+	</Grid>
+</Window>

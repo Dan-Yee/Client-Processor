@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "Protos/shared.proto";
+
+option csharp_namespace = "Server";
+
+service Employee {
+	rpc newEmployee(EmployeeInfo) returns (ServiceStatus);							// rpc to create a new Employee
+	rpc updateEmployee(EmployeeInfo) returns (ServiceStatus);						// rpc to update an existing Employee's information
+	rpc getEmployees(google.protobuf.Empty) returns (AllEmployeesInfo);				// rpc to get all Employees from the database
+	rpc doLogin(LoginCredentials) returns (LoginStatus);							// rpc to verify credentials for login
+}
+
+// record for storing the credentials for a login attempt
+message LoginCredentials {
+	string username = 1;
+	string password = 2;
+}
+
+// record for storing whether or not the login attempt was successful
+message LoginStatus {
+	bool isSuccessfulLogin = 1;
+}
+
+// record for storing Employee information
+message EmployeeInfo {
+	optional int32 employee_id = 1;													// if creating a new Employee, this field will be empty. If updating Employee's information, this field will contain the user ID.
+	string first_name = 2;
+	string last_name = 3;
+	LoginCredentials credentials = 4;
+}
+
+message AllEmployeesInfo {
+	repeated EmployeeInfo employees = 1;
+}
