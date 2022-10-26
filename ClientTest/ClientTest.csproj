@@ -28,7 +28,7 @@
     </Protobuf>
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\shared.proto">
-      <GrpcServices>Client</GrpcServices>
+      <GrpcServices>Server</GrpcServices>
     </Protobuf>
   </ItemGroup>
 
