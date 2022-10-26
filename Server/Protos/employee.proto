@@ -7,7 +7,7 @@ option csharp_namespace = "Server";
 service Employee {
 	rpc newEmployee(EmployeeInfo) returns (ServiceStatus);							// rpc to create a new Employee
 	rpc updateEmployee(EmployeeInfo) returns (ServiceStatus);						// rpc to update an existing Employee's information
-	rpc getEmployees(google.protobuf.Empty) returns (AllEmployeesInfo);				// rpc to get all Employees from the database
+	rpc getEmployees(google.protobuf.Empty) returns (AllEmployees);				// rpc to get all Employees from the database
 	rpc doLogin(LoginCredentials) returns (LoginStatus);							// rpc to verify credentials for login
 }
 
@@ -17,9 +17,11 @@ message LoginCredentials {
 	string password = 2;
 }
 
-// record for storing whether or not the login attempt was successful
+// record for storing whether or not the login attempt was successful, the ID of the employee attempting login and whether or not the employee is an admin
 message LoginStatus {
-	bool isSuccessfulLogin = 1;
+	int32 employee_id = 1;
+	bool isSuccessfulLogin = 2;
+	bool isAdmin = 3;
 }
 
 // record for storing Employee information
@@ -28,8 +30,10 @@ message EmployeeInfo {
 	string first_name = 2;
 	string last_name = 3;
 	LoginCredentials credentials = 4;
+	bool isAdmin = 5;
 }
 
-message AllEmployeesInfo {
+// record for storing zero or more EmployeeInfo messages, each containing information about a specific employee
+message AllEmployees {
 	repeated EmployeeInfo employees = 1;
 }
