@@ -32,6 +32,7 @@
 				<RowDefinition></RowDefinition>
 				<RowDefinition></RowDefinition>
 				<RowDefinition></RowDefinition>
+				<RowDefinition></RowDefinition>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition MinWidth="350"></ColumnDefinition>
@@ -48,5 +49,6 @@
 			<TextBlock Grid.Row="4" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
 			<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Email}"/>
 			<Button Grid.Row="5" Grid.Column="1" x:Name="RegisterBtn"  Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+			<Button Grid.Row="6" Grid.Column="1" x:Name="HomeBtn"  Content="Home" Command="{Binding ToHomeScreenCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
 		</Grid>
 </Window>

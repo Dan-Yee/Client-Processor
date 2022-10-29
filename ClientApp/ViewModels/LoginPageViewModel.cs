@@ -60,8 +60,6 @@ namespace ClientApp.ViewModels
         }
         public void LoginCommand()
         {
-            bool booltool = true;
-            
             var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
             var ClientApp = new Employee.EmployeeClient(channel);
             
@@ -71,14 +69,13 @@ namespace ClientApp.ViewModels
                 Password = Password,
             };
             var serviceResponse = ClientApp.doLogin(credentials);                               // assynchronous rpc to Server to verify login credentials
-
+            
             if (serviceResponse.IsSuccessfulLogin)
             {
-                Window homePage = new HomePage();
+                Window homePage = new HomePage(UserName, serviceResponse.IsAdmin);
                 homePage.Show();
                 _loginPage.Close();
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager
-    .GetMessageBoxStandardWindow("title", "User: " + UserName + " Logged in successfully");
+                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + UserName + " Logged in successfully. Admin="+serviceResponse.IsAdmin);
                 loginSuccessMessage.Show();
             }
             else

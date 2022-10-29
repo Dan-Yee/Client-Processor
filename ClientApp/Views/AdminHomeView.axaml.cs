@@ -8,7 +8,11 @@ namespace ClientApp.Views
         public AdminHomeView()
         {
             InitializeComponent();
-            DataContext = new AdminHomeViewModel(this);
+        }
+        public AdminHomeView(string user,bool isAdmin)
+        {
+            InitializeComponent();
+            DataContext = new AdminHomeViewModel(this,user,isAdmin);
         }
     }
 }
