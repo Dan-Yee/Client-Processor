@@ -12,6 +12,7 @@
     <None Remove=".gitignore" />
     <None Remove="Protos\client.proto" />
     <None Remove="Protos\employee.proto" />
+    <None Remove="Protos\procedure.proto" />
     <None Remove="Protos\shared.proto" />
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +43,7 @@
   <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\procedure.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\shared.proto" GrpcServices="Server" />
   </ItemGroup>
 </Project>

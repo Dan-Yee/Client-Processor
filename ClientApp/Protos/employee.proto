@@ -7,7 +7,7 @@ option csharp_namespace = "Server";
 service Employee {
 	rpc newEmployee(EmployeeInfo) returns (ServiceStatus);							// rpc to create a new Employee
 	rpc updateEmployee(EmployeeInfo) returns (ServiceStatus);						// rpc to update an existing Employee's information
-	rpc getEmployees(google.protobuf.Empty) returns (AllEmployees);				// rpc to get all Employees from the database
+	rpc getEmployees(google.protobuf.Empty) returns (AllEmployees);					// rpc to get all Employees from the database
 	rpc doLogin(LoginCredentials) returns (LoginStatus);							// rpc to verify credentials for login
 }
 
