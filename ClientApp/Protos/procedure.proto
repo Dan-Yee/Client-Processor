@@ -13,26 +13,14 @@ message ClientID {
 	int32 clientID = 1;
 }
 
-// record for representing any forms associated with a procedure
-message ProcedureForms {
-	repeated bytes forms = 1;
-}
-
-// record for representing the before and after image for a procedure
-message ProcedureImages {
-	bytes beforeImage = 1;
-	bytes AfterImage = 2;
-}
-
 // record for representing a specific procedure.
 message ProcedureInfo {
 	optional int32 procedure_ID = 1;
 	string procedure_name = 2;
-	int32 client_ID = 3;
-	int32 employee_ID = 4;
-	ProcedureForms forms = 5;
-	ProcedureImages images = 6;
-	optional string procedure_notes = 7;
+	optional string procedure_datetime = 3;
+	int32 client_ID = 4;
+	int32 employee_ID = 5;
+	optional string procedure_notes = 6;
 }
 
 // record for representing zero or more procedures. This is used for getting all procedures associated with a specific client.
