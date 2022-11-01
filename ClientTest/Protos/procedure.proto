@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "Protos/shared.proto";
+
+option csharp_namespace = "Server";
+
+service Procedure {
+	rpc addProcedure(ProcedureInfo) returns (ServiceStatus);					// rpc for adding a completed procedure to the database
+	rpc getProcedures(ClientID) returns (AllProcedures);						// rpc for getting procedures associated with a specific client by ID
+}
+
+// record for representing a ClientID. This is used for getting all procedures associated with a specific client by ID.
+message ClientID {
+	int32 cID = 1;
+}
+
+// record for representing a specific procedure.
+message ProcedureInfo {
+	optional int32 procedure_ID = 1;
+	string procedure_name = 2;
+	optional string procedure_datetime = 3;
+	int32 client_ID = 4;
+	int32 employee_ID = 5;
+	optional string procedure_notes = 6;
+}
+
+// record for representing zero or more procedures. This is used for getting all procedures associated with a specific client.
+message AllProcedures {
+	repeated ProcedureInfo procedures = 1;
+}
