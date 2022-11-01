@@ -1,5 +1,6 @@
 CREATE TABLE Client_Procedures (
 	procedure_id serial PRIMARY KEY,
+	procedure_name varchar(50),								-- the name of the procedure; user inputted
 	procedure_datetime timestamp,							-- the date and time of a specific procedure
 	client_ID integer,										-- the Client this procedure is associated with
 	employee_ID integer,									-- the Employee working on this procedure
