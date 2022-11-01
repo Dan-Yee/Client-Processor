@@ -14,11 +14,15 @@ namespace ClientApp.ViewModels
 {
     public class CreateCustomerViewModel:ViewModelBase
     {
+        string _user = string.Empty;
+        bool _isAdmin = false;
         CreateCustomerPage _createCustomerPage;
 
-        public CreateCustomerViewModel(CreateCustomerPage ccp)
+        public CreateCustomerViewModel(CreateCustomerPage ccp, string user, bool isAdmin)
         {
             _createCustomerPage = ccp;
+            _user = user;
+            _isAdmin = isAdmin;
         }
 
         private string _firstName = string.Empty;
@@ -125,9 +129,14 @@ namespace ClientApp.ViewModels
             };
             var createResponse = client.newClient(clientInfo);
 
-            new HomePage().Show();
+            new HomePage(_user,_isAdmin).Show();
             _createCustomerPage.Close();
             
+        }
+        public void ToHomeScreenCommand()
+        {
+            new HomePage(_user,_isAdmin).Show();
+            _createCustomerPage.Close();
         }
     }
 }

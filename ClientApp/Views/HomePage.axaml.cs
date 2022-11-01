@@ -8,7 +8,11 @@ namespace ClientApp.Views
         public HomePage()
         {
             InitializeComponent();
-            DataContext = new HomePageViewModel(this);
+        }
+        public HomePage(string user,bool isAdmin)
+        {
+            InitializeComponent();
+            DataContext = new HomePageViewModel(this,user,isAdmin);
         }
     }
 }

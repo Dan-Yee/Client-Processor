@@ -42,30 +42,29 @@ namespace Server.Services
         /// <summary>
         /// Implementation of the newEmployee RPC for adding a new employee
         /// </summary>
-        /// <param name="request">An object containing the first name, last name, username, and password for the new employee.</param>
+        /// <param name="request">An object containing the first name, last name, username, password, and privilege for the new employee.</param>
         /// <param name="context"></param>
         /// <returns><c>true</c> if the operation was successful. <c>false</c> otherwise.</returns>
         public override Task<ServiceStatus> newEmployee(EmployeeInfo request, ServerCallContext context)
         {
-            ServiceStatus status = new();
-            status.IsSuccessfulOperation = CreateNewEmployee(request);
-            return Task.FromResult(status);
+            return Task.FromResult(CreateNewEmployee(request));
         }
 
         /// <summary>
         /// Method <c>CreateNewEmployee</c> inserts a new record into Employees table in the database
         /// </summary>
-        /// <param name="employeeInfo">An object containing the first name, last name, username, and password of the new employee</param>
-        /// <returns><c>true</c> if the INSERT operation was successful. <c>false</c> otherwise.</returns>
-        private static bool CreateNewEmployee(EmployeeInfo employeeInfo)
+        /// <param name="employeeInfo">An object containing the first name, last name, username, password, and privilege of the new employee</param>
+        /// <returns>A ServiceStatus object containing the status message and whether or not the operation was successful.</returns>
+        private static ServiceStatus CreateNewEmployee(EmployeeInfo employeeInfo)
         {
+            ServiceStatus sStatus = new();
             NpgsqlCommand command;
             string query;
-            int status;
+            int status = 0;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "INSERT INTO Employees (first_name, last_name, employee_username, employee_password) VALUES ($1, $2, $3, $4);";
+                query = "INSERT INTO Employees (first_name, last_name, employee_username, employee_password, isAdministrator) VALUES ($1, $2, $3, $4, $5);";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -73,14 +72,37 @@ namespace Server.Services
                         new() {Value = employeeInfo.FirstName},
                         new() {Value = employeeInfo.LastName},
                         new() {Value = employeeInfo.Credentials.Username},
-                        new() {Value = GetHashedString(employeeInfo.Credentials.Password)}
+                        new() {Value = GetHashedString(employeeInfo.Credentials.Password)},
+                        new() {Value = employeeInfo.IsAdmin}
                     }
                 };
                 conn.Open();
-                status = command.ExecuteNonQuery();
+
+                // if the username already exists, PostgreSQL will throw exception code 23505: duplicate key value violates unique contraint "..."
+                try
+                {
+                    status = command.ExecuteNonQuery();
+                } catch(PostgresException pgE)
+                {
+                    if(pgE.SqlState.Equals("23505"))
+                    {
+                        sStatus.IsSuccessfulOperation = false;
+                        sStatus.StatusMessage = "Error: Username already exists.";
+                        conn.Close();
+                        return sStatus;
+                    } else
+                    {
+                        sStatus.IsSuccessfulOperation = false;
+                        sStatus.StatusMessage = "Error: Unable to create new employee.";
+                        conn.Close();
+                        return sStatus;
+                    }
+                }
                 conn.Close();
             }
-            return status == 1;                                             // INSERT returns the number of rows affected. This operation expects 1 to be successful.
+            sStatus.IsSuccessfulOperation = (status == 1);                          // INSERT returns the number of rows affected. We expect this value to be 1 if the operation was successful
+            sStatus.StatusMessage = sStatus.IsSuccessfulOperation ? "Success: Employee record was updated" : "Error: Unable to update the employee.";
+            return sStatus;
         }
 
         /// <summary>
@@ -91,9 +113,7 @@ namespace Server.Services
         /// <returns><c>true</c> if the operation was successful. <c>false</c> otherwise.</returns>
         public override Task<ServiceStatus> updateEmployee(EmployeeInfo request, ServerCallContext context)
         {
-            ServiceStatus status = new();
-            status.IsSuccessfulOperation = UpdateEmployeeRecord(request);
-            return Task.FromResult(status);
+            return Task.FromResult(UpdateEmployeeRecord(request));
         }
 
         /// <summary>
@@ -101,20 +121,20 @@ namespace Server.Services
         /// </summary>
         /// <param name="info">An object containing the employee's id, first name, last name, username, and password. Any of these fields, except for ID, can be changed.</param>
         /// <returns><c>true</c> if the UPDATE operation was successful. <c>false</c> otherwise.</returns>
-        private static bool UpdateEmployeeRecord(EmployeeInfo info)
+        private static ServiceStatus UpdateEmployeeRecord(EmployeeInfo info)
         {
+            ServiceStatus sStatus = new();
             NpgsqlCommand command;
             NpgsqlDataReader reader;
             string query;
-            int status;
-            bool needUpdate = true;
+            int status = 0;
+            bool needUpdate = true;                                                 // assume the record needs to be updated until a check can be performed
+            bool isUsernameDiff = false;                                            // assume the username is not changing until a check can be performed
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                /*
-                 * Check if an update is necessary. 
-                 * If all the information sent from the Client is the same as all the data currently stored, UPDATE is not necessary.
-                 */
+                // Check if an update is necessary. 
+                // If all the information sent from the Client is the same as all the data currently stored, UPDATE is not necessary.
                 query = "SELECT * FROM Employees WHERE employee_id = $1;";
                 command = new NpgsqlCommand(@query, conn)
                 {
@@ -129,41 +149,94 @@ namespace Server.Services
                 {
                     reader.Read();
                     needUpdate = !((reader["first_name"].ToString()).Equals(info.FirstName) &&
-                        (reader["last_name"].ToString()).Equals(info.LastName) &&
-                        (reader["first_name"].ToString()).Equals(info.FirstName) &&
-                        (reader["employee_username"].ToString()).Equals(info.Credentials.Username) &&
-                        (reader["employee_password"].ToString()).Equals(GetHashedString(info.Credentials.Password)));
+                        reader["last_name"].ToString().Equals(info.LastName) &&
+                        reader["first_name"].ToString().Equals(info.FirstName) &&
+                        reader["employee_username"].ToString().Equals(info.Credentials.Username) &&
+                        reader["employee_password"].ToString().Equals(GetHashedString(info.Credentials.Password)) &&
+                        (Convert.ToBoolean(reader["isAdministrator"]) == info.IsAdmin));
+
+                    isUsernameDiff = !(reader["employee_username"].ToString().Equals(info.Credentials.Username));
                 }
                 conn.Close();
 
                 // if some information received from the Client side did not match what was stored in the database, update the database.
                 if (needUpdate)
                 {
-                    query = "UPDATE Employees SET " +
-                        "first_name = $1, " +
-                        "last_name = $2, " +
-                        "employee_username = $3, " +
-                        "employee_password = $4 " +
-                        "WHERE employee_id = $5;";
-                    command = new NpgsqlCommand(@query, conn)
+                    // Attempting to update the value of a column with the UNIQUE constraint with the same existing value will throw exception code 23505
+                    // This conditional removes the username field from the UPDATE statement unless it is the value being updated.
+                    if (isUsernameDiff)
                     {
-                        Parameters =
+                        query = "UPDATE Employees SET " +
+                            "first_name = $1, " +
+                            "last_name = $2, " +
+                            "employee_username = $3, " +
+                            "employee_password = $4, " +
+                            "isAdministrator = $5 " +
+                            "WHERE employee_id = $6;";
+                        command = new NpgsqlCommand(@query, conn)
+                        {
+                            Parameters =
+                            {
+                                new() {Value = info.FirstName},
+                                new() {Value = info.LastName},
+                                new() {Value = info.Credentials.Username},
+                                new() {Value = GetHashedString(info.Credentials.Password)},
+                                new() {Value = info.IsAdmin},
+                                new() {Value = info.EmployeeId}
+                            }
+                        };
+                    } else
                     {
-                        new() {Value = info.FirstName},
-                        new() {Value = info.LastName},
-                        new() {Value = info.Credentials.Username},
-                        new() {Value = GetHashedString(info.Credentials.Password)},
-                        new() {Value = info.EmployeeId}
+                        query = "UPDATE Employees SET " +
+                                "first_name = $1, " +
+                                "last_name = $2, " +
+                                "employee_password = $3, " +
+                                "isAdministrator = $4 " +
+                                "WHERE employee_id = $5;";
+                        command = new NpgsqlCommand(@query, conn)
+                        {
+                            Parameters =
+                            {
+                                new() {Value = info.FirstName},
+                                new() {Value = info.LastName},
+                                new() {Value = GetHashedString(info.Credentials.Password)},
+                                new() {Value = info.IsAdmin},
+                                new() {Value = info.EmployeeId}
+                            }
+                        };
                     }
-                    };
                     conn.Open();
-                    status = command.ExecuteNonQuery();
+
+                    // if the username already exists, PostgreSQL will throw exception code 23505: duplicate key value violates unique contraint "..."
+                    try
+                    {
+                        status = command.ExecuteNonQuery();
+                    }
+                    catch (PostgresException pgE)
+                    {
+                        if (pgE.SqlState.Equals("23505"))
+                        {
+                            sStatus.IsSuccessfulOperation = false;
+                            sStatus.StatusMessage = "Error: Username already exists.";
+                            conn.Close();
+                            return sStatus;
+                        }
+                        else
+                        {
+                            sStatus.IsSuccessfulOperation = false;
+                            sStatus.StatusMessage = "Error: Unable to update the employee.";
+                            conn.Close();
+                            return sStatus;
+                        }
+                    }
                     conn.Close();
-                    return status == 1;                                             // UPDATE returns the number of rows affected. This operation expects 1 to be considered successful.
                 } else
                 {
-                    return true;                                                    // No UPDATE was needed. The operation would be considered successful.
+                    status = 1;                                                     // if no update is needed, assume the service status was successful.
                 }
+                sStatus.IsSuccessfulOperation = (status == 1);                      // UPDATE returns the number of rows affected. We expect this value to be 1 if this operation was successful.
+                sStatus.StatusMessage = sStatus.IsSuccessfulOperation ? "Success: Employee record was updated" : "Error: Unable to update the employee.";
+                return sStatus;
             }
         } 
 
@@ -173,7 +246,7 @@ namespace Server.Services
         /// <param name="request">Empty. This RPC call does not require input parameters.</param>
         /// <param name="context"></param>
         /// <returns>An object containing any number of objects where each of the sub-objects represents information about an Employee record in the database</returns>
-        public override Task<AllEmployeesInfo> getEmployees(Empty request, ServerCallContext context)
+        public override Task<AllEmployees> getEmployees(Empty request, ServerCallContext context)
         {
             return Task.FromResult(SelectAllEmployees());
         }
@@ -182,9 +255,9 @@ namespace Server.Services
         /// Method <c>SelectAllEmployees</c> selects all rows from the Employee table and packs it into a message to be sent back.
         /// </summary>
         /// <returns>A Protobuf message containing information about every Employee stored in the database</returns>
-        private static AllEmployeesInfo SelectAllEmployees()
+        private static AllEmployees SelectAllEmployees()
         {
-            AllEmployeesInfo allEmployees = new();
+            AllEmployees allEmployees = new();
             NpgsqlCommand command;
             NpgsqlDataReader reader;
             string query;
@@ -209,7 +282,8 @@ namespace Server.Services
                             EmployeeId = Convert.ToInt32(reader["employee_id"]),
                             FirstName = reader["first_name"].ToString(),
                             LastName = reader["last_name"].ToString(),
-                            Credentials = currentCredentials
+                            Credentials = currentCredentials,
+                            IsAdmin = Convert.ToBoolean(reader["isAdministrator"])
                         };
                         allEmployees.Employees.Add(current);
                     }
@@ -225,12 +299,10 @@ namespace Server.Services
         /// </summary>
         /// <param name="request">An object containing the username and password being verified for login.</param>
         /// <param name="context"></param>
-        /// <returns><c>true</c> if the credentials are valid. <c>false</c> otherwise.</returns>
+        /// <returns><c>LoginStatus</c> object containing the employee_id of the employee that attempted login and if the login was successful or not.</returns>
         public override Task<LoginStatus> doLogin(LoginCredentials request, ServerCallContext context)
         {
-            LoginStatus status = new();
-            status.IsSuccessfulLogin = CheckCredentials(request.Username, request.Password);
-            return Task.FromResult(status);
+            return Task.FromResult(CheckCredentials(request.Username, request.Password));
         }
 
         /// <summary>
@@ -238,16 +310,20 @@ namespace Server.Services
         /// </summary>
         /// <param name="username">The username of the account</param>
         /// <param name="password">The user entered password to be verified against what is already in the database</param>
-        /// <returns><c>true</c> if <c>password</c> matches what is stored in the database. <c>false</c> otherwise</returns>
-        private static bool CheckCredentials(string username, string password)
+        /// <returns><c>LoginStatus</c> object containing the employee_id of the employee that attempted login, if the login was successful or not, and if the employee is an admin user.</returns>
+        private static LoginStatus CheckCredentials(string username, string password)
         {
+            LoginStatus status = new();
             NpgsqlCommand command;
+            NpgsqlDataReader reader;
             string query;
-            string? expectedPassword;
+            int employee_id = -1;
+            string? expectedPassword = string.Empty;
+            bool isAdmin = false;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT employee_password FROM Employees WHERE employee_username = $1;";
+                query = "SELECT employee_id, employee_password, isAdministrator FROM Employees WHERE employee_username = $1;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -256,10 +332,21 @@ namespace Server.Services
                     }
                 };
                 conn.Open();
-                expectedPassword = (command.ExecuteScalar() == null) ? string.Empty : command.ExecuteScalar().ToString();
+                reader = command.ExecuteReader();
+                if(reader.HasRows)
+                {
+                    reader.Read();
+                    employee_id = Convert.ToInt32(reader["employee_id"]); 
+                    expectedPassword = reader["employee_password"].ToString();
+                    isAdmin = Convert.ToBoolean(reader["isAdministrator"]);
+                }
+                reader.Close();
                 conn.Close();
             }
-            return GetHashedString(password).Equals(expectedPassword);
+            status.EmployeeId = employee_id;
+            status.IsSuccessfulLogin = GetHashedString(password).Equals(expectedPassword);
+            status.IsAdmin = isAdmin;
+            return status;
         }
     }
 }

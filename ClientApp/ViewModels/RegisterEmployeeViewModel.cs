@@ -11,10 +11,14 @@ namespace ClientApp.ViewModels
 {
     public class RegisterEmployeeViewModel : ViewModelBase
     {
+        string _user = string.Empty;
+        bool _isAdmin = false;
         RegisterEmployeeView _registerEmployeeView;
-        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView)
+        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView, string user, bool isAdmin)
         {
             _registerEmployeeView = registerEmployeeView;
+            _user = user;
+            _isAdmin = isAdmin;
         }
 
         private string _employeeFirstName = string.Empty;
@@ -89,6 +93,17 @@ namespace ClientApp.ViewModels
             }
         }
 
+        private bool _employeeIsAdmin = false;
+        public bool EmployeeIsAdmin
+        {
+            get { return _employeeIsAdmin; }
+            set
+            {
+                _employeeIsAdmin = value;
+                OnPropertyChanged(nameof(EmployeeIsAdmin));
+            }
+        }
+
         
 
         public void EmployeeRegisterCommand()
@@ -106,11 +121,17 @@ namespace ClientApp.ViewModels
                 FirstName = EmployeeFirstName,
                 LastName = EmployeeLastName,
                 Credentials = loginCredentials,
-                
+                IsAdmin = EmployeeIsAdmin,
             };
             var createResponse = employee.newEmployee(employeeInfo);
 
-            new AdminHomeView().Show();
+            new AdminHomeView(_user,_isAdmin).Show();
+            _registerEmployeeView.Close();
+        }
+
+        public void ToAdminHomeCommand()
+        {
+            new AdminHomeView(_user, _isAdmin).Show();
             _registerEmployeeView.Close();
         }
     }

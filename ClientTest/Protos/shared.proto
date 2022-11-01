@@ -4,4 +4,5 @@ option csharp_namespace = "Server";
 
 message ServiceStatus {
 	bool isSuccessfulOperation = 1;
+	string statusMessage = 2;
 }

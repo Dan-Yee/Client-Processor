@@ -8,7 +8,6 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
     <None Remove="Protos\client.proto" />
@@ -43,6 +42,6 @@
   <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\shared.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\shared.proto" GrpcServices="Server" />
   </ItemGroup>
 </Project>
