@@ -13,7 +13,12 @@ namespace ClientApp.Models
         public string LastName { get; }
         public string PhoneNumber { get; }
         public string Email { get; }
-        
+
+
+        public Customer()
+        {
+            
+        }
 
         public Customer(int client_ID, string firstName, string lastName, string phonenumber, string email)
         {

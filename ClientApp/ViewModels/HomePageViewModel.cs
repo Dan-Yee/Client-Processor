@@ -12,6 +12,7 @@ using ClientApp.Views;
 using Avalonia.Controls;
 using Grpc.Net.Client;
 using Server;
+using Avalonia.Controls.Selection;
 
 namespace ClientApp.ViewModels
 {
@@ -26,7 +27,7 @@ namespace ClientApp.ViewModels
             get => _isAdmin;
             set => this.RaiseAndSetIfChanged(ref _isAdmin, value);
         }
-        
+
         //private ObservableCollection<string> _items = new();
         private ObservableCollection<Customer> _items = new();
 
@@ -43,6 +44,9 @@ namespace ClientApp.ViewModels
                 _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
             }
             Items = _items;
+
+            Selection = new SelectionModel<Customer>();
+            Selection.SelectionChanged += SelectionChanged;
 
             _user = user;
             _isAdmin = isAdmin;
@@ -80,11 +84,33 @@ namespace ClientApp.ViewModels
             }
         }
 
+        public SelectionModel<Customer> Selection { get; }
+
+        public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
+        {
+            // ... handle selection changed
+        }
+
         public void LogoutCommand()
         {
             new LoginPage().Show();
             _homePage.Close();
         }
-        
+        public void GoToClientProceduresCommand()
+        {
+            if(Selection != null)
+            {
+                new ClientProcedureListingView().Show();
+                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
+                loginSuccessMessage.Show();
+                _homePage.Close();
+            }
+            else
+            {
+                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null");
+                loginSuccessMessage.Show();
+            }
+            
+        }
     }
 }
