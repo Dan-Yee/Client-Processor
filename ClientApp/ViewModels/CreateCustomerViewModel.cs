@@ -14,16 +14,28 @@ namespace ClientApp.ViewModels
 {
     public class CreateCustomerViewModel:ViewModelBase
     {
-        string _user = string.Empty;
-        bool _isAdmin = false;
+        //View that this viewmodel is attached to
         CreateCustomerPage _createCustomerPage;
 
+        /// <summary>
+        /// Constructor for the viewmodel. Initializes the view
+        /// </summary>
+        /// <param name="ccp"></param>
+        public CreateCustomerViewModel(CreateCustomerPage ccp)
+        {
+            _createCustomerPage = ccp;
+        }
+
+        /*
+        string _user = string.Empty;
+        bool _isAdmin = false;
         public CreateCustomerViewModel(CreateCustomerPage ccp, string user, bool isAdmin)
         {
             _createCustomerPage = ccp;
             _user = user;
             _isAdmin = isAdmin;
         }
+        */
 
         private string _firstName = string.Empty;
 
@@ -114,12 +126,17 @@ namespace ClientApp.ViewModels
 
             }
         }
+
+        /// <summary>
+        /// Onclick event for creating employee.
+        /// </summary>
         public void RegisterCommand()
         {
 
             var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
             var client = new Client.ClientClient(channel);
 
+            //Initializing the client
             var clientInfo = new ClientInfo
             {
                 FirstName = FirstName,
@@ -129,13 +146,17 @@ namespace ClientApp.ViewModels
             };
             var createResponse = client.newClient(clientInfo);
 
-            new HomePage(_user,_isAdmin).Show();
+            //new HomePage(_user,_isAdmin).Show();
+            new HomePage().Show();
             _createCustomerPage.Close();
-            
         }
+        /// <summary>
+        /// Takes user to the home page
+        /// </summary>
         public void ToHomeScreenCommand()
         {
-            new HomePage(_user,_isAdmin).Show();
+            //new HomePage(_user,_isAdmin).Show();
+            new HomePage().Show();
             _createCustomerPage.Close();
         }
     }

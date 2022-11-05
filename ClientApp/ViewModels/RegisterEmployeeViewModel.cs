@@ -11,16 +11,28 @@ namespace ClientApp.ViewModels
 {
     public class RegisterEmployeeViewModel : ViewModelBase
     {
+        //View that this viewmodel is attached to
+        RegisterEmployeeView _registerEmployeeView;
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the view
+        /// </summary>
+        /// <param name="registerEmployeeView"></param>
+        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView)
+        {
+            _registerEmployeeView = registerEmployeeView;
+        }
+
+        /*
         string _user = string.Empty;
         bool _isAdmin = false;
-        RegisterEmployeeView _registerEmployeeView;
         public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView, string user, bool isAdmin)
         {
             _registerEmployeeView = registerEmployeeView;
             _user = user;
             _isAdmin = isAdmin;
         }
-
+        */
         private string _employeeFirstName = string.Empty;
 
         public string EmployeeFirstName
@@ -105,7 +117,9 @@ namespace ClientApp.ViewModels
         }
 
         
-
+        /// <summary>
+        /// Onclick event for registering employee
+        /// </summary>
         public void EmployeeRegisterCommand()
         {
             var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
@@ -123,15 +137,22 @@ namespace ClientApp.ViewModels
                 Credentials = loginCredentials,
                 IsAdmin = EmployeeIsAdmin,
             };
+            //Makes employee in database
             var createResponse = employee.newEmployee(employeeInfo);
 
-            new AdminHomeView(_user,_isAdmin).Show();
+            //new AdminHomeView(_user,_isAdmin).Show();
+            //Takes user back to admin home view
+            new AdminHomeView().Show();
             _registerEmployeeView.Close();
         }
 
+        /// <summary>
+        /// Takes uesr to admin home view
+        /// </summary>
         public void ToAdminHomeCommand()
         {
-            new AdminHomeView(_user, _isAdmin).Show();
+            //new AdminHomeView(_user, _isAdmin).Show();
+            new AdminHomeView().Show();
             _registerEmployeeView.Close();
         }
     }

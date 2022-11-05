@@ -11,53 +11,38 @@ using System.Windows.Input;
 using Tmds.DBus;
 using Grpc.Net.Client;
 using Server;
+using System.Security.Cryptography;
 
 namespace ClientApp.ViewModels
 {
     public class LoginPageViewModel: ViewModelBase
     {
-        
-        private string _username = string.Empty;
+        //Holds current user
+        public static string GlobalUserName { get; set; }
 
-        public string UserName
-        {
+        //Holds whether the user has admin privilages
+        public static bool GlobalIsAdmin{ get; set; }
+        public string UserName { get; set; }
 
-            get
-            {
-                return _username;
-            }
+        //private string _password= string.Empty;
+        public string Password { get; set; }
 
-            set
-            {
-                _username = value;
-                OnPropertyChanged(nameof(UserName));
-
-            }
-        }
-
-        private string _password= string.Empty;
-
-        public string Password
-        {
-
-            get
-            {
-                return _password;
-            }
-
-            set
-            {
-                _password = value;
-                OnPropertyChanged(nameof(Password));
-
-            }
-        }
-
+        //View that this viewmodel is attached to
         LoginPage _loginPage;
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the view
+        /// </summary>
+        /// <param name="lp"></param>
         public LoginPageViewModel(LoginPage lp)
         {
             _loginPage = lp;
+            
         }
+
+        /// <summary>
+        /// onclick event for logging in
+        /// </summary>
         public void LoginCommand()
         {
             var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
@@ -69,17 +54,21 @@ namespace ClientApp.ViewModels
                 Password = Password,
             };
             var serviceResponse = ClientApp.doLogin(credentials);                               // assynchronous rpc to Server to verify login credentials
-            
+            //If the credentials are valid
             if (serviceResponse.IsSuccessfulLogin)
             {
-                Window homePage = new HomePage(UserName, serviceResponse.IsAdmin);
-                homePage.Show();
+                GlobalUserName = UserName;
+                GlobalIsAdmin = serviceResponse.IsAdmin;
+                
+                //Takes user to home page
+                new HomePage().Show();
                 _loginPage.Close();
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + UserName + " Logged in successfully. Admin="+serviceResponse.IsAdmin);
-                loginSuccessMessage.Show();
+                //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + GlobalUserName + " Logged in successfully. Admin="+GlobalIsAdmin);
+                //loginSuccessMessage.Show();
             }
             else
             {
+                //Display message that log in failed
                 var loginFailedMessage = MessageBox.Avalonia.MessageBoxManager
     .GetMessageBoxStandardWindow("title", "Logged in failed");
                 loginFailedMessage.Show();

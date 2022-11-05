@@ -8,11 +8,14 @@ namespace ClientApp.Views
         public RegisterEmployeeView()
         {
             InitializeComponent();
+            DataContext = new RegisterEmployeeViewModel(this);
         }
+        /*
         public RegisterEmployeeView(string user,bool isAdmin)
         {
             InitializeComponent();
             DataContext = new RegisterEmployeeViewModel(this,user,isAdmin);
         }
+        */
     }
 }

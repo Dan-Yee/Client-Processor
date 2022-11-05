@@ -10,16 +10,18 @@ namespace ClientApp.ViewModels
 {
     public class AdminLoginViewModel : ViewModelBase
     {
+        //View that this viewmodel is attached to
+        AdminLoginView _adminLoginView;
+        
         string _user = string.Empty;
         bool _isAdmin = false;
-        AdminLoginView _adminLoginView;
         public AdminLoginViewModel(AdminLoginView adminLoginView, string user, bool isAdmin)
         {
             _adminLoginView = adminLoginView;
             _user = user;
             _isAdmin = isAdmin;
         }
-
+        
         private string _adminUsername = string.Empty;
 
         public string AdminUserName
@@ -62,7 +64,7 @@ namespace ClientApp.ViewModels
             bool booltool = true;
             if (booltool)
             {
-                new AdminHomeView(_user,_isAdmin).Show();
+                new AdminHomeView().Show();
                 _adminLoginView.Close();
                 var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager
     .GetMessageBoxStandardWindow("title", "User: " + AdminUserName + " Logged in successfully");
@@ -78,7 +80,7 @@ namespace ClientApp.ViewModels
         }
         public void ToAdminHomePageCommand()
         {
-            new AdminHomeView(_user,_isAdmin).Show();
+            new AdminHomeView().Show();
             _adminLoginView.Close();
         }
     }

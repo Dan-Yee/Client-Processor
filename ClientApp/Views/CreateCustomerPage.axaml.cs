@@ -8,11 +8,14 @@ namespace ClientApp.Views
         public CreateCustomerPage()
         {
             InitializeComponent();
+            DataContext = new CreateCustomerViewModel(this);
         }
+        /*
         public CreateCustomerPage(string user,bool isAdmin)
         {
             InitializeComponent();
             DataContext = new CreateCustomerViewModel(this,user,isAdmin);
         }
+        */
     }
 }
