@@ -22,6 +22,7 @@ namespace ClientApp.ViewModels
         private ClientProcedureListingView _ClientProcedureListingView;
         //The list of procedures for the client. Binded in the view to display the procedures
         private ObservableCollection<ProcedureModel> _procedures = new();
+        private ObservableCollection<string> _displayedProcedures = new();
         //ID of the client selected
         private int _clientId;
         
@@ -50,11 +51,14 @@ namespace ClientApp.ViewModels
             {
                 //Add procedures to the list
                 _procedures.Add(new ProcedureModel(procedure.ProcedureID, procedure.ProcedureName, procedure.ProcedureDatetime, procedure.ClientID, procedure.EmployeeID, procedure.ProcedureNotes));
+                _displayedProcedures.Add(procedure.ProcedureDatetime.Split(" ")[0] + " - " + procedure.ProcedureName);
             }
             //Makes the list of procedures publicly available
             Procedures = _procedures;
+            DisplayedProcedures = _displayedProcedures;
             
-            Selection = new SelectionModel<ProcedureModel>();
+            //Selection = new SelectionModel<ProcedureModel>();
+            Selection = new SelectionModel<string>();
             Selection.SelectionChanged += SelectionChanged;
 
             //IsAdmin = false;
@@ -118,7 +122,16 @@ namespace ClientApp.ViewModels
                 this.RaiseAndSetIfChanged(ref _procedures, value);
             }
         }
-        public SelectionModel<ProcedureModel> Selection { get; }
+        public ObservableCollection<string> DisplayedProcedures
+        {
+            get => _displayedProcedures;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _displayedProcedures, value);
+            }
+        }
+        //public SelectionModel<ProcedureModel> Selection { get; }
+        public SelectionModel<string> Selection { get; }
         /// <summary>
         /// Opens the make procedure view and closes current view
         /// </summary>
@@ -128,6 +141,7 @@ namespace ClientApp.ViewModels
             new MakeProcedureView(_clientId).Show();
             _ClientProcedureListingView.Close();
         }
+
     }
 
 }

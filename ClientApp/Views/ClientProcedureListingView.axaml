@@ -46,7 +46,7 @@
 		<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
 			<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
 			<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-				<ListBox Items="{Binding Procedures}" Selection="{Binding Selection}"></ListBox>
+				<ListBox Items="{Binding DisplayedProcedures}" Selection="{Binding Selection}"></ListBox>
 			</ScrollViewer>
 		</StackPanel>
 		
