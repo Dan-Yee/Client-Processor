@@ -62,5 +62,18 @@ namespace ClientApp.ViewModels
                 //Console.WriteLine(y[0]);
             }
         }
+
+        /// <summary>
+        /// Onclick event for storing the file
+        /// </summary>
+        public void StoreFileCommand()
+        {
+            //Hafez here
+
+
+            //This brings you back to last page
+            new AdminHomeView().Show();
+            _importFormView.Close();
+        }
     }
 }
