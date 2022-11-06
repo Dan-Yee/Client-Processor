@@ -8,11 +8,14 @@ namespace ClientApp.Views
         public AdminLoginView()
         {
             InitializeComponent();
+            //DataContext = new AdminLoginViewModel(this);
         }
+        /*
         public AdminLoginView(string user,bool isAdmin)
         {
             InitializeComponent();
             DataContext = new AdminLoginViewModel(this,user,isAdmin);
         }
+        */
     }
 }

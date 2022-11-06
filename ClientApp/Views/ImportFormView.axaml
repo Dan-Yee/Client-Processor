@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		xmlns:views="clr-namespace:ClientApp.Views"
-        x:Class="ClientApp.Views.ClientProcedureListingView"
-		x:DataType="vm:ClientProcedureListingViewModel"
+        x:Class="ClientApp.Views.ImportFormView"
+		x:DataType="vm:ImportFormViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ClientProcedureListingView">
+        Title="ClientApp">
 	<Design.DataContext>
-		<vm:ClientProcedureListingViewModel/>
+		<vm:ImportFormViewModel/>
 	</Design.DataContext>
 	<Window.Styles>
 		<Style Selector="Button">
@@ -21,11 +21,10 @@
 			<Setter Property="CornerRadius" Value="0"/>
 		</Style>
 	</Window.Styles>
-
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
-	<Grid HorizontalAlignment="Center" >
+	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
-			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
+			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
 			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
 			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
 		</Grid.RowDefinitions>
@@ -35,25 +34,27 @@
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		
-		<TextBlock Text="" FontSize="30.0" Grid.Row="0" Grid.Column="0"/>
-		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Procedure Listing" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import Form" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+		<Button Content="import" Command="{Binding Files}" Grid.Row="1" Grid.Column="1"></Button>
+		<TextBlock Text="Selected File(s): " Grid.Row="2" Grid.Column="1" Margin="0 0 0 0"></TextBlock>
+		<TextBlock Text="{Binding FilePaths}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0, 20, 0, 0"></TextBlock>
+		
+		<!--
+		<Button Content="Admin" Command="{Binding GoToAdminHomeCommand}" IsVisible="{CompiledBinding ShowAdminButton}" Grid.Row="0" Grid.Column="2" Margin="10 0 0 0"/>
+		<Button Content="Log out" Command="{Binding LogoutCommand}" Grid.Row="0" Grid.Column="2" Margin="150 0 0 0"/>
 
 		<TextBox Watermark="Search..." Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
 		<Button Content="Search"  Grid.Row="1" Grid.Column="2" Margin="10 0 0 0"/>
-		<Button Content="Home" Command="{Binding GoHomeCommand}" Grid.Row="1" Grid.Column="2" Margin="150 0 0 0"/>
+		<Button Content="Add" Command="{Binding CreateCustomerCommand}" Grid.Row="1" Grid.Column="2" Margin="150 0 0 0"/>
 
-		
 		<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
 			<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
 			<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-				<ListBox Items="{Binding Procedures}" Selection="{Binding Selection}"></ListBox>
+				<ListBox Items="{Binding Items}" Selection="{Binding Selection}"></ListBox>
 			</ScrollViewer>
 		</StackPanel>
-		
-		<Button Content="Create" Command="{Binding GoToMakeProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
-		<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
-		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
-		<Button Content="Delete" Command="{Binding DeleteProcedureCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
+		<Button Content="select" Command="{Binding GoToClientProceduresCommand}" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0"/>
+		-->
 	</Grid>
 
 </Window>

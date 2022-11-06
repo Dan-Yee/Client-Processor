@@ -18,21 +18,24 @@ namespace ClientApp.ViewModels
 {
     public class HomePageViewModel: ReactiveObject
     {
-        string _user = string.Empty;
-        private bool _isAdmin=false;
-        
-        
-        public bool IsAdmin
-        {
-            get => _isAdmin;
-            set => this.RaiseAndSetIfChanged(ref _isAdmin, value);
-        }
-
+        //Holds whether the user has admin privilages or not
+        public bool ShowAdminButton { get; set; }
         //private ObservableCollection<string> _items = new();
-        private ObservableCollection<Customer> _items = new();
 
+        private ObservableCollection<Customer> _items = new();
+        //View that this viewmodel is attached to
         private HomePage _homePage;
-        public HomePageViewModel(HomePage hp,string user, bool isAdmin)
+
+        
+        // Plan to delete this constructor
+        public HomePageViewModel(HomePage hp,string s,bool b) { }
+
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the list of employees
+        /// </summary>
+        /// <param name="hp"></param>
+        public HomePageViewModel(HomePage hp)
         {
             // localhost for testing purposes
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
@@ -41,25 +44,34 @@ namespace ClientApp.ViewModels
             AllClients info = client.getClients(new Google.Protobuf.WellKnownTypes.Empty());
             foreach (ClientInfo c in info.Clients)
             {
+                //Adds employees to the list
                 _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
             }
             Items = _items;
 
+            //enables employee selection
             Selection = new SelectionModel<Customer>();
             Selection.SelectionChanged += SelectionChanged;
 
-            _user = user;
-            _isAdmin = isAdmin;
+            ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
+
             //IsAdmin = false;
-            
+
+            //string user = LoginPageViewModel.GlobalUserName;
+            //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + LoginPageViewModel.GlobalUserName + " Logged in successfully.admin="+LoginPageViewModel.GlobalIsAdmin);
+            //loginSuccessMessage.Show();
+            //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "admin="+LoginPageViewModel.GlobalIsAdmin);
+            //loginSuccessMessage.Show();
 
             _homePage = hp;
         }
 
-        //Binded onclick event
+        /// <summary>
+        /// On click event to creating customer button
+        /// </summary>
         public void CreateCustomerCommand()
         {
-            new CreateCustomerPage(_user, IsAdmin).Show();
+            new CreateCustomerPage().Show();
             _homePage.Close();
         }
 
@@ -69,9 +81,12 @@ namespace ClientApp.ViewModels
             _homePage.Close();
         }*/
 
+        /// <summary>
+        /// Takes user to admin home view
+        /// </summary>
         public void GoToAdminHomeCommand()
         {
-            new AdminHomeView(_user, IsAdmin).Show();
+            new AdminHomeView().Show();
             _homePage.Close();
         }
         
@@ -91,16 +106,24 @@ namespace ClientApp.ViewModels
             // ... handle selection changed
         }
 
+        /// <summary>
+        /// Logs out user
+        /// </summary>
         public void LogoutCommand()
         {
             new LoginPage().Show();
             _homePage.Close();
         }
+
+        /// <summary>
+        /// Once client is selected, goes to the procedure listing page
+        /// </summary>
         public void GoToClientProceduresCommand()
         {
+            //If a client is selected
             if(Selection != null)
             {
-                new ClientProcedureListingView().Show();
+                new ClientProcedureListingView(Selection.SelectedItem.Client_ID).Show();
                 var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
                 loginSuccessMessage.Show();
                 _homePage.Close();

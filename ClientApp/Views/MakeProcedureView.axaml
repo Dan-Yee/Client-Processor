@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ClientApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		xmlns:views="clr-namespace:ClientApp.Views"
+        x:Class="ClientApp.Views.MakeProcedureView"
+		x:DataType="vm:MakeProcedureViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ClientApp">
+	<Design.DataContext>
+		<vm:MakeProcedureViewModel/>
+	</Design.DataContext>
+
+	<Grid HorizontalAlignment="Center">
+		<Grid.RowDefinitions>
+			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
+			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
+			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+			<ColumnDefinition MinWidth="350"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+
+		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Make Procedure" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+		<!--form photos pay-->
+		<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding }"/>
+	</Grid>
+</Window>
