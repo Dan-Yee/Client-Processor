@@ -74,27 +74,6 @@ namespace Server.Services
                 return new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "UPLOAD FAILED! Invalid Arguments!" };
             }
 
-            ///////////////InsertRecord(FileName, Extension, ProcedureID, Destination, x);
-
-            //TESTING this Upload
-
-            /*Console.WriteLine("end x: " + x.Length + " /// " + FileName + "." + Extension);
-
-            using var writer = new BinaryWriter(File.OpenWrite(@$"C:/Users/moeme/499/{FileName + "zz"}.{Extension}"));
-            writer.Write(x);*/
-
-
-            ////////////////////////
-
-            //TestConnection();
-            //InsertRecord(x);
-            //Console.ReadKey();
-
-            ////////////////////////
-
-
-
-            //return new //StringResponse { Message = $"{FileName}.{Extension} UPLOADED SUCCESSFULY!" };
             return InsertRecord(FileName, Extension, ProcedureID, Destination, x);
         }
 
@@ -117,21 +96,18 @@ namespace Server.Services
         }
 
 
+        /// <summary>
+        /// Method <c>InsertRecord</c> Inserts received record to database.
+        /// </summary>
+        /// <returns>An instance of ServiceStatus that indicates if the process was successful or not with a short description</returns>
         private static ServiceStatus InsertRecord(string fNAme, string fExtension, int PID, int table, byte[] x)
         {
-            //bool success = false;
 
             ServiceStatus status = new ServiceStatus(); 
 
             using (NpgsqlConnection conn = GetConnection())
             {
 
-                /*string query = $@"insert into public.Files(Name,Extension,Bytes)values('thefile','.jpg','{x}')";
-                NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
-                conn.Open();*/
-
-
-                //////////////////////////////////////////////////////////////////
 
                 if (table == 0) //insert form template
                 {
@@ -151,17 +127,6 @@ namespace Server.Services
 
                     int n;
 
-                    /*int n = cmd.ExecuteNonQuery();
-
-                    conn.Close();
-
-                    if (n == 1)
-                    {
-                        //Console.WriteLine("Record inserted");
-                        return true; //Record Inserted
-                    }
-                    else
-                        return false; //insert Failed*/
 
                     try
                     {
@@ -200,8 +165,6 @@ namespace Server.Services
                         return status;
                     }
 
-
-
                 }
                 else
                 {
@@ -209,13 +172,9 @@ namespace Server.Services
                     status.StatusMessage = "UPLOAD FAILED!!! INVALID ARGUMENTS!!!";
                     return status;
                 }
-                ///////////////////////////////////////////////////////////////////
-
 
             }
         }
-
-
 
     }
 }
