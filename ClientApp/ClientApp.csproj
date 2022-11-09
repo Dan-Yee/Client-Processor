@@ -46,6 +46,6 @@
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\FileTransfer.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\procedure.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\shared.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\shared.proto" GrpcServices="Client" />
   </ItemGroup>
 </Project>
