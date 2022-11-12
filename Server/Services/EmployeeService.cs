@@ -13,13 +13,29 @@ namespace Server.Services
         /// Method <c>GetHashedString</c> takes a string input and returns the base64 encoded hashed string.
         /// </summary>
         /// <param name="input">The plaintext string to be hashed</param>
+        /// <param name="salt">The salt applied to this string</param>
         /// <returns>The base64 encoded string after it has been hashed</returns>
-        private static string GetHashedString(string input)
+        private static string GetHashed(string input, string salt)
         {
             using (var sha512 = SHA512.Create())
             {
-                var hashedBytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(input));
-                return Convert.ToBase64String(hashedBytes);
+                string salted = input + salt;
+                byte[] hashed = sha512.ComputeHash(Encoding.UTF8.GetBytes(salted));
+                return Convert.ToBase64String(hashed);
+            }
+        }
+
+        /// <summary>
+        /// Method <c>GetSalt</c> generates a random 32 byte salt string.
+        /// </summary>
+        /// <returns>A 32 non-zero byte string in Base64</returns>
+        private static string GetSalt()
+        {
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                byte[] saltBytes = new byte[32];
+                rng.GetNonZeroBytes(saltBytes);
+                return Convert.ToBase64String(saltBytes);
             }
         }
 
@@ -60,11 +76,13 @@ namespace Server.Services
             ServiceStatus sStatus = new();
             NpgsqlCommand command;
             string query;
+            string passwordSalt;
             int status = 0;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "INSERT INTO Employees (first_name, last_name, employee_username, employee_password, isAdministrator) VALUES ($1, $2, $3, $4, $5);";
+                query = "INSERT INTO Employees (first_name, last_name, employee_username, employee_password, password_salt, isAdministrator) VALUES ($1, $2, $3, $4, $5, $6);";
+                passwordSalt = GetSalt();
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -72,7 +90,8 @@ namespace Server.Services
                         new() {Value = employeeInfo.FirstName},
                         new() {Value = employeeInfo.LastName},
                         new() {Value = employeeInfo.Credentials.Username},
-                        new() {Value = GetHashedString(employeeInfo.Credentials.Password)},
+                        new() {Value = GetHashed(employeeInfo.Credentials.Password, passwordSalt)},
+                        new() {Value = passwordSalt},
                         new() {Value = employeeInfo.IsAdmin}
                     }
                 };
@@ -127,8 +146,9 @@ namespace Server.Services
             NpgsqlCommand command;
             NpgsqlDataReader reader;
             string query;
-            int status = 0;
-            bool needUpdate = true;                                                 // assume the record needs to be updated until a check can be performed
+            string? passwordSalt = string.Empty;
+            int status;
+            bool needUpdate = false;                                                // assume the record does not need to be updated until a check can be performed
             bool isUsernameDiff = false;                                            // assume the username is not changing until a check can be performed
 
             using (NpgsqlConnection conn = GetConnection())
@@ -148,11 +168,12 @@ namespace Server.Services
                 if (reader.HasRows)
                 {
                     reader.Read();
+                    passwordSalt = reader["password_salt"].ToString();
                     needUpdate = !((reader["first_name"].ToString()).Equals(info.FirstName) &&
                         reader["last_name"].ToString().Equals(info.LastName) &&
                         reader["first_name"].ToString().Equals(info.FirstName) &&
                         reader["employee_username"].ToString().Equals(info.Credentials.Username) &&
-                        reader["employee_password"].ToString().Equals(GetHashedString(info.Credentials.Password)) &&
+                        reader["employee_password"].ToString().Equals(GetHashed(info.Credentials.Password, passwordSalt)) &&
                         (Convert.ToBoolean(reader["isAdministrator"]) == info.IsAdmin));
 
                     isUsernameDiff = !(reader["employee_username"].ToString().Equals(info.Credentials.Username));
@@ -180,7 +201,7 @@ namespace Server.Services
                                 new() {Value = info.FirstName},
                                 new() {Value = info.LastName},
                                 new() {Value = info.Credentials.Username},
-                                new() {Value = GetHashedString(info.Credentials.Password)},
+                                new() {Value = GetHashed(info.Credentials.Password, passwordSalt)},
                                 new() {Value = info.IsAdmin},
                                 new() {Value = info.EmployeeId}
                             }
@@ -199,7 +220,7 @@ namespace Server.Services
                             {
                                 new() {Value = info.FirstName},
                                 new() {Value = info.LastName},
-                                new() {Value = GetHashedString(info.Credentials.Password)},
+                                new() {Value = GetHashed(info.Credentials.Password, passwordSalt)},
                                 new() {Value = info.IsAdmin},
                                 new() {Value = info.EmployeeId}
                             }
@@ -274,8 +295,7 @@ namespace Server.Services
                     {
                         var currentCredentials = new LoginCredentials
                         {
-                            Username = reader["employee_username"].ToString(),
-                            Password = reader["employee_password"].ToString()
+                            Username = reader["employee_username"].ToString()
                         };
                         var current = new EmployeeInfo
                         {
@@ -318,12 +338,13 @@ namespace Server.Services
             NpgsqlDataReader reader;
             string query;
             int employee_id = -1;
+            string? passwordSalt = string.Empty;
             string? expectedPassword = string.Empty;
             bool isAdmin = false;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT employee_id, employee_password, isAdministrator FROM Employees WHERE employee_username = $1;";
+                query = "SELECT employee_id, employee_password, password_salt, isAdministrator FROM Employees WHERE employee_username = $1;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -338,13 +359,14 @@ namespace Server.Services
                     reader.Read();
                     employee_id = Convert.ToInt32(reader["employee_id"]); 
                     expectedPassword = reader["employee_password"].ToString();
+                    passwordSalt = reader["password_salt"].ToString();
                     isAdmin = Convert.ToBoolean(reader["isAdministrator"]);
                 }
                 reader.Close();
                 conn.Close();
             }
             status.EmployeeId = employee_id;
-            status.IsSuccessfulLogin = GetHashedString(password).Equals(expectedPassword);
+            status.IsSuccessfulLogin = GetHashed(password, passwordSalt).Equals(expectedPassword);
             status.IsAdmin = isAdmin;
             return status;
         }
