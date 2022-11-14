@@ -115,5 +115,62 @@ namespace Server.Services
             }
             return clients;
         }
+
+        /// <summary>
+        /// Implementation of the searchClientsByName RPC that retrieves all records of all Clients that fulfill a search pattern
+        /// </summary>
+        /// <param name="request">The phrase being used to search the Client table.</param>
+        /// <param name="context"></param>
+        /// <returns>An object of objects where each sub-object represents an entry in the search result of the Client table.</returns>
+        public override Task<AllClients> searchClientsByName(ClientName request, ServerCallContext context)
+        {
+            return Task.FromResult(searchClients(request));
+        }
+
+        /// <summary>
+        /// Method <c>searchClients</c> searches the database, given a phrase (first name), for records that are similar.
+        /// </summary>
+        /// <param name="name">The first name being used to perform the search.</param>
+        /// <returns>A protobuf message containing records for each Client that fulfilled the search criteria.</returns>
+        private static AllClients searchClients(ClientName name)
+        {
+            AllClients clients = new();
+            NpgsqlCommand command;
+            NpgsqlDataReader reader;
+            string searchTerm = name.CName + "%";
+            string query;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "SELECT * FROM Clients WHERE first_name LIKE $1";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = searchTerm}
+                    }
+                };
+                conn.Open();
+                reader = command.ExecuteReader();
+                if(reader.HasRows)
+                {
+                    while(reader.Read())
+                    {
+                        ClientInfo current = new()
+                        {
+                            ClientId = Convert.ToInt32(reader["client_id"]),
+                            FirstName = reader["first_name"].ToString(),
+                            LastName = reader["last_name"].ToString(),
+                            PhoneNumber = reader["phone_number"].ToString(),
+                            Email = reader["email_address"].ToString()
+                        };
+                        clients.Clients.Add(current);
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            return clients;
+        }
     }
 }
