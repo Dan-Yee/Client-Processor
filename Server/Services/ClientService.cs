@@ -142,7 +142,7 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Clients WHERE first_name LIKE $1";
+                query = "SELECT * FROM Clients WHERE CONCAT(first_name, ' ', last_name) LIKE $1";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
