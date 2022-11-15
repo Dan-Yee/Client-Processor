@@ -96,6 +96,7 @@ namespace Server.Services
             AllProcedures procedures = new();
             NpgsqlCommand command;
             NpgsqlDataReader reader;
+            DateTime dt;
             string query;
 
             using (NpgsqlConnection conn = GetConnection())
@@ -114,11 +115,13 @@ namespace Server.Services
                 {
                     while(reader.Read())
                     {
+                        dt = Convert.ToDateTime(reader["procedure_datetime"]);
+                        dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                         var currentProcedure = new ProcedureInfo
                         {
                             ProcedureID = Convert.ToInt32(reader["procedure_id"]),
                             ProcedureName = reader["procedure_name"].ToString(),
-                            ProcedureDatetime = reader["procedure_datetime"].ToString(),
+                            ProcedureDatetime = dt.ToLocalTime().ToString(),
                             ClientID = Convert.ToInt32(reader["client_id"]),
                             EmployeeID = Convert.ToInt32(reader["employee_id"]),
                             ProcedureNotes = reader["procedure_notes"].ToString()
