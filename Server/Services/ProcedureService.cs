@@ -1,6 +1,9 @@
 using Grpc.Core;
 using DotNetEnv;
 using Npgsql;
+using iText.Kernel.Pdf;
+using iText.Forms;
+using iText.Forms.Fields;
 
 namespace Server.Services
 {
@@ -133,6 +136,67 @@ namespace Server.Services
                 conn.Close();
             }
             return procedures;
+        }
+
+        /// <summary>
+        /// Implementation of RPC getFormFields for getting all the fillable fields from a PDF form, given the form name.
+        /// </summary>
+        /// <param name="request">An object containing the name of the form.</param>
+        /// <param name="context"></param>
+        /// <returns>An object of objects where each sub-object represents a field that was found on the specified form.</returns>
+        public override Task<FormFields> getFormFields(FormName request, ServerCallContext context)
+        {
+            return Task.FromResult(GetFields(request));
+        }
+
+        /// <summary>
+        /// Method <c>GetFields</c> queries the database for the form (stored as bytes) that is specified by the provided name. It accesses the form and finds all the fields that can be filled out, returning the names and types.
+        /// </summary>
+        /// <param name="fName">An object containing the name of the form.</param>
+        /// <returns>An object containing zero or more fields, each representing an individual field from the original PDF.</returns>
+        private static FormFields GetFields(FormName fName)
+        {
+            FormFields fields = new();
+            NpgsqlCommand command;
+            NpgsqlDataReader reader;
+            string query;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "SELECT file_bytes FROM Empty_Forms WHERE filename = $1";
+                command = new(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = fName.FormName_}
+                    }
+                };
+                conn.Open();
+                reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    using (MemoryStream input = new((byte[])reader["file_bytes"]))
+                    {
+                        PdfReader pdfReader = new(input);
+                        PdfDocument document = new(pdfReader);
+                        PdfAcroForm acroForm = PdfAcroForm.GetAcroForm(document, false);
+                        IDictionary<String, PdfFormField> formFields = acroForm.GetFormFields();
+                        foreach (KeyValuePair<String, PdfFormField> field in formFields)
+                        {
+                            if (field.Key.Contains(".1"))
+                                continue;
+                            Field currentField = new()
+                            {
+                                FieldName = field.Key,
+                                FieldType = field.Value.ToString()
+                            };
+                            fields.Fields.Add(currentField);
+                        }
+                    }
+                }
+            }
+            return fields;
         }
     }
 }
