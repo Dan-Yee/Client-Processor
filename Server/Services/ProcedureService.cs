@@ -195,6 +195,8 @@ namespace Server.Services
                         }
                     }
                 }
+                reader.Close();
+                conn.Close();
             }
             return fields;
         }
