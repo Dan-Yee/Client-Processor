@@ -176,6 +176,7 @@ namespace Server.Services
                 if (reader.HasRows)
                 {
                     reader.Read();
+                    fields.FName = fName;
                     using (MemoryStream input = new((byte[])reader["file_bytes"]))
                     {
                         PdfReader pdfReader = new(input);
