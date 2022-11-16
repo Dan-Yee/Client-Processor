@@ -7,6 +7,7 @@ option csharp_namespace = "Server";
 service Client {
 	rpc newClient(ClientInfo) returns (ServiceStatus);										// rpc to create a new Client in the database
 	rpc getClients(google.protobuf.Empty) returns (AllClients);								// rpc to get all Clients currently stored in the database.
+	rpc searchClientsByName(ClientName) returns (AllClients);								// rpc to get Client(s) that fit a search criteria by name
 }
 
 // record for storing information about one Client
@@ -16,6 +17,11 @@ message ClientInfo {
 	string last_name = 3;
 	string phone_number = 4;
 	optional string email = 5;
+}
+
+// record for storing a Client name for searching
+message ClientName {
+	string cName = 1;
 }
 
 // record that represents 0 or more Clients

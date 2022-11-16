@@ -6,6 +6,7 @@ option csharp_namespace = "Server";
 service Procedure {
 	rpc addProcedure(ProcedureInfo) returns (ServiceStatus);					// rpc for adding a completed procedure to the database
 	rpc getProcedures(ClientID) returns (AllProcedures);						// rpc for getting procedures associated with a specific client by ID
+	rpc getFormFields(FormName) returns (FormFields);							// rpc for getting the fillable fields in a PDF form specified by its name
 }
 
 // record for representing a ClientID. This is used for getting all procedures associated with a specific client by ID.
@@ -26,4 +27,22 @@ message ProcedureInfo {
 // record for representing zero or more procedures. This is used for getting all procedures associated with a specific client.
 message AllProcedures {
 	repeated ProcedureInfo procedures = 1;
+}
+
+// record for representing the name of the form being filled out -- used to get the fields of
+message FormName {
+	string form_name = 1;
+}
+
+// record for representing a single field on a PDF form.
+message Field {
+	string field_name = 1;
+	string field_type = 2;
+	string field_value = 3;
+	repeated string possible_values = 4;										// a list of possible values for this field; used for checkboxes/dropdown type fields
+}
+
+// record for representing an arbitrary number of fields from a PDF form.
+message FormFields {
+	repeated Field fields = 1;
 }

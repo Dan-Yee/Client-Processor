@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="2.3.0" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+    <PackageReference Include="itext7" Version="7.2.4" />
     <PackageReference Include="Npgsql" Version="6.0.7" />
   </ItemGroup>
 
