@@ -13,7 +13,7 @@ namespace ClientApp.ViewModels
     */
     
     
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : ReactiveObject
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

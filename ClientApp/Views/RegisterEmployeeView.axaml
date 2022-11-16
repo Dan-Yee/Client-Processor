@@ -1,19 +1,17 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		x:Name="MyPage2"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="ClientApp.Views.RegisterEmployeeView"
-		xmlns:vm="using:ClientApp.ViewModels"
-		xmlns:views="clr-namespace:ClientApp.Views"
-		x:DataType="vm:RegisterEmployeeViewModel"
-        Title="Register employee view">
+<UserControl xmlns="https://github.com/avaloniaui"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+   xmlns:app="clr-namespace:ClientApp"
+   xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   x:Class="ClientApp.Views.RegisterEmployeeView"
+   x:DataType="vm:RegisterEmployeeViewModel"
+   xmlns:reactiveUi="http://reactiveui.net"
+   xmlns:vm="using:ClientApp.ViewModels"
+   mc:Ignorable="d">
 
-	<Design.DataContext>
-		<vm:RegisterEmployeeViewModel/>
-	</Design.DataContext>
-	<Window.Styles>
+	<UserControl.Styles>
 		<Style Selector="RowDefinition">
 			<Setter Property="Height" Value="auto"/>
 		</Style>
@@ -23,7 +21,11 @@
 		<Style Selector="TextBox">
 			<Setter Property="Height" Value="50"/>
 		</Style>
-	</Window.Styles>
+	</UserControl.Styles>
+
+
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterAdmimHomePageProcedure}">
+		<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center" >
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
@@ -54,4 +56,10 @@
 		<Button Grid.Row="6" Grid.Column="1" x:Name="EmployeeRegisterBtn"  Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
 		<Button Grid.Row="7" Grid.Column="1" x:Name="AdminHomeBtn"  Content="Back" Command="{Binding ToAdminHomeCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
 	</Grid>
-</Window>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:AdminHomeViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>		
+</UserControl>

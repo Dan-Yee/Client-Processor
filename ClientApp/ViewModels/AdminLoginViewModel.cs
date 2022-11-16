@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using ClientApp.Views;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,12 @@ namespace ClientApp.ViewModels
 {
     public class AdminLoginViewModel : ViewModelBase
     {
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "AdminLogin";
+        public RoutingState Router { get; } = new RoutingState();
+
+
         //View that this viewmodel is attached to
         AdminLoginView _adminLoginView;
         
@@ -64,8 +71,8 @@ namespace ClientApp.ViewModels
             bool booltool = true;
             if (booltool)
             {
-                new AdminHomeView().Show();
-                _adminLoginView.Close();
+                //new AdminHomeView().Show();
+                //_adminLoginView.Close();
                 var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager
     .GetMessageBoxStandardWindow("title", "User: " + AdminUserName + " Logged in successfully");
                 loginSuccessMessage.Show();
@@ -80,8 +87,8 @@ namespace ClientApp.ViewModels
         }
         public void ToAdminHomePageCommand()
         {
-            new AdminHomeView().Show();
-            _adminLoginView.Close();
+           // new AdminHomeView().Show();
+            //_adminLoginView.Close();
         }
     }
 }

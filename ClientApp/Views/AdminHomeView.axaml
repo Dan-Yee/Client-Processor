@@ -1,18 +1,17 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:ClientApp.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-		xmlns:views="clr-namespace:ClientApp.Views"
-		x:DataType="vm:AdminHomeViewModel"
-        x:Class="ClientApp.Views.AdminHomeView"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="ClientApp">
-	<Design.DataContext>
-		<vm:AdminHomeViewModel/>
-	</Design.DataContext>
-	<Window.Styles>
+<UserControl  xmlns="https://github.com/avaloniaui"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+   xmlns:app="clr-namespace:ClientApp"
+   xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   x:Class="ClientApp.Views.AdminHomeView"
+   x:DataType="vm:AdminHomeViewModel"
+   xmlns:reactiveUi="http://reactiveui.net"
+   xmlns:vm="using:ClientApp.ViewModels"
+   mc:Ignorable="d">
+
+	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="FontSize" Value="20"/>
 			<Setter Property="Width" Value="125"/>
@@ -20,10 +19,16 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
 		</Style>
-	</Window.Styles>
-	
+	</UserControl.Styles>
+
 
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterRegister}">
+		<rxui:RoutedViewHost.DefaultContent>
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToImport}">
+		<rxui:RoutedViewHost.DefaultContent>
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}">
+		<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
@@ -49,13 +54,30 @@
 				<ListBox Items="{Binding Employees}" Selection="{Binding Selection}"></ListBox>
 			</ScrollViewer>
 		</StackPanel>
-		
+
 		<Button Content="Add" Command="{Binding CreateEmployeeCommand}" Grid.Row="2" Grid.Column="2" Margin="20 50 0 0"/>
 		<!--
 		<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
 		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
 		-->
 		<Button Content="Delete" Command="{Binding DeleteEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
-		
 	</Grid>
-</Window>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:ViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:ImportViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+	</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:RegisterViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

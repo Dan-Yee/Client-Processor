@@ -1,18 +1,17 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:ClientApp.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-		xmlns:views="clr-namespace:ClientApp.Views"
-        x:Class="ClientApp.Views.ClientProcedureListingView"
-		x:DataType="vm:ClientProcedureListingViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="ClientProcedureListingView">
-	<Design.DataContext>
-		<vm:ClientProcedureListingViewModel/>
-	</Design.DataContext>
-	<Window.Styles>
+<UserControl xmlns="https://github.com/avaloniaui"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+   xmlns:app="clr-namespace:ClientApp"
+   xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   x:Class="ClientApp.Views.ClientProcedureListingView"
+   x:DataType="vm:ClientProcedureListingViewModel"
+   xmlns:reactiveUi="http://reactiveui.net"
+   xmlns:vm="using:ClientApp.ViewModels"
+   mc:Ignorable="d">
+
+	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="FontSize" Value="30"/>
 			<Setter Property="Width" Value="125"/>
@@ -20,9 +19,11 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
 		</Style>
-	</Window.Styles>
+	</UserControl.Styles>
 
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}">
+		<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center" >
 		<Grid.RowDefinitions>
 			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
@@ -34,7 +35,7 @@
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		
+
 		<TextBlock Text="" FontSize="30.0" Grid.Row="0" Grid.Column="0"/>
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Procedure Listing" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
 
@@ -42,18 +43,23 @@
 		<Button Content="Search"  Grid.Row="1" Grid.Column="2" Margin="10 0 0 0"/>
 		<Button Content="Home" Command="{Binding GoHomeCommand}" Grid.Row="1" Grid.Column="2" Margin="150 0 0 0"/>
 
-		
+
 		<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
 			<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
 			<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
 				<ListBox Items="{Binding DisplayedProcedures}" Selection="{Binding Selection}"></ListBox>
 			</ScrollViewer>
 		</StackPanel>
-		
+
 		<Button Content="Create" Command="{Binding GoToMakeProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
 		<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
 		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
 		<Button Content="Delete" Command="{Binding DeleteProcedureCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
 	</Grid>
-
-</Window>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:ViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

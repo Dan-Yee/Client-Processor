@@ -1,26 +1,35 @@
 ﻿using ClientApp.Views;
 using Grpc.Net.Client;
+using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {
-    public class RegisterEmployeeViewModel : ViewModelBase
+    public class RegisterEmployeeViewModel : ViewModelBase,IRoutableViewModel
     {
-        //View that this viewmodel is attached to
-        RegisterEmployeeView _registerEmployeeView;
+
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "RegisterEmployee";
+
+        public RoutingState RouterAdmimHomePageProcedure { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToAdminHome { get; }
 
         /// <summary>
         /// Constructor for the viewmodel. initializes the view
         /// </summary>
         /// <param name="registerEmployeeView"></param>
-        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView)
+        public RegisterEmployeeViewModel()
         {
-            _registerEmployeeView = registerEmployeeView;
+            GoToAdminHome = ReactiveCommand.CreateFromObservable(
+             () => RouterAdmimHomePageProcedure.Navigate.Execute(new AdminHomeViewModel()));
         }
 
         /*
@@ -140,10 +149,9 @@ namespace ClientApp.ViewModels
             //Makes employee in database
             var createResponse = employee.newEmployee(employeeInfo);
 
-            //new AdminHomeView(_user,_isAdmin).Show();
+
             //Takes user back to admin home view
-            new AdminHomeView().Show();
-            _registerEmployeeView.Close();
+            GoToAdminHome.Execute();
         }
 
         /// <summary>
@@ -151,9 +159,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void ToAdminHomeCommand()
         {
-            //new AdminHomeView(_user, _isAdmin).Show();
-            new AdminHomeView().Show();
-            _registerEmployeeView.Close();
+            GoToAdminHome.Execute();
+
         }
     }
 }

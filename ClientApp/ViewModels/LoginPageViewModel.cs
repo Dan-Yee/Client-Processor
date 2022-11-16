@@ -1,27 +1,18 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using ClientApp.Views;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Tmds.DBus;
+﻿using ClientApp.Views;
 using Grpc.Net.Client;
 using Server;
-using System.Security.Cryptography;
+using ReactiveUI;
+using System.Reactive;
 
 namespace ClientApp.ViewModels
 {
-    public class LoginPageViewModel: ViewModelBase
+    public class LoginPageViewModel : ReactiveObject,IRoutableViewModel
     {
         //Holds current user
         public static string GlobalUserName { get; set; }
 
         //Holds whether the user has admin privilages
-        public static bool GlobalIsAdmin{ get; set; }
+        public static bool GlobalIsAdmin { get; set; }
         public string UserName { get; set; }
 
         //private string _password= string.Empty;
@@ -30,15 +21,30 @@ namespace ClientApp.ViewModels
         //View that this viewmodel is attached to
         LoginPage _loginPage;
 
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "Login";
+
+        // Required by the IScreen interface.
+        public RoutingState Router { get; } = new RoutingState();
+
+        // The command that navigates a user to first view model.
+        public ReactiveCommand<Unit, IRoutableViewModel> GoNext { get;}
+
+       
+
+
+
         /// <summary>
         /// Constructor for the viewmodel. initializes the view
         /// </summary>
         /// <param name="lp"></param>
-        public LoginPageViewModel(LoginPage lp)
+        public LoginPageViewModel()
         {
-            _loginPage = lp;
-            
+            GoNext = ReactiveCommand.CreateFromObservable(
+              () => Router.Navigate.Execute(new HomePageViewModel()));
         }
+
 
         /// <summary>
         /// onclick event for logging in
@@ -47,7 +53,7 @@ namespace ClientApp.ViewModels
         {
             var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
             var ClientApp = new Employee.EmployeeClient(channel);
-            
+
             var credentials = new LoginCredentials
             {
                 Username = UserName,
@@ -59,22 +65,23 @@ namespace ClientApp.ViewModels
             {
                 GlobalUserName = UserName;
                 GlobalIsAdmin = serviceResponse.IsAdmin;
-                
+
                 //Takes user to home page
-                new HomePage().Show();
-                _loginPage.Close();
-                //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + GlobalUserName + " Logged in successfully. Admin="+GlobalIsAdmin);
-                //loginSuccessMessage.Show();
+                GoNext.Execute();
+
+
+                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + GlobalUserName + " Logged in successfully. Admin="+GlobalIsAdmin);
+                loginSuccessMessage.Show();
             }
             else
             {
-                //Display message that log in failed
+                //Display message that log in failed 
                 var loginFailedMessage = MessageBox.Avalonia.MessageBoxManager
     .GetMessageBoxStandardWindow("title", "Logged in failed");
                 loginFailedMessage.Show();
 
             }
-            
+
         }
     }
 }

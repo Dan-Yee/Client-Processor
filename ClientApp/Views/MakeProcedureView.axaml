@@ -9,10 +9,7 @@
 		x:DataType="vm:MakeProcedureViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="ClientApp">
-	<Design.DataContext>
-		<vm:MakeProcedureViewModel/>
-	</Design.DataContext>
-
+	
 	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition MinHeight="100" Height="100"></RowDefinition>

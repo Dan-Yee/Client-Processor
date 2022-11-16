@@ -13,11 +13,16 @@ using Avalonia.Controls;
 using Grpc.Net.Client;
 using Server;
 using Avalonia.Controls.Selection;
+using System.Reactive;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace ClientApp.ViewModels
 {
-    public class HomePageViewModel: ReactiveObject
+    
+    public class HomePageViewModel : ReactiveObject, IRoutableViewModel
     {
+
+        LoginPageViewModel Log = new LoginPageViewModel();
         //Holds whether the user has admin privilages or not
         public bool ShowAdminButton { get; set; }
         //private ObservableCollection<string> _items = new();
@@ -26,21 +31,56 @@ namespace ClientApp.ViewModels
         //View that this viewmodel is attached to
         private HomePage _homePage;
 
-        
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "Homepage";
+
+        public RoutingState Router { get; } = new RoutingState();
+
+        public RoutingState Router0 { get; } = new RoutingState();
+
+        public RoutingState Router1 { get; } = new RoutingState();
+
+        public RoutingState Router2 { get; } = new RoutingState();
+
+        public RoutingState Router3 { get; } = new RoutingState();
+
+        public RoutingState RouterToLogin { get; } = new RoutingState();
+
+
+        // The command that navigates a user to a view model.
+        public ReactiveCommand<Unit, IRoutableViewModel> GoCreateCustomerCommand { get; }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToAdminLoginCommand { get; }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToAdminHomeCommand { get; }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> BackToLogin { get; }
+       
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
+
+
+
+
+       
+
         // Plan to delete this constructor
-        public HomePageViewModel(HomePage hp,string s,bool b) { }
+        // public HomePageViewModel(HomePage hp, string s, bool b) { }
 
 
         /// <summary>
         /// Constructor for the viewmodel. initializes the list of employees
         /// </summary>
         /// <param name="hp"></param>
-        public HomePageViewModel(HomePage hp)
+        public HomePageViewModel()
         {
             // localhost for testing purposes
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
             var client = new Client.ClientClient(channel);
-            
+
             AllClients info = client.getClients(new Google.Protobuf.WellKnownTypes.Empty());
             foreach (ClientInfo c in info.Clients)
             {
@@ -63,33 +103,39 @@ namespace ClientApp.ViewModels
             //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "admin="+LoginPageViewModel.GlobalIsAdmin);
             //loginSuccessMessage.Show();
 
-            _homePage = hp;
+            
+          GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
+              () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(Selection.SelectedItem.Client_ID)));
+          GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
+             () => Router1.Navigate.Execute(new CreateCustomerViewModel()));
+            GoGoToAdminHomeCommand = ReactiveCommand.CreateFromObservable(
+              () => Router2.Navigate.Execute(new AdminHomeViewModel()));
+            GoToLogin = ReactiveCommand.CreateFromObservable(
+             () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
+
         }
+
+       
 
         /// <summary>
         /// On click event to creating customer button
         /// </summary>
         public void CreateCustomerCommand()
         {
-            new CreateCustomerPage().Show();
-            _homePage.Close();
+            GoCreateCustomerCommand.Execute();
+           
         }
-
-        /*public void GoToAdminLoginCommand()
-        {
-            new AdminLoginView().Show();
-            _homePage.Close();
-        }*/
+       
 
         /// <summary>
         /// Takes user to admin home view
         /// </summary>
         public void GoToAdminHomeCommand()
         {
-            new AdminHomeView().Show();
-            _homePage.Close();
+            GoGoToAdminHomeCommand.Execute();
+            
         }
-        
+
         public ObservableCollection<Customer> Items
         {
             get => _items;
@@ -100,6 +146,7 @@ namespace ClientApp.ViewModels
         }
 
         public SelectionModel<Customer> Selection { get; }
+        //public LoginPageViewModel LoginPageViewModel { get; }
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
@@ -111,8 +158,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void LogoutCommand()
         {
-            new LoginPage().Show();
-            _homePage.Close();
+            GoToLogin.Execute();
+          
         }
 
         /// <summary>
@@ -121,19 +168,20 @@ namespace ClientApp.ViewModels
         public void GoToClientProceduresCommand()
         {
             //If a client is selected
-            if(Selection != null)
+            if (Selection != null)
             {
-                new ClientProcedureListingView(Selection.SelectedItem.Client_ID).Show();
+                
+                GoGoToClientProceduresCommand.Execute();
                 var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
                 loginSuccessMessage.Show();
-                _homePage.Close();
+                
             }
             else
             {
                 var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null");
                 loginSuccessMessage.Show();
             }
-            
+
         }
     }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using Procedure = Server.Procedure;
@@ -16,16 +17,28 @@ using Procedure = Server.Procedure;
 
 namespace ClientApp.ViewModels
 {
-    public class ClientProcedureListingViewModel : ReactiveObject
+    public class ClientProcedureListingViewModel : ReactiveObject, IRoutableViewModel
     {
         //View that this viewmodel is attached to
-        private ClientProcedureListingView _ClientProcedureListingView;
+        //private ClientProcedureListingView _ClientProcedureListingView;
         //The list of procedures for the client. Binded in the view to display the procedures
         private ObservableCollection<ProcedureModel> _procedures = new();
         private ObservableCollection<string> _displayedProcedures = new();
         //ID of the client selected
         private int _clientId;
+
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "ClientProcedureListing";
+        public RoutingState Router0 { get; } = new RoutingState();
+
+        public RoutingState RouterHomePageProcedure { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
+
+
         
+
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
@@ -37,7 +50,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         /// <param name="cplv"></param>
         /// <param name="c_ID"></param>
-        public ClientProcedureListingViewModel(ClientProcedureListingView cplv, int c_ID)
+        public ClientProcedureListingViewModel(int c_ID)
         {
             // localhost for testing purposes
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
@@ -64,7 +77,10 @@ namespace ClientApp.ViewModels
             //IsAdmin = false;
             _clientId = c_ID;
 
-            _ClientProcedureListingView = cplv;
+            GoHome = ReactiveCommand.CreateFromObservable(
+             () => RouterHomePageProcedure.Navigate.Execute(new HomePageViewModel()));
+
+            
         }
 
         /*
@@ -109,9 +125,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void GoHomeCommand()
         {
-            //new HomePage(_user, _isAdmin).Show();
-            new HomePage().Show();
-            _ClientProcedureListingView.Close();
+            GoHome.Execute();
+            
         }
         
         public ObservableCollection<ProcedureModel> Procedures
@@ -139,7 +154,7 @@ namespace ClientApp.ViewModels
         {
             //new MakeProcedureView(_user,_isAdmin,_clientId).Show();
             new MakeProcedureView(_clientId).Show();
-            _ClientProcedureListingView.Close();
+            //_ClientProcedureListingView.Close();
         }
 
     }

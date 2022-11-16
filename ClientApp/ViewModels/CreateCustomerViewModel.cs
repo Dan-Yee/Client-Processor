@@ -2,30 +2,51 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using ClientApp.Views;
 using Grpc.Net.Client;
+using Microsoft.AspNetCore.Components.Routing;
+using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ClientApp.ViewModels
 {
-    public class CreateCustomerViewModel:ViewModelBase
+    public class CreateCustomerViewModel:ViewModelBase, IRoutableViewModel
     {
+        
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "CreateCustomer";
+        public RoutingState RouterHomePage { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
+
+
         //View that this viewmodel is attached to
         CreateCustomerPage _createCustomerPage;
+
+
+        public CreateCustomerViewModel()
+        {
+            GoHome = ReactiveCommand.CreateFromObservable(
+             () => RouterHomePage.Navigate.Execute(new HomePageViewModel()));
+        }
+
 
         /// <summary>
         /// Constructor for the viewmodel. Initializes the view
         /// </summary>
         /// <param name="ccp"></param>
+        /*
         public CreateCustomerViewModel(CreateCustomerPage ccp)
         {
             _createCustomerPage = ccp;
         }
-
+        */
         /*
         string _user = string.Empty;
         bool _isAdmin = false;
@@ -146,18 +167,16 @@ namespace ClientApp.ViewModels
             };
             var createResponse = client.newClient(clientInfo);
 
-            //new HomePage(_user,_isAdmin).Show();
-            new HomePage().Show();
-            _createCustomerPage.Close();
+            GoHome.Execute();
+            
         }
         /// <summary>
         /// Takes user to the home page
         /// </summary>
         public void ToHomeScreenCommand()
         {
-            //new HomePage(_user,_isAdmin).Show();
-            new HomePage().Show();
-            _createCustomerPage.Close();
+            GoHome.Execute();
+            
         }
     }
 }

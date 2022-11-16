@@ -1,13 +1,19 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
+using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class AdminLoginView : Window
+    public partial class AdminLoginView : ReactiveUserControl<AdminLoginViewModel>
     {
         public AdminLoginView()
         {
-            InitializeComponent();
+
+            this.WhenActivated(disposables => { /* Handle interactions etc. */ });
+            AvaloniaXamlLoader.Load(this);
+            //InitializeComponent();
             //DataContext = new AdminLoginViewModel(this);
         }
         /*

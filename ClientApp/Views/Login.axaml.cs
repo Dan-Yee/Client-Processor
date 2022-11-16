@@ -6,22 +6,13 @@ using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class HomePage : ReactiveUserControl<HomePageViewModel>
+    public partial class LoginPage : ReactiveUserControl<LoginPageViewModel>
     {
-        public HomePage()
+        public LoginPage()
         {
-
             this.WhenActivated(disposables => { /* Handle interactions etc. */ });
             AvaloniaXamlLoader.Load(this);
         }
-
-        /*
-        public HomePage(string user,bool isAdmin)
-        {
-            InitializeComponent();
-            DataContext = new HomePageViewModel(this,user,isAdmin);
-        }
-        */
 
     }
 }

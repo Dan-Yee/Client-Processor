@@ -1,18 +1,19 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:ClientApp.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-		xmlns:views="clr-namespace:ClientApp.Views"
-        x:Class="ClientApp.Views.ImportFormView"
-		x:DataType="vm:ImportFormViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="ClientApp">
-	<Design.DataContext>
-		<vm:ImportFormViewModel/>
-	</Design.DataContext>
-	<Window.Styles>
+<UserControl xmlns="https://github.com/avaloniaui"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+   xmlns:app="clr-namespace:ClientApp"
+   xmlns:viewModels="clr-namespace:ClientApp.ViewModels"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   x:Class="ClientApp.Views.ImportFormView"
+   x:DataType="vm:ImportFormViewModel"
+   xmlns:reactiveUi="http://reactiveui.net"
+   xmlns:vm="using:ClientApp.ViewModels"
+   mc:Ignorable="d">
+	
+	
+	
+	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="FontSize" Value="30"/>
 			<Setter Property="Width" Value="125"/>
@@ -20,8 +21,10 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
 		</Style>
-	</Window.Styles>
+	</UserControl.Styles>
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterAdmimHomePageProcedure}">
+		<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
 			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
@@ -33,7 +36,7 @@
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
 			<ColumnDefinition MinWidth="350"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		
+
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import Form" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
 		<Button Content="import" Command="{Binding Files}" Grid.Row="1" Grid.Column="1"></Button>
 		<TextBlock Text="Selected File(s): " Grid.Row="2" Grid.Column="1" Margin="0 0 0 0"></TextBlock>
@@ -41,7 +44,11 @@
 
 		<!--<TextBox Text="{Binding FilePaths}" Grid.Row="3" Grid.Column="1" Height="50" Margin="0, 50, 0, 0"/>-->
 		<Button Content="Store" Command="{Binding StoreFileCommand}" Grid.Row="3" Grid.Column="1" Margin="0, 150, 0, 0"/>
-		
 	</Grid>
-
-</Window>
+	</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+	<!-- See ViewLocator.cs section below -->
+	<app:AdminHomeViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+</UserControl>

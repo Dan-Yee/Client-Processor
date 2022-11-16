@@ -11,17 +11,25 @@ using System.Collections.ObjectModel;
 using Google.Protobuf;
 using Grpc.Net.Client;
 using System.IO;
+using System.Reactive;
 
 namespace ClientApp.ViewModels
 {
 
-    public class ImportFormViewModel : ReactiveObject
+    public class ImportFormViewModel : ReactiveObject, IRoutableViewModel
     {
         
         //global variables used to store the information corresponding to files
         private static List<byte[]> FilesInBytes = new List<byte[]>();
         private static string[] FileNames = new string[1];
         private static string[] FileExtentions = new string[1];
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "ImportForm";
+
+        public RoutingState RouterAdmimHomePageProcedure { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToAdminHome { get; }
 
         /// <summary>
         /// Metheod that sends a file to the server in cunks(byte[])
@@ -160,10 +168,6 @@ namespace ClientApp.ViewModels
         }
 
 
-        
-
-
-
 
         //View that this viewmodel is attached to
         ImportFormView _importFormView;
@@ -182,9 +186,11 @@ namespace ClientApp.ViewModels
         /// Constructor for view model. Initializes view
         /// </summary>
         /// <param name="ifv"></param>
-        public ImportFormViewModel(ImportFormView ifv)
+        public ImportFormViewModel()
         {
-            _importFormView = ifv;
+            GoToAdminHome = ReactiveCommand.CreateFromObservable(
+            () => RouterAdmimHomePageProcedure.Navigate.Execute(new AdminHomeViewModel()));
+            //_importFormView = ifv;
             FilePaths = "path";
         }
 
@@ -228,11 +234,11 @@ namespace ClientApp.ViewModels
             {
                 await UploadFile(FilesInBytes[i], FileNames[i], FileExtentions[i], NotProcedureForm(), FormTemplate());
             }
-            
+
 
             //This brings you back to last page
-            new AdminHomeView().Show();
-            _importFormView.Close();
+            GoToAdminHome.Execute();
+          
         }
     }
 }
