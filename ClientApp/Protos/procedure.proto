@@ -44,5 +44,6 @@ message Field {
 
 // record for representing an arbitrary number of fields from a PDF form.
 message FormFields {
-	repeated Field fields = 1;
+	FormName fName = 1;
+	repeated Field fields = 2;
 }
