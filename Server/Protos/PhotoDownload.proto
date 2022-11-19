@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer.Protos";
+import "Protos/shared.proto";
+
+service PhotoDownload {
+  rpc PhotosDownload(PhotosRequest) returns (stream PhotoResponse){}
+}
+
+
+message PhotosRequest{
+    int32 ProcedureID = 1;
+    bool isBefore = 2;
+}
+
+message PhotoResponse{
+    oneof PhotoDownload{
+        PhotoInfo NameAndExtention = 1;
+        bytes PhotoBytes = 2;
+        ServiceStatus status = 3;
+    }
+}
+
+message PhotoInfo{
+    string PhotoName = 1;
+    string photoExtension = 2;
+}
+
