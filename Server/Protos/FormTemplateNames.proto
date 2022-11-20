@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer.Protos";
+
+
+
+
+service FormTemplateNames {
+  rpc GetTemplateNames(TemplatesRequest) returns (stream TemplateName) {}
+}
+
+message TemplateName{
+	string FormTemplateName = 1;
+	string FormTemplateExtension = 2;
+}
+
+message TemplatesRequest{}
