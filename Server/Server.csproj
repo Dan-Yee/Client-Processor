@@ -11,6 +11,7 @@
     <None Remove="Protos\employee.proto" />
     <None Remove="Protos\FileTransfer.proto" />
     <None Remove="Protos\FileUpload.proto" />
+    <None Remove="Protos\FormTemplateNames.proto" />
     <None Remove="Protos\PhotoDownload.proto" />
     <None Remove="Protos\procedure.proto" />
     <None Remove="Protos\shared.proto" />
@@ -28,6 +29,7 @@
     <Protobuf Include="Protos\employee.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\FileTransfer.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\FileUpload.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\FormTemplateNames.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\PhotoDownload.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\procedure.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\shared.proto" GrpcServices="Server" />
