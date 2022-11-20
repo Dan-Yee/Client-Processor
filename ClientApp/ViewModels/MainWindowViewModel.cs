@@ -16,7 +16,7 @@ namespace ClientApp.ViewModels
         // Required by the IScreen interface.
         public RoutingState RouterToLogin { get; } = new RoutingState();
 
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
+        
 
 
         public string Greeting => "Welcome to the Business";
@@ -25,17 +25,9 @@ namespace ClientApp.ViewModels
         /// </summary>
         public MainWindowViewModel()
         {
-            GoToLogin = ReactiveCommand.CreateFromObservable(
-              () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
+            RouterToLogin.Navigate.Execute(new LoginPageViewModel());
+            
         }
 
-
-        /// <summary>
-        /// Executes the button to take you to login
-        /// </summary>
-        public void Login()
-        {
-            GoToLogin.Execute();
-        }
     }
 }

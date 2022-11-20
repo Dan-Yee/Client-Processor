@@ -7,6 +7,7 @@ using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -132,6 +133,8 @@ namespace ClientApp.ViewModels
 
         private string _email = string.Empty;
 
+        public event PropertyChangingEventHandler? PropertyChanging;
+
         public string Email
         {
 
@@ -177,6 +180,16 @@ namespace ClientApp.ViewModels
         {
             GoHome.Execute();
             
+        }
+
+        public void RaisePropertyChanging(PropertyChangingEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaisePropertyChanged(PropertyChangedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

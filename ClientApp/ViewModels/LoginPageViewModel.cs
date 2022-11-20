@@ -18,9 +18,6 @@ namespace ClientApp.ViewModels
         //private string _password= string.Empty;
         public string Password { get; set; }
 
-        //View that this viewmodel is attached to
-        LoginPage _loginPage;
-
         public IScreen HostScreen { get; }
 
         public string UrlPathSegment { get; } = "Login";
@@ -30,15 +27,15 @@ namespace ClientApp.ViewModels
 
         // The command that navigates a user to first view model.
         public ReactiveCommand<Unit, IRoutableViewModel> GoNext { get;}
+        
 
        
 
 
 
         /// <summary>
-        /// Constructor for the viewmodel. initializes the view
+        /// Constructor for the viewmodel. initializes the routing
         /// </summary>
-        /// <param name="lp"></param>
         public LoginPageViewModel()
         {
             GoNext = ReactiveCommand.CreateFromObservable(
@@ -69,16 +66,12 @@ namespace ClientApp.ViewModels
                 //Takes user to home page
                 GoNext.Execute();
 
-
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + GlobalUserName + " Logged in successfully. Admin="+GlobalIsAdmin);
-                loginSuccessMessage.Show();
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Success", "User: "+GlobalUserName+", logged in successfully.").Show();
             }
             else
             {
                 //Display message that log in failed 
-                var loginFailedMessage = MessageBox.Avalonia.MessageBoxManager
-    .GetMessageBoxStandardWindow("title", "Logged in failed");
-                loginFailedMessage.Show();
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Failed", "Login failed").Show();
 
             }
 

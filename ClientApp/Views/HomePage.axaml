@@ -59,10 +59,12 @@
 		<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
 			<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
 			<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-				<ListBox Items="{Binding Items}" Selection="{Binding Selection}"></ListBox>
+				<ListBox Name="ClientList" Items="{Binding Items}" Selection="{Binding Selection}"></ListBox>
+				
 			</ScrollViewer>
 		</StackPanel>
-		<Button Content="select" Command="{Binding GoToClientProceduresCommand}" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0"/>
+		<Button Content="select" Name="SelectButton" Command="{Binding GoToClientProceduresCommand}" IsEnabled="{Binding SelectButtonEnabled}" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0"/>
+		<!--<Button Content="select" Name="SelectButton" Command="{Binding GoToClientProceduresCommand}"  IsEnabled="{Binding ElementName=ClientList, Path=Selection.SelectedIndex}" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0"/>-->
 	</Grid>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>

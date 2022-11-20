@@ -1,4 +1,5 @@
-<UserControl  xmlns="https://github.com/avaloniaui"
+<UserControl  
+	xmlns="https://github.com/avaloniaui"
    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
    xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
@@ -18,7 +19,7 @@
 				<TextBlock Text="Username" HorizontalAlignment="Center" FontSize="20" Margin="0,50,0,0"/>
 				<TextBox Width="200" Text="{CompiledBinding UserName}"/>
 				<TextBlock Text="Password" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
-				<TextBox Width="200"  Text="{CompiledBinding Password}"/>
+				<TextBox Width="200"  Text="{CompiledBinding Password}" PasswordChar="*"/>
 				<Button x:Name="loginBtn" Command="{Binding LoginCommand}" Content="Login" HorizontalAlignment="Center" Margin="0,30,0,0" Width="150" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25"/>
 			</StackPanel>
 		</rxui:RoutedViewHost.DefaultContent>

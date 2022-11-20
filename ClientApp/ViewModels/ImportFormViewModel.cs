@@ -185,7 +185,6 @@ namespace ClientApp.ViewModels
         /// <summary>
         /// Constructor for view model. Initializes view
         /// </summary>
-        /// <param name="ifv"></param>
         public ImportFormViewModel()
         {
             GoToAdminHome = ReactiveCommand.CreateFromObservable(

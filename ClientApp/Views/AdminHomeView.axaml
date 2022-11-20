@@ -60,7 +60,7 @@
 		<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
 		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
 		-->
-		<Button Content="Delete" Command="{Binding DeleteEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
+		<Button Content="Delete" IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding DeleteEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
 	</Grid>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>

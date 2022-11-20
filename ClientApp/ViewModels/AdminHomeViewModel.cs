@@ -4,12 +4,18 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using Server;
 using System.Reactive;
+using System.ComponentModel;
+using Avalonia.Controls.Selection;
+using AvaloniaEdit.Editing;
+using ClientApp.Models;
 
 namespace ClientApp.ViewModels
 {
     public class AdminHomeViewModel : ReactiveObject,IRoutableViewModel
     {
         public IScreen HostScreen { get; }
+
+        public SelectionModel<EmployeeModel> Selection { get; }
 
         public string UrlPathSegment { get; } = "AdminHome";
         public RoutingState Router2 { get; } = new RoutingState();
@@ -26,9 +32,23 @@ namespace ClientApp.ViewModels
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToRegister { get; }
 
+        //Determines if an element has been selected in the list view
+        private bool _selectButtonEnabled;
+        public bool SelectButtonEnabled
+        {
+            get
+            {
+                return _selectButtonEnabled;
+            }
+            set
+            {
+                _selectButtonEnabled = value;
+                //Updates that a value has been selected
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        //View that this viewmodel is attached to
-        AdminHomeView _adminHomeView;
         //List of employees. Binded in view to display the employees
         private ObservableCollection<Models.EmployeeModel> _employees = new();
 
@@ -48,6 +68,9 @@ namespace ClientApp.ViewModels
                 _employees.Add(new Models.EmployeeModel(e.EmployeeId, e.FirstName, e.LastName, e.Credentials.Username, e.IsAdmin));
             }
             //Employees = _employees;
+            SelectButtonEnabled = false;
+            Selection = new SelectionModel<EmployeeModel>();
+            Selection.SelectionChanged += SelectionChanged;
 
             GoHome = ReactiveCommand.CreateFromObservable(
              () => RouterHomePageProcedure.Navigate.Execute(new HomePageViewModel()));
@@ -86,6 +109,12 @@ namespace ClientApp.ViewModels
             {
                 this.RaiseAndSetIfChanged(ref _employees, value);
             }
+        }
+
+        public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
+        {
+            // ... handle selection changed
+            SelectButtonEnabled = true;
         }
 
         /// <summary>

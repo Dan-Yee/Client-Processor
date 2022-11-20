@@ -4,6 +4,7 @@ using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -25,7 +26,6 @@ namespace ClientApp.ViewModels
         /// <summary>
         /// Constructor for the viewmodel. initializes the view
         /// </summary>
-        /// <param name="registerEmployeeView"></param>
         public RegisterEmployeeViewModel()
         {
             GoToAdminHome = ReactiveCommand.CreateFromObservable(
@@ -115,6 +115,9 @@ namespace ClientApp.ViewModels
         }
 
         private bool _employeeIsAdmin = false;
+
+        public event PropertyChangingEventHandler? PropertyChanging;
+
         public bool EmployeeIsAdmin
         {
             get { return _employeeIsAdmin; }
@@ -161,6 +164,16 @@ namespace ClientApp.ViewModels
         {
             GoToAdminHome.Execute();
 
+        }
+
+        public void RaisePropertyChanging(PropertyChangingEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaisePropertyChanged(PropertyChangedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

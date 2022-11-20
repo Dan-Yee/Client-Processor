@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {
-    public class MakeProcedureViewModel:ViewModelBase
+    public class MakeProcedureViewModel : ViewModelBase
     {
         //View that this viewmodel is attached to
         private MakeProcedureView _makeProcedureView;

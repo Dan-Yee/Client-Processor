@@ -15,21 +15,48 @@ using Server;
 using Avalonia.Controls.Selection;
 using System.Reactive;
 using Microsoft.AspNetCore.Components.Routing;
+using System.ComponentModel;
 
 namespace ClientApp.ViewModels
 {
     
     public class HomePageViewModel : ReactiveObject, IRoutableViewModel
     {
-
-        LoginPageViewModel Log = new LoginPageViewModel();
         //Holds whether the user has admin privilages or not
         public bool ShowAdminButton { get; set; }
-        //private ObservableCollection<string> _items = new();
+   
+        //Determines if an element has been selected in the list view
+        private bool _selectButtonEnabled;
+        public bool SelectButtonEnabled
+        {
+            get
+            {
+                return _selectButtonEnabled;
+            }
+            set
+            {
+                _selectButtonEnabled  = value;
+                //Updates that a value has been selected
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        //The client list
+        public ObservableCollection<Customer> Items
+        {
+            get => _items;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _items, value);
+            }
+        }
+
+        
+        public SelectionModel<Customer> Selection { get; }
 
         private ObservableCollection<Customer> _items = new();
-        //View that this viewmodel is attached to
-        private HomePage _homePage;
+        
 
         public IScreen HostScreen { get; }
 
@@ -62,21 +89,12 @@ namespace ClientApp.ViewModels
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
 
-
-
-
-       
-
-        // Plan to delete this constructor
-        // public HomePageViewModel(HomePage hp, string s, bool b) { }
-
-
         /// <summary>
         /// Constructor for the viewmodel. initializes the list of employees
         /// </summary>
-        /// <param name="hp"></param>
         public HomePageViewModel()
         {
+            
             // localhost for testing purposes
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
             var client = new Client.ClientClient(channel);
@@ -92,18 +110,10 @@ namespace ClientApp.ViewModels
             //enables employee selection
             Selection = new SelectionModel<Customer>();
             Selection.SelectionChanged += SelectionChanged;
-
+            SelectButtonEnabled = false;
             ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
 
-            //IsAdmin = false;
 
-            //string user = LoginPageViewModel.GlobalUserName;
-            //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "User: " + LoginPageViewModel.GlobalUserName + " Logged in successfully.admin="+LoginPageViewModel.GlobalIsAdmin);
-            //loginSuccessMessage.Show();
-            //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "admin="+LoginPageViewModel.GlobalIsAdmin);
-            //loginSuccessMessage.Show();
-
-            
           GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
               () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(Selection.SelectedItem.Client_ID)));
           GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
@@ -113,9 +123,10 @@ namespace ClientApp.ViewModels
             GoToLogin = ReactiveCommand.CreateFromObservable(
              () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
 
+            
         }
 
-       
+        /* Event Handlers Below */
 
         /// <summary>
         /// On click event to creating customer button
@@ -136,21 +147,10 @@ namespace ClientApp.ViewModels
             
         }
 
-        public ObservableCollection<Customer> Items
-        {
-            get => _items;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _items, value);
-            }
-        }
-
-        public SelectionModel<Customer> Selection { get; }
-        //public LoginPageViewModel LoginPageViewModel { get; }
-
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
+            SelectButtonEnabled = true;
         }
 
         /// <summary>
