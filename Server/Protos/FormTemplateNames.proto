@@ -6,7 +6,11 @@ option csharp_namespace = "GrpcServer.Protos";
 
 
 service FormTemplateNames {
-  rpc GetTemplateNames(TemplatesRequest) returns (stream TemplateName) {}
+  rpc GetTemplateNames(TemplatesRequest) returns (TemplatesResponse) {}
+}
+
+message TemplatesResponse{
+	repeated TemplateName TemplateNames = 1;
 }
 
 message TemplateName{
