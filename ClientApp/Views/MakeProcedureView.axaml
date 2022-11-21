@@ -24,6 +24,6 @@
 
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Make Procedure" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
 		<!--form photos pay-->
-		<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding }"/>
+		<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoToFormMenu}"/>
 	</Grid>
 </Window>

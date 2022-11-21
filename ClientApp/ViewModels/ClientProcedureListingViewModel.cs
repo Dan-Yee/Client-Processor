@@ -88,7 +88,7 @@ namespace ClientApp.ViewModels
 
         public void GoToMakeProcedurePageCommand()
         {
-            new MakeProcedureView().Show();
+            new MakeProcedureView(_clientId).Show();
             //Locator.CurrentMutable.Register(() => new MakeProcedureView(), typeof(IViewFor<MakeProcedureViewModel>));
             //MakeProcedurePage.Execute();
             //= ReactiveCommand.CreateFromObservable(

@@ -30,16 +30,11 @@ namespace ClientApp.ViewModels
             _makeProcedureView = mpv;
             _clientId = c_ID;
         }
-        /*
-        string _user = string.Empty;
-        private bool _isAdmin = false;
-        public MakeProcedureViewModel(MakeProcedureView mpv, string user, bool isAdmin,int c_ID)
+
+        public void GoToFormMenu()
         {
-            _user = user;
-            _isAdmin = isAdmin;
-            _makeProcedureView = mpv;
-            _clientId = c_ID;
+            new FormMenuView(_clientId).Show();
+            _makeProcedureView.Close();
         }
-        */
     }
 }
