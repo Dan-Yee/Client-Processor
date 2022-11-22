@@ -31,7 +31,7 @@ namespace Server.Services
         /// <param name="request">An object containing the client id and employee id associated with the procedure, and forms/images associated with the procedure</param>
         /// <param name="context"></param>
         /// <returns>An object containing the status of the RPC and a status message.</returns>
-        public override Task<ServiceStatus> addProcedure(ProcedureInfo request, ServerCallContext context)
+        public override Task<ProcedureID> addProcedure(ProcedureInfo request, ServerCallContext context)
         {
             return Task.FromResult(InsertProcedure(request));
         }
@@ -41,9 +41,9 @@ namespace Server.Services
         /// </summary>
         /// <param name="info">An object containing the client id and employee id associated with the procedure, and forms/images associated with the procedure</param>
         /// <returns>An object containing the status of the RPC and a status message.</returns>
-        private static ServiceStatus InsertProcedure(ProcedureInfo info)
+        private static ProcedureID InsertProcedure(ProcedureInfo info)
         {
-            ServiceStatus status = new();
+            ProcedureID newPID = new();
             NpgsqlCommand command;
             string query;
             int procedureID;
@@ -66,16 +66,14 @@ namespace Server.Services
                 try
                 {
                     procedureID = command.ExecuteNonQuery();                    // This specific query returns the procedure_id of the newly inserted procedure.
-                    status.IsSuccessfulOperation = true;
-                    status.StatusMessage = "Success: Procedure was saved.";
+                    newPID.PID = procedureID;
                 } catch (NpgsqlException pgE)
                 {
-                    status.IsSuccessfulOperation = false;
-                    status.StatusMessage = "Error: Unable to save procedure.";
+                    newPID.PID = -1;
                 }
                 conn.Close();
             }
-            return status;
+            return newPID;
         }
 
         /// <summary>
@@ -200,6 +198,55 @@ namespace Server.Services
                 conn.Close();
             }
             return fields;
+        }
+
+        /// <summary>
+        /// Implementation of the deleteProcedure RPC that deletes a procedure and all relevant information such as forms and images.
+        /// </summary>
+        /// <param name="request">The procedure ID being referenced for deletion.</param>
+        /// <param name="context"></param>
+        /// <returns>An object that states whether or not the operation was successful.</returns>
+        public override Task<ServiceStatus> deleteProcedure(ProcedureID request, ServerCallContext context)
+        {
+            return Task.FromResult(DeleteProcedure(request));
+        }
+
+        /// <summary>
+        /// Method <c>DeleteProcedure</c> deletes a procedure from the Client_Procedures table and other tables that contain relevant information, given the ID.
+        /// </summary>
+        /// <param name="pID">The procedure ID being referenced for deletion.</param>
+        /// <returns>An object that states whether or not the operation was successful.</returns>
+        private static ServiceStatus DeleteProcedure(ProcedureID pID)
+        {
+            ServiceStatus sStatus = new();
+            NpgsqlCommand command;
+            string query;
+            int status;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "DELETE FROM Client_Procedures WHERE procedure_id = $1;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = pID.PID}
+                    }
+                };
+                conn.Open();
+                status = command.ExecuteNonQuery();
+                conn.Close();
+            }
+            if(status == 1)
+            {
+                sStatus.IsSuccessfulOperation = true;
+                sStatus.StatusMessage = "Success: Procedure deleted.";
+            } else
+            {
+                sStatus.IsSuccessfulOperation = false;
+                sStatus.StatusMessage = "Error: Unable to delete procedure. Does the procedure exist?";
+            }
+            return sStatus;
         }
     }
 }
