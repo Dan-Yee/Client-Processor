@@ -168,18 +168,30 @@ namespace Server.Services
                 if (reader.HasRows)
                 {
                     reader.Read();
-                    passwordSalt = reader["password_salt"].ToString();
+                    passwordSalt = Convert.ToString(reader["password_salt"]);
+
+                    // If the inputted information has a blank username, assume username is not being updated and overwrite it.
+                    if (info.Credentials.Username.Equals(string.Empty))
+                        info.Credentials.Username = Convert.ToString(reader["employee_username"]);
+                    // If inputted information has blank password, assume password is not being updated and overwrite it.
+                    if (info.Credentials.Password.Equals(string.Empty))
+                        info.Credentials.Password = Convert.ToString(reader["employee_password"]);
+                    else
+                        info.Credentials.Password = GetHashed(info.Credentials.Password, passwordSalt);
+
                     needUpdate = !((reader["first_name"].ToString()).Equals(info.FirstName) &&
                         reader["last_name"].ToString().Equals(info.LastName) &&
                         reader["first_name"].ToString().Equals(info.FirstName) &&
                         reader["employee_username"].ToString().Equals(info.Credentials.Username) &&
-                        reader["employee_password"].ToString().Equals(GetHashed(info.Credentials.Password, passwordSalt)) &&
+                        reader["employee_password"].ToString().Equals(info.Credentials.Password) &&
                         (Convert.ToBoolean(reader["isAdministrator"]) == info.IsAdmin));
 
                     isUsernameDiff = !(reader["employee_username"].ToString().Equals(info.Credentials.Username));
                 }
                 conn.Close();
+                reader.Close();
 
+                Console.WriteLine(needUpdate);
                 // if some information received from the Client side did not match what was stored in the database, update the database.
                 if (needUpdate)
                 {
@@ -201,7 +213,7 @@ namespace Server.Services
                                 new() {Value = info.FirstName},
                                 new() {Value = info.LastName},
                                 new() {Value = info.Credentials.Username},
-                                new() {Value = GetHashed(info.Credentials.Password, passwordSalt)},
+                                new() {Value = info.Credentials.Password},
                                 new() {Value = info.IsAdmin},
                                 new() {Value = info.EmployeeId}
                             }
@@ -220,7 +232,7 @@ namespace Server.Services
                             {
                                 new() {Value = info.FirstName},
                                 new() {Value = info.LastName},
-                                new() {Value = GetHashed(info.Credentials.Password, passwordSalt)},
+                                new() {Value = info.Credentials.Password},
                                 new() {Value = info.IsAdmin},
                                 new() {Value = info.EmployeeId}
                             }
