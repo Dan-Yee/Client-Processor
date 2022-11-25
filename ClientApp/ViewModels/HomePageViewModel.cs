@@ -172,8 +172,8 @@ namespace ClientApp.ViewModels
             {
                 
                 GoGoToClientProceduresCommand.Execute();
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
-                loginSuccessMessage.Show();
+                //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
+                //loginSuccessMessage.Show();
                 
             }
             else

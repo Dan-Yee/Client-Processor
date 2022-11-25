@@ -22,7 +22,7 @@
 	</UserControl.Styles>
 
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
 		<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center" >
 		<Grid.RowDefinitions>

@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ClientApp.ViewModels
     */
     
     
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged//,IControl
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

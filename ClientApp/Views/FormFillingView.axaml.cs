@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using ClientApp.ViewModels;
 
 namespace ClientApp.Views
@@ -7,7 +8,7 @@ namespace ClientApp.Views
     {
         public FormFillingView()
         {
-
+            
         }
         public FormFillingView(int c_ID,string filename)
         {

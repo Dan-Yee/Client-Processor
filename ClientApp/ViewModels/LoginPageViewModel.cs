@@ -10,6 +10,7 @@ namespace ClientApp.ViewModels
     {
         //Holds current user
         public static string GlobalUserName { get; set; }
+        public static int GlobalEmployeeID{ get; set; }
 
         //Holds whether the user has admin privilages
         public static bool GlobalIsAdmin { get; set; }
@@ -66,6 +67,7 @@ namespace ClientApp.ViewModels
                 //Takes user to home page
                 GoNext.Execute();
 
+                GlobalEmployeeID = serviceResponse.EmployeeId;
                 MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Success", "User: "+GlobalUserName+", logged in successfully.").Show();
             }
             else

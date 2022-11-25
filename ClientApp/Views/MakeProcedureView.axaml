@@ -10,20 +10,37 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="ClientApp">
 
-	<Grid HorizontalAlignment="Center">
-		<Grid.RowDefinitions>
-			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
-			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
-			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-		</Grid.ColumnDefinitions>
-
+	<!--<StackPanel>-->
+		
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+	<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
+		<!--form photos pay
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Make Procedure" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
-		<!--form photos pay-->
 		<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoToFormMenu}"/>
+		-->
+		<TextBlock Text="Form" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="0 20 0 0"></TextBlock>
+		<StackPanel Grid.Row="1" Grid.Column="1" Margin="0 20 0 0">
+			<Label VerticalAlignment="Center" HorizontalAlignment="Center">Completed Forms</Label>
+			<ScrollViewer Height="50" VerticalScrollBarVisibility="Auto">
+				<ListBox Items="{Binding CurrentlySelectedForms}" Selection="{Binding CurrentFormSelection}"></ListBox>
+			</ScrollViewer>
+		</StackPanel>
+		<Button Content="Select" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0" Command="{Binding GoToFillOutForm}"/>
+		<TextBox Watermark="Search..." Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 20 0 0"/>
+		<Button Content="Search" Grid.Row="3" Grid.Column="2" Margin="10 0 0 0"/>
+		<StackPanel Grid.Row="4" Grid.Column="1" Margin="0 20 0 0">
+			<Label VerticalAlignment="Center" HorizontalAlignment="Center">Find Form</Label>
+			<ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
+				<ListBox Items="{Binding FormTemplateList}" Selection="{Binding FormTemplateSelection}"></ListBox>
+			</ScrollViewer>
+		</StackPanel>
+		<Button Content="Select" Grid.Row="4" Grid.Column="2" Margin="10 0 0 0" Command="{Binding SelectFormTemplate}"/>
+
+		
 	</Grid>
+	</ScrollViewer>
+	<!--
+	</StackPanel>
+	-->
+
 </Window>

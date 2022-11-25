@@ -38,6 +38,8 @@ namespace ClientApp.ViewModels
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> MakeProcedurePage { get; }
+        
+        
 
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
@@ -88,7 +90,8 @@ namespace ClientApp.ViewModels
 
         public void GoToMakeProcedurePageCommand()
         {
-            new MakeProcedureView(_clientId).Show();
+            //new MakeProcedureView(_clientId).Show();
+            new InitializeProcedureView(_clientId).Show();
             //Locator.CurrentMutable.Register(() => new MakeProcedureView(), typeof(IViewFor<MakeProcedureViewModel>));
             //MakeProcedurePage.Execute();
             //= ReactiveCommand.CreateFromObservable(
