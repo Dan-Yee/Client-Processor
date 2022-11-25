@@ -248,5 +248,93 @@ namespace Server.Services
             }
             return sStatus;
         }
+
+        /// <summary>
+        /// Implementation of the RPC completeForm that gets a form from the Empty_Forms table, fills in fields, and stores it in the Procedure_Forms table.
+        /// </summary>
+        /// <param name="request">An object containing the Procedure ID, Form name, Form fields and their respective values.</param>
+        /// <param name="context"></param>
+        /// <returns>An object stating whether or not this operation was successful.</returns>
+        public override Task<ServiceStatus> completeForm(CompleteFormInfo request, ServerCallContext context)
+        {
+            return Task.FromResult(CompleteForm(request));
+        }
+
+        /// <summary>
+        /// Method <c>CompleteForm</c> queries the Empty_Forms table for the form to be filled out. It then edit that form and stores it in the Procedure_Forms table.
+        /// </summary>
+        /// <param name="info">An object containing the Procedure ID, Form name, Form fields and their respective values.</param>
+        /// <returns>An object stating whether or not this operation was successful.</returns>
+        private static ServiceStatus CompleteForm(CompleteFormInfo info)
+        {
+            ServiceStatus sStatus = new();
+            NpgsqlCommand command;
+            NpgsqlDataReader reader;
+            string query;
+            byte[]? fileToStore = null;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "SELECT file_bytes FROM Empty_Forms WHERE filename = $1;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = info.Form.FName.FormName_}
+                    }
+                };
+                conn.Open();
+                reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    using (MemoryStream fileInput = new((byte[])reader["file_bytes"]))
+                    {
+                        using (MemoryStream fileOutput = new())
+                        {
+                            PdfReader pdfReader = new(fileInput);
+                            PdfWriter pdfWriter = new(fileOutput);
+                            PdfDocument pdfDocument = new(pdfReader, pdfWriter);
+                            PdfAcroForm acroForm = PdfAcroForm.GetAcroForm(pdfDocument, false);
+                            IDictionary<string, PdfFormField> formFields = acroForm.GetFormFields();
+                            PdfFormField? fieldToSet;
+
+                            foreach (Field field in info.Form.Fields)
+                            {
+                                formFields.TryGetValue(field.FieldName, out fieldToSet);
+                                if (fieldToSet != null)
+                                {
+                                    fieldToSet.SetValue(field.FieldValue);
+                                }
+                            }
+                            acroForm.FlattenFields();
+                            pdfDocument.Close();
+                            fileToStore = fileOutput.ToArray();
+                        }
+                    }
+                }
+                conn.Close();
+                reader.Close();
+            }
+
+            // Begin Testing only section
+            if (fileToStore != null)
+            {
+                File.WriteAllBytes("complete.pdf", fileToStore);
+                sStatus.IsSuccessfulOperation = true;
+                sStatus.StatusMessage = "Success: Form was completed and saved.";
+            }
+            else
+            {
+                sStatus.IsSuccessfulOperation = false;
+                sStatus.StatusMessage = "Error: Form was not saved.";
+            }
+            // End testing only section
+
+            // Need to store the file in "fileToStore" into the database.
+            // Check if the file is null first. If null, return error.
+            // ProcedureID is stored in "info.ProcedureID" (int32) -- foreign key
+            return sStatus;
+        }
     }
 }
