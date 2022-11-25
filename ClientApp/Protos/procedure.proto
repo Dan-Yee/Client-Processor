@@ -8,6 +8,7 @@ service Procedure {
 	rpc getProcedures(ClientID) returns (AllProcedures);				// rpc for getting procedures associated with a specific client by ID
 	rpc getFormFields(FormName) returns (FormFields);					// rpc for getting the fillable fields in a PDF form specified by its name
 	rpc deleteProcedure(ProcedureID) returns (ServiceStatus);			// rpc for deleting a procedure, given the ID
+	rpc completeForm(CompleteFormInfo) returns (ServiceStatus);			// rpc for filling out a form and storing it in the database
 }
 
 // record for representing a ClientID. This is used for getting all procedures associated with a specific client by ID.
@@ -45,11 +46,16 @@ message Field {
 	string field_name = 1;
 	string field_type = 2;
 	string field_value = 3;
-	repeated string possible_values = 4;										// a list of possible values for this field; used for checkboxes/dropdown type fields
 }
 
 // record for representing an arbitrary number of fields from a PDF form.
 message FormFields {
 	FormName fName = 1;
 	repeated Field fields = 2;
+}
+
+// record for representing the complete information needed to complete a form and store it in the database.
+message CompleteFormInfo {
+	int32 procedure_ID = 1;
+	FormFields form = 2;
 }
