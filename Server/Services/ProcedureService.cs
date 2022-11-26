@@ -339,6 +339,7 @@ namespace Server.Services
                 {
                     insertStatus = 0;
                 }
+                conn.Close();
 
                 // INSERT returns the total number of rows affected. We expect this value to be "1" for this operation to be considered successful.
                 if(insertStatus == 1)
