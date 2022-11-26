@@ -65,7 +65,7 @@ namespace Server.Services
                 conn.Open();
                 try
                 {
-                    procedureID = command.ExecuteNonQuery();                    // This specific query returns the procedure_id of the newly inserted procedure.
+                    procedureID = Convert.ToInt32(command.ExecuteScalar());                    // This specific query returns the procedure_id of the newly inserted procedure.
                     newPID.PID = procedureID;
                 } catch (NpgsqlException pgE)
                 {
