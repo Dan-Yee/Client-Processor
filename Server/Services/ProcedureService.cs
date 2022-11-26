@@ -272,10 +272,12 @@ namespace Server.Services
             NpgsqlDataReader reader;
             string query;
             byte[]? fileToStore = null;
+            string? fileToStoreExt = string.Empty;
+            int insertStatus;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT file_bytes FROM Empty_Forms WHERE filename = $1;";
+                query = "SELECT file_extension, file_bytes FROM Empty_Forms WHERE filename = $1;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -288,6 +290,7 @@ namespace Server.Services
                 if (reader.HasRows)
                 {
                     reader.Read();
+                    fileToStoreExt = Convert.ToString(reader["file_extension"]);
                     using (MemoryStream fileInput = new((byte[])reader["file_bytes"]))
                     {
                         using (MemoryStream fileOutput = new())
@@ -315,25 +318,40 @@ namespace Server.Services
                 }
                 conn.Close();
                 reader.Close();
-            }
 
-            // Begin Testing only section
-            if (fileToStore != null)
-            {
-                File.WriteAllBytes("complete.pdf", fileToStore);
-                sStatus.IsSuccessfulOperation = true;
-                sStatus.StatusMessage = "Success: Form was completed and saved.";
-            }
-            else
-            {
-                sStatus.IsSuccessfulOperation = false;
-                sStatus.StatusMessage = "Error: Form was not saved.";
-            }
-            // End testing only section
+                // store the completed form (file) into the Procedure_Forms table
+                query = "INSERT INTO Procedure_Forms (procedure_id, filename, file_extension, file_bytes) VALUES ($1, $2, $3, $4);";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = info.ProcedureID},
+                        new() {Value = info.Form.FName.FormName_},
+                        new() {Value = fileToStoreExt},
+                        new() {Value = fileToStore},
+                    }
+                };
+                conn.Open();
+                try
+                {
+                    insertStatus = command.ExecuteNonQuery();
+                } catch (NpgsqlException pgE)
+                {
+                    insertStatus = 0;
+                }
 
-            // Need to store the file in "fileToStore" into the database.
-            // Check if the file is null first. If null, return error.
-            // ProcedureID is stored in "info.ProcedureID" (int32) -- foreign key
+                // INSERT returns the total number of rows affected. We expect this value to be "1" for this operation to be considered successful.
+                if(insertStatus == 1)
+                {
+                    sStatus.IsSuccessfulOperation = true;
+                    sStatus.StatusMessage = "Success: Form was completed and saved.";
+                }
+                else
+                {
+                    sStatus.IsSuccessfulOperation = false;
+                    sStatus.StatusMessage = "Error: Form was not saved.";
+                }
+            }
             return sStatus;
         }
     }
