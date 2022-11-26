@@ -273,7 +273,7 @@ namespace Server.Services
             string query;
             byte[]? fileToStore = null;
             string? fileToStoreExt = string.Empty;
-            int insertStatus;
+            int insertStatus = 0;
 
             using (NpgsqlConnection conn = GetConnection())
             {
@@ -319,30 +319,35 @@ namespace Server.Services
                 conn.Close();
                 reader.Close();
 
-                // store the completed form (file) into the Procedure_Forms table
-                query = "INSERT INTO Procedure_Forms (procedure_id, filename, file_extension, file_bytes) VALUES ($1, $2, $3, $4);";
-                command = new NpgsqlCommand(@query, conn)
+                // Only attempt to insert if the form that was edited exists and is not null
+                if (fileToStore != null)
                 {
-                    Parameters =
+                    // store the completed form (file) into the Procedure_Forms table
+                    query = "INSERT INTO Procedure_Forms (procedure_id, filename, file_extension, file_bytes) VALUES ($1, $2, $3, $4);";
+                    command = new NpgsqlCommand(@query, conn)
+                    {
+                        Parameters =
                     {
                         new() {Value = info.ProcedureID},
                         new() {Value = info.Form.FName.FormName_},
                         new() {Value = fileToStoreExt},
                         new() {Value = fileToStore},
                     }
-                };
-                conn.Open();
-                try
-                {
-                    insertStatus = command.ExecuteNonQuery();
-                } catch (NpgsqlException pgE)
-                {
-                    insertStatus = 0;
+                    };
+                    conn.Open();
+                    try
+                    {
+                        insertStatus = command.ExecuteNonQuery();
+                    }
+                    catch (NpgsqlException pgE)
+                    {
+                        insertStatus = 0;
+                    }
+                    conn.Close();
                 }
-                conn.Close();
 
                 // INSERT returns the total number of rows affected. We expect this value to be "1" for this operation to be considered successful.
-                if(insertStatus == 1)
+                if (insertStatus == 1)
                 {
                     sStatus.IsSuccessfulOperation = true;
                     sStatus.StatusMessage = "Success: Form was completed and saved.";
