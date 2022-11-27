@@ -4,13 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:ext="clr-namespace:ClientApp.ViewModels"
 			 xmlns:app="clr-namespace:ClientApp"
              x:Class="ClientApp.Views.PhotosViewingView">
+
+	<UserControl.Resources>
+		<ext:BitmapAssetValueConverter x:Key="variableImage"/>
+	</UserControl.Resources>
+	
+	
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter }">
 		<rxui:RoutedViewHost.DefaultContent>
 			<ScrollViewer VerticalScrollBarVisibility="Auto">
 				<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Photos" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+					<Image Width="1000"
+					Height="1000"
+					Source="{Binding ImaPath, Converter={StaticResource variableImage}}}">
+					</Image>
 					<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoBackCommand}"/>
 				</Grid>
 				</ScrollViewer>
