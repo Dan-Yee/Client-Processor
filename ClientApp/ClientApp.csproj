@@ -11,6 +11,7 @@
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
     <None Remove="Protos\client.proto" />
+    <None Remove="Protos\CompletedForm.proto" />
     <None Remove="Protos\employee.proto" />
     <None Remove="Protos\FileTransfer.proto" />
     <None Remove="Protos\FileUpload.proto" />
@@ -46,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\CompletedForm.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\FileTransfer.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\FileUpload.proto" GrpcServices="Client" />

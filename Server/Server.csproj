@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Protos\client.proto" />
+    <None Remove="Protos\CompletedForm.proto" />
     <None Remove="Protos\employee.proto" />
     <None Remove="Protos\FileTransfer.proto" />
     <None Remove="Protos\FileUpload.proto" />
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\CompletedForm.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\FileTransfer.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\FileUpload.proto" GrpcServices="Server" />
