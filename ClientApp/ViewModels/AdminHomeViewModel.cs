@@ -8,29 +8,35 @@ using System.ComponentModel;
 using Avalonia.Controls.Selection;
 using AvaloniaEdit.Editing;
 using ClientApp.Models;
+using MessageBox.Avalonia.Enums;
 
 namespace ClientApp.ViewModels
 {
-    public class AdminHomeViewModel : ReactiveObject,IRoutableViewModel
+    public class AdminHomeViewModel : ReactiveObject, IRoutableViewModel
     {
         public IScreen HostScreen { get; }
+
+        public static EmployeeModel SelectedEmployee {get;set;}
 
         public SelectionModel<EmployeeModel> Selection { get; }
 
         public string UrlPathSegment { get; } = "AdminHome";
         public RoutingState Router2 { get; } = new RoutingState();
+        public RoutingState ViewEmployeeRouter{ get; } = new RoutingState();
 
         public RoutingState RouterHomePageProcedure { get; } = new RoutingState();
 
         public RoutingState RouterToImport { get; } = new RoutingState();
 
         public RoutingState RouterRegister { get; } = new RoutingState();
+        
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToImport { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToRegister { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToEmployeeInformation{ get; }
 
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
@@ -80,6 +86,9 @@ namespace ClientApp.ViewModels
 
             GoToRegister = ReactiveCommand.CreateFromObservable(
              () => RouterRegister.Navigate.Execute(new RegisterEmployeeViewModel()));
+
+            GoToEmployeeInformation = ReactiveCommand.CreateFromObservable(
+             () => ViewEmployeeRouter.Navigate.Execute(new EmployeeInformationViewModel()));
         }
 
         /*
@@ -148,11 +157,27 @@ namespace ClientApp.ViewModels
         /// <summary>
         /// Deletes employee from database
         /// </summary>
-        public void DeleteEmployeeCommand()
+        public async void DeleteEmployeeCommand()
         {
-            
+
             //Want yes no dialog here
+            ButtonResult result = await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Confirm deletion", ButtonEnum.YesNo).Show();
+            if(result == ButtonResult.Yes)
+            {
+
+                
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "To delete").Show();
+            }
+            else
+            {
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Clicked no").Show();
+            }
         }
 
+        public void GoToReadProcedurePageCommand()
+        {
+            SelectedEmployee=Selection.SelectedItem;
+            GoToEmployeeInformation.Execute();
+        }
     }
 }

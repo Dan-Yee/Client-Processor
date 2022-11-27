@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.EmployeeInformationView">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+		<rxui:RoutedViewHost.DefaultContent>
+			<StackPanel Margin="0 20 0 0">
+				<Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto, Auto, Auto, Auto,Auto">
+					<TextBlock Grid.Row="0" Grid.Column="1" Text="First Name" Margin="0 10 0 0" />
+					<TextBox Grid.Row="0" Grid.Column="2" Text="{Binding EmployeeFirstNameInfo}" Margin="100 0 0 0" Width="200"/>
+
+					<TextBlock Grid.Row="1" Grid.Column="1" Text="Last Name" Margin="0 10 0 0" />
+					<TextBox Grid.Row="1" Grid.Column="2" Text="{Binding EmployeeLastNameInfo}" Margin="100 0 0 0" Width="200"/>
+
+					<TextBlock Grid.Row="2" Grid.Column="1" Text="User Name" Margin="0 10 0 0" />
+					<TextBox Grid.Row="2" Grid.Column="2" Text="{Binding EmployeeUserNameInfo}" Margin="100 0 0 0" Width="200"/>
+
+					<TextBlock Grid.Row="3" Grid.Column="1" Text="Administrative Priviliages" Margin="0 10 0 0" />
+					<TextBox Grid.Row="3" Grid.Column="2" Text="{Binding EmployeeIsAdminInfo}" Margin="100 0 0 0" Width="200"/>
+
+					<Button Content="Home" Grid.Row="4" Grid.Column="2" Command="{Binding goToHomePageCommand}"/>
+				</Grid>
+			</StackPanel>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:AdminHomeViewLocator />
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

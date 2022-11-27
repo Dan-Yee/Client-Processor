@@ -14,6 +14,7 @@ namespace ClientApp.ViewModels
 
         InitializeProcedureView _initializeProcedureView;
         int _clientID;
+        public static int CurrentProcedureID { get; set; }
 
         public string _ProcedureName { get; set; }
         public string _ProcedureDescription { get; set; }
@@ -36,8 +37,8 @@ namespace ClientApp.ViewModels
                 ProcedureName = _ProcedureName,
                 ProcedureNotes = _ProcedureDescription
             };
-            RPCProcedure.addProcedure(i);
-
+            ProcedureID pid = RPCProcedure.addProcedure(i);
+            CurrentProcedureID = pid.PID;
             new MakeProcedureView(_clientID).Show();
             _initializeProcedureView.Close();
         }
