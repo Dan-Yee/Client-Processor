@@ -15,6 +15,8 @@
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Make Procedure" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
 		<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoToFormMenu}"/>
 		<Button Content="Photos" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Command="{Binding GoToPhotosMenu}"/>
+		<Button Content="Import Before Picture" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Command="{Binding Before}"/>
+		<Button Content="Import After Picture" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Command="{Binding After}"/>
 	</Grid>
 	</ScrollViewer>
 
