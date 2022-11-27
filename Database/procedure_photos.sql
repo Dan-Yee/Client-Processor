@@ -6,5 +6,7 @@ CREATE TABLE Procedure_photos (
     photo_bytes bytea,
     CONSTRAINT procedure_ID
       FOREIGN KEY(procedure_ID) 
-      REFERENCES client_procedures(procedure_ID)
+      REFERENCES client_procedures(procedure_ID),
+    CONSTRAINT PrimaryKey 
+	PRIMARY KEY (procedure_id, photo_name)
 );
