@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer.Protos";
+import "Protos/shared.proto";
+
+service CompletedForm {
+  rpc CompletedFormNames(CompletedFormsRequest) returns (CompletedFormsResponse){}
+  rpc CompletedFormDownload (SelectedFormRequest) returns (stream SelectedFormResponse){}
+  rpc DeleteForm(SelectedFormRequest) returns (ServiceStatus){}
+}
+
+
+message SelectedFormRequest{
+	int32 FormID = 1;
+}
+
+message SelectedFormResponse{
+	oneof response{
+		bytes FormBytes = 1;
+		ServiceStatus status = 2;
+	}
+}
+
+/////////////////FormNames////////////////////
+
+message CompletedFormsRequest{
+    int32 Procedure_ID = 1;
+}
+
+message CompletedFormsResponse{
+	repeated FormInfo FormInfo = 1;
+}
+
+message FormInfo{
+    int32 FormID = 1;
+	string FormName = 2;
+	string FormExtension = 3;
+}

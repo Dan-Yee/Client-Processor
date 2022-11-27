@@ -5,6 +5,7 @@ import "Protos/shared.proto";
 
 service PhotoDownload {
   rpc PhotosDownload(PhotosRequest) returns (stream PhotoResponse){}
+  rpc PhotoDelete(DeleteRequest) returns (ServiceStatus){}
 }
 
 
@@ -24,5 +25,10 @@ message PhotoResponse{
 message PhotoInfo{
     string PhotoName = 1;
     string photoExtension = 2;
+}
+
+message DeleteRequest{
+    string PhotoName = 1;
+    int32 PID = 2;
 }
 

@@ -8,7 +8,6 @@ service FileUpload {
   rpc FileUpload(stream UploadRequest) returns (ServiceStatus) {}
 }
 
-
 message UploadRequest{
     oneof UploadMessage{
         FileMetaData FileMeta = 1;
@@ -16,14 +15,12 @@ message UploadRequest{
     }
 }
 
-
 message FileMetaData{
     oneof FileMeta{
         PhotoMeta PhotoMeta = 1;
         FormTemplateMeta FormTemplateMeta = 2;
      }
 }
-
 
 message PhotoMeta{
     int32 ProcedureID = 1;
@@ -36,5 +33,6 @@ message FormTemplateMeta{
     string FormName = 1;
     string FormExtension = 2;
 }
+
 
 

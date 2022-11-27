@@ -1,12 +1,14 @@
 syntax = "proto3";
 
 option csharp_namespace = "GrpcServer.Protos";
-
+import "Protos/shared.proto";
 
 
 
 service FormTemplateNames {
   rpc GetTemplateNames(TemplatesRequest) returns (TemplatesResponse) {}
+  rpc GetForm(FormRequest) returns (stream FormResponse) {}
+  rpc DeleteTemplate(FormRequest) returns (ServiceStatus) {}
 }
 
 message TemplatesResponse{
@@ -18,4 +20,16 @@ message TemplateName{
 	string FormTemplateExtension = 2;
 }
 
+
 message TemplatesRequest{}
+
+message FormRequest{
+	string TemplateName =1;
+}
+
+message FormResponse{
+	oneof response{
+		ServiceStatus status = 1;
+		bytes FormBytes = 2;
+	}
+}
