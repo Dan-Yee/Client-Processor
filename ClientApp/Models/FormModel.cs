@@ -10,7 +10,7 @@ namespace ClientApp.Models
     {
         public string FileName { get; }
         public string FileExtension { get; }
-        public string FileBytes { get; }
+        public byte [] FileBytes { get; }
         
 
 
@@ -19,7 +19,7 @@ namespace ClientApp.Models
 
         }
 
-        public FormModel(string fn,string fe, string fb)
+        public FormModel(string fn,string fe, byte[] fb)
         {
             FileName = fn;
             FileExtension = fe;
