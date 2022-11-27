@@ -38,7 +38,18 @@ namespace ClientApp.ViewModels
         {
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
-            PhotosViewingViewModel.DownloadPhoto(5,false);
+            CallToDownloadPhotos();
+            
+        }
+
+        public async void CallToDownloadPhotos()
+        {
+            await PhotosViewingViewModel.DownloadPhoto(5, false);
+            if(Globals.GBytes != null && Globals.GBytes.Length > 0)
+            {
+                //loads the byte array into the image function
+                byteArrayToImage(Globals.GBytes);
+            }
         }
 
         /// <summary>
@@ -122,9 +133,8 @@ namespace ClientApp.ViewModels
             //create the last file
             photos.Add(new Photo(name, extension, ByteList.ToArray()));
             Globals.GBytes = ByteList.ToArray();
-            var phot = new PhotosViewingViewModel();
-            //loads the byte array into the image function
-            phot.byteArrayToImage(Globals.GBytes);
+            
+            
             return photos;
             //return new ServiceStatus { IsSuccessfulOperation = true, StatusMessage ="Files Downloaded!!!"};
         }
