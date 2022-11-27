@@ -6,7 +6,7 @@ using Npgsql;
 using Server;
 //using Server;
 
-namespace GrpcServer.Services
+namespace Server.Services
 {
     public class UploadFileService : FileUpload.FileUploadBase
     {

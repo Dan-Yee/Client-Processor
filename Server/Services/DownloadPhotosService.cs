@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 //using GrpcServer.classes;
 
-namespace GrpcServer.Services
+namespace Server.Services
 {
     public class DownloadPhotosService : PhotoDownload.PhotoDownloadBase
     {
@@ -71,7 +71,7 @@ namespace GrpcServer.Services
                         await responseStream.WriteAsync(new PhotoResponse { PhotoBytes = ByteString.CopyFrom(buffer) });
 
 
-                        Console.WriteLine($"DATA SENT!!!!!!!!: {n} bytes sent");
+                        //Console.WriteLine($"DATA SENT!!!!!!!!: {n} bytes sent");
 
                         if (n == 0)
                         {
@@ -153,5 +153,41 @@ namespace GrpcServer.Services
 
             return photos;
         }
+
+
+        /// <summary>
+        /// Method that deletes a photo from the database based on a made request
+        /// </summary>
+        /// <param name="request"></param> contains the info needed to perform the deletion
+        /// <param name="context"></param> 
+        /// <returns></returns>
+        public override Task<ServiceStatus> PhotoDelete(DeleteRequest request, ServerCallContext context)
+        {
+            using (NpgsqlConnection conn = GetConnection())
+            {
+
+                conn.Open();
+                string SQL = $"DELETE FROM procedure_photos WHERE procedure_id = {request.PID} AND photo_name = \'{request.PhotoName}\'";
+                NpgsqlCommand cmd = new NpgsqlCommand(SQL, conn);
+
+                int n;
+                try
+                {
+                    n = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                }
+                catch (PostgresException pgE)
+                {
+                    conn.Close();
+                    return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
+                }
+            }
+
+            return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = true, StatusMessage = "photo deleted" });
+        }
+
+
+
     }
 }
