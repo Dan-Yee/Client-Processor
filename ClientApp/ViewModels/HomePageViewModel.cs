@@ -94,6 +94,10 @@ namespace ClientApp.ViewModels
 
         public static string ClientName{ get; set; }
 
+        public static int Client_ID { get; set; }
+
+        public List<int> ListOfClientIDs { get; set; } = new();
+
         /// <summary>
         /// Constructor for the viewmodel. initializes the list of employees
         /// </summary>
@@ -140,6 +144,7 @@ namespace ClientApp.ViewModels
             if(SearchNameTextInput!=null && SearchNameTextInput.Length > 0)
             {
                 _items.Clear();
+                ListOfClientIDs.Clear();
                 var channel = GrpcChannel.ForAddress("https://localhost:7123");
                 var client = new Client.ClientClient(channel);
                 AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
@@ -147,6 +152,7 @@ namespace ClientApp.ViewModels
                 {
                     var c = info.Clients[0];
                     _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
+                    ListOfClientIDs.Add(c.ClientId);
                 }
             }
         }
@@ -180,6 +186,7 @@ namespace ClientApp.ViewModels
         {
             // ... handle selection changed
             SelectButtonEnabled = true;
+            Client_ID = ListOfClientIDs[Selection.SelectedIndex];
         }
 
         /// <summary>

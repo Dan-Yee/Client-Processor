@@ -29,7 +29,7 @@ namespace ClientApp.ViewModels
         public EmployeeInformationViewModel()
         {
             GoToHomePage = ReactiveCommand.CreateFromObservable(
-             () => Router.Navigate.Execute(new HomePageViewModel()));
+             () => Router.Navigate.Execute(new AdminHomeViewModel()));
             //AdminHomeViewModel.SelectedEmployee
             EmployeeFirstNameInfo = AdminHomeViewModel.SelectedEmployee.FirstName;
             EmployeeLastNameInfo = AdminHomeViewModel.SelectedEmployee.LastName;
@@ -44,7 +44,7 @@ namespace ClientApp.ViewModels
             }
         }
 
-        public void goToHomePageCommand()
+        public void GoToHomePageCommand()
         {
             GoToHomePage.Execute();
         }

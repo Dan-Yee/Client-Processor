@@ -24,6 +24,8 @@
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
 		<rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToReadProcedureRouter}">
+				<rxui:RoutedViewHost.DefaultContent>
 	<Grid HorizontalAlignment="Center" >
 		<Grid.RowDefinitions>
 			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
@@ -56,6 +58,13 @@
 		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
 		<Button Content="Delete" Command="{Binding DeleteProcedureCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
 	</Grid>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<!-- See ViewLocator.cs section below -->
+					<app:ProcedureReadViewLocator />
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+				
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
 			<!-- See ViewLocator.cs section below -->

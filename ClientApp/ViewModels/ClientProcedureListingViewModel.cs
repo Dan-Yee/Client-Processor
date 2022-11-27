@@ -31,15 +31,20 @@ namespace ClientApp.ViewModels
         //ID of the client selected
         private int _clientId;
 
+        public static int Procedure_Id { get; set; }
+        public static ProcedureModel SelectedProcedure { get; set; }
+
         public IScreen HostScreen { get; }
 
         public string UrlPathSegment { get; } = "ClientProcedureListing";
 
         public RoutingState Router { get; } = new RoutingState();
         public RoutingState Router2 { get; } = new RoutingState();
+        public RoutingState GoToReadProcedureRouter { get; } = new RoutingState();
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> MakeProcedurePage { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToReadProcedureView { get; }
 
         public RoutingState Router0 { get; } = new RoutingState();
         public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
@@ -89,6 +94,8 @@ namespace ClientApp.ViewModels
 
             GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
               () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(c_ID)));
+            GoToReadProcedureView = ReactiveCommand.CreateFromObservable(
+              () => GoToReadProcedureRouter.Navigate.Execute(new ProcedureReadViewModel()));
             //MakeProcedurePage = ReactiveCommand.CreateFromObservable(
             //() => Router2.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
 
@@ -111,6 +118,13 @@ namespace ClientApp.ViewModels
             new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureID() { PID = ListOfProcedureIDs[Selection.SelectedIndex] });
             MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: "+ ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
             _displayedProcedures.RemoveAt(Selection.SelectedIndex);
+        }
+
+        public void GoToReadProcedurePageCommand()
+        {
+            Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
+            SelectedProcedure = _procedures[Selection.SelectedIndex];
+            GoToReadProcedureView.Execute();
         }
 
         /// <summary>
