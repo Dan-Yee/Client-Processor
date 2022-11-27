@@ -24,6 +24,8 @@ namespace ClientApp.ViewModels
         //Id of the client
         private int _clientId;
 
+        public static List<string> ListOfFilledOutFormNames { get; set; } = new();
+
 
         private ObservableCollection<FormModel> _currentlySelectedForms = new();
         public ObservableCollection<FormModel> CurrentlySelectedForms
@@ -104,7 +106,8 @@ namespace ClientApp.ViewModels
         public void GoToFillOutForm()
         {
             _formMenuView.Close();
-            new FormFillingView(_clientId, CurrentFormSelection.SelectedItem.FileName).Show();
+            //new FormFillingView(_clientId, CurrentFormSelection.SelectedItem.FileName).Show();
+            new FormFillingView(_clientId, FormTemplateSelection.SelectedItem.FileName).Show();
         }
     }
 }

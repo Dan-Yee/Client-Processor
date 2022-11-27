@@ -2,6 +2,7 @@
 using AvaloniaEdit.Editing;
 using ClientApp.Models;
 using ClientApp.Views;
+using DynamicData;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
@@ -13,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Procedure = Server.Procedure;
 
@@ -38,8 +40,11 @@ namespace ClientApp.ViewModels
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> MakeProcedurePage { get; }
-        
-        
+
+        public RoutingState Router0 { get; } = new RoutingState();
+        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
+
+        public List<int> ListOfProcedureIDs { get; set; } = new();
 
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
@@ -65,6 +70,7 @@ namespace ClientApp.ViewModels
             {
                 //Add procedures to the list
                 _procedures.Add(new ProcedureModel(procedure.ProcedureID, procedure.ProcedureName, procedure.ProcedureDatetime, procedure.ClientID, procedure.EmployeeID, procedure.ProcedureNotes));
+                ListOfProcedureIDs.Add(procedure.ProcedureID);
                 _displayedProcedures.Add(procedure.ProcedureDatetime.Split(" ")[0] + " - " + procedure.ProcedureName);
             }
             //Makes the list of procedures publicly available
@@ -81,9 +87,10 @@ namespace ClientApp.ViewModels
             GoHome = ReactiveCommand.CreateFromObservable(
              () => Router.Navigate.Execute(new HomePageViewModel()));
 
-            
+            GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
+              () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(c_ID)));
             //MakeProcedurePage = ReactiveCommand.CreateFromObservable(
-             //() => Router2.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
+            //() => Router2.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
 
 
         }
@@ -97,6 +104,13 @@ namespace ClientApp.ViewModels
             //= ReactiveCommand.CreateFromObservable(
              //() => Router.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
 
+        }
+
+        public void DeleteProcedureCommand()
+        {
+            new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureID() { PID = ListOfProcedureIDs[Selection.SelectedIndex] });
+            MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: "+ ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
+            _displayedProcedures.RemoveAt(Selection.SelectedIndex);
         }
 
         /// <summary>

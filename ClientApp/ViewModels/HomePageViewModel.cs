@@ -16,6 +16,8 @@ using Avalonia.Controls.Selection;
 using System.Reactive;
 using Microsoft.AspNetCore.Components.Routing;
 using System.ComponentModel;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 
 namespace ClientApp.ViewModels
 {
@@ -83,11 +85,14 @@ namespace ClientApp.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> GoGoToAdminHomeCommand { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToClientInformationCommand { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> BackToLogin { get; }
        
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
+
+        public static string ClientName{ get; set; }
 
         /// <summary>
         /// Constructor for the viewmodel. initializes the list of employees
@@ -96,6 +101,7 @@ namespace ClientApp.ViewModels
         {
             
             // localhost for testing purposes
+            /*
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
             var client = new Client.ClientClient(channel);
 
@@ -106,7 +112,7 @@ namespace ClientApp.ViewModels
                 _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
             }
             Items = _items;
-
+            */
             //enables employee selection
             Selection = new SelectionModel<Customer>();
             Selection.SelectionChanged += SelectionChanged;
@@ -122,11 +128,28 @@ namespace ClientApp.ViewModels
               () => Router2.Navigate.Execute(new AdminHomeViewModel()));
             GoToLogin = ReactiveCommand.CreateFromObservable(
              () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
+            GoToClientInformationCommand = ReactiveCommand.CreateFromObservable(
+              () => Router3.Navigate.Execute(new ClientInformationViewModel()));
 
-            
         }
 
         /* Event Handlers Below */
+        public string SearchNameTextInput { get; set; }
+        public void SearchForClientCommand()
+        {
+            if(SearchNameTextInput!=null && SearchNameTextInput.Length > 0)
+            {
+                _items.Clear();
+                var channel = GrpcChannel.ForAddress("https://localhost:7123");
+                var client = new Client.ClientClient(channel);
+                AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
+                if (info.Clients.Count > 0)
+                {
+                    var c = info.Clients[0];
+                    _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
+                }
+            }
+        }
 
         /// <summary>
         /// On click event to creating customer button
@@ -145,6 +168,12 @@ namespace ClientApp.ViewModels
         {
             GoGoToAdminHomeCommand.Execute();
             
+        }
+
+        public void GoGoToClientInformationCommand()
+        {
+            ClientName = Selection.SelectedItem.FirstName;
+            GoToClientInformationCommand.Execute();
         }
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
