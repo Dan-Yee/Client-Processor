@@ -142,7 +142,7 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Clients WHERE CONCAT(first_name, ' ', last_name) LIKE $1";
+                query = "SELECT * FROM Clients WHERE LOWER(CONCAT(first_name, ' ', last_name)) LIKE LOWER($1);";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -165,6 +165,7 @@ namespace Server.Services
                             Email = reader["email_address"].ToString()
                         };
                         clients.Clients.Add(current);
+                        Console.WriteLine(current.FirstName);
                     }
                 }
                 reader.Close();
