@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.ProcedureUpdateView">
+
+		<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToProcedureListing}">
+			<rxui:RoutedViewHost.DefaultContent>
+					<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*">
+						<TextBlock Grid.Row="0" Grid.Column="1" Text="Procedure Type" Margin="0 20 0 0"/>
+						<TextBox Grid.Row="1" Grid.Column="1" Margin="0 10 0 0" Text="{Binding _ProcedureName}"/>
+						<TextBlock Grid.Row="2" Grid.Column="1" Text="Comments/Notes" Margin="0 20 0 0"/>
+						<TextBox Grid.Row="3" Grid.Column="1" Margin="0 10 0 0" Text="{Binding _ProcedureDescription}" TextWrapping="Wrap" Height="100"/>
+						<Button Grid.Row="4" Grid.Column="1" Content="Update" Command="{Binding UpdateProcedureCommand}" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+						<Button Grid.Row="5" Grid.Column="1" Content="Back" Command="{Binding BackCommand}" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+					</Grid>
+		
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<app:CreateProcedureListingLocator/>
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>
