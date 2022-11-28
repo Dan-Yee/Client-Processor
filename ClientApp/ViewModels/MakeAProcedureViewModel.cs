@@ -64,9 +64,12 @@ namespace ClientApp.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFormMenu { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToProcedureListing { get; }
 
+        public static int ProcedureID { get; set; }
+
         public MakeAProcedureViewModel()
         {
-            
+            ProcedureID = InitializeProcedureViewModel.CurrentProcedureID;
+
             NavigateToFormMenu = ReactiveCommand.CreateFromObservable(
                 () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
             NavigateToProcedureListing = ReactiveCommand.CreateFromObservable(
@@ -79,8 +82,8 @@ namespace ClientApp.ViewModels
                 FormTemplateList.Add(new FormModel(template.FormTemplateName, null, null));
 
             }
-        }
 
+        }
         public static TemplatesResponse GetTemplateNames()
         {
             TemplatesResponse templates = new TemplatesResponse();
@@ -213,14 +216,13 @@ namespace ClientApp.ViewModels
                 ms.Close();
             }
         }
+
+
         /// <summary>
         /// open file dialog to grab the before pic
         /// </summary>
         public async void Before()
         {
-            var ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
-
-
             var wind = new Window();
             var ofd = new OpenFileDialog();
             // ofd.InitialDirectory = @"C:\Users";
@@ -248,7 +250,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public async void After()
         {
-            var ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
+            
             var wind = new Window();
             var ofd = new OpenFileDialog();
             // ofd.InitialDirectory = @"C:\Users";
