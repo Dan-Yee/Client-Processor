@@ -4,7 +4,6 @@ using Npgsql;
 using iText.Kernel.Pdf;
 using iText.Forms;
 using iText.Forms.Fields;
-using Microsoft.AspNetCore.Connections.Features;
 
 namespace Server.Services
 {
