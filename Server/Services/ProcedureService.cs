@@ -365,12 +365,12 @@ namespace Server.Services
                     command = new NpgsqlCommand(@query, conn)
                     {
                         Parameters =
-                    {
-                        new() {Value = info.ProcedureID},
-                        new() {Value = info.Form.FName.FormName_},
-                        new() {Value = fileToStoreExt},
-                        new() {Value = fileToStore},
-                    }
+                        {
+                            new() {Value = info.ProcedureID},
+                            new() {Value = info.Form.FName.FormName_},
+                            new() {Value = fileToStoreExt},
+                            new() {Value = fileToStore},
+                        }
                     };
                     conn.Open();
                     try
