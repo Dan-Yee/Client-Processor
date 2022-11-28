@@ -57,8 +57,17 @@ namespace ClientApp.ViewModels
         {
             // ... handle selection changed
             //Automatically uploads procedure id
-            Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
-            SelectedProcedure = _procedures[Selection.SelectedIndex];
+            try
+            {
+                Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
+                SelectedProcedure = _procedures[Selection.SelectedIndex];
+            }
+            catch (Exception exception)
+            {
+                Procedure_Id = ListOfProcedureIDs[0];
+                SelectedProcedure = _procedures[0];
+            }
+            
         }
 
 

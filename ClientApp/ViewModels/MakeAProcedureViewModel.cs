@@ -68,8 +68,7 @@ namespace ClientApp.ViewModels
 
         public MakeAProcedureViewModel()
         {
-            ProcedureID = InitializeProcedureViewModel.CurrentProcedureID;
-
+            ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
             NavigateToFormMenu = ReactiveCommand.CreateFromObservable(
                 () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
             NavigateToProcedureListing = ReactiveCommand.CreateFromObservable(
