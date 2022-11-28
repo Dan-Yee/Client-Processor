@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Selection;
 using ClientApp.Models;
-using ClientApp.Views;
 using Google.Protobuf;
 using Grpc.Net.Client;
 using GrpcServer.Protos;
@@ -12,18 +11,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {
-    public class MakeProcedureViewModel : ReactiveObject, IRoutableViewModel
+    public class MakeAProcedureViewModel : ReactiveObject, IRoutableViewModel
     {
-        //View that this viewmodel is attached to
-        private MakeProcedureView _makeProcedureView;
-        //Id of the client
-        private int _clientId;
+        public string? UrlPathSegment => throw new NotImplementedException();
 
+        public IScreen HostScreen { get; }
 
         private ObservableCollection<FormModel> _formTemplateList = new();
         public ObservableCollection<FormModel> FormTemplateList
@@ -60,20 +58,18 @@ namespace ClientApp.ViewModels
             }
         }
 
-        public string? UrlPathSegment => throw new NotImplementedException();
+        public RoutingState RouterToFormMenu { get; } = new RoutingState();
+        public RoutingState RouterToProcedureListing { get; } = new RoutingState();
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFormMenu { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToProcedureListing { get; }
 
-        public IScreen HostScreen => throw new NotImplementedException();
-
-        /// <summary>
-        /// Constructor of the view model. Initializes the view and the client id
-        /// </summary>
-        /// <param name="mpv"></param>
-        /// <param name="c_ID"></param>
-        public MakeProcedureViewModel(MakeProcedureView mpv, int c_ID)
+        public MakeAProcedureViewModel()
         {
-            _makeProcedureView = mpv;
-            _clientId = c_ID;
             
+            NavigateToFormMenu = ReactiveCommand.CreateFromObservable(
+                () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
+            NavigateToProcedureListing = ReactiveCommand.CreateFromObservable(
+                () => RouterToProcedureListing.Navigate.Execute(new ClientProcedureListingViewModel()));
             TemplatesResponse templates = GetTemplateNames();
 
 
@@ -97,22 +93,17 @@ namespace ClientApp.ViewModels
 
         public void GoToFormMenu()
         {
-            new FormMenuView(_clientId).Show();
-            _makeProcedureView.Close();
+            NavigateToFormMenu.Execute();
+        }
+        public void BackToListingCommand()
+        {
+            NavigateToProcedureListing.Execute();
         }
 
         public void SelectFormTemplate()
         {
             _currentlySelectedForms.Add(FormTemplateSelection.SelectedItem);
         }
-
-        public void GoToFillOutForm()
-        {
-            new FormFillingView(_clientId, CurrentFormSelection.SelectedItem.FileName).Show();
-            //_makeProcedureView.Close();
-        }
-
-
 
         //=============================CREATE.MESSAGE_FOR.PHOTOS===============================
 
@@ -237,7 +228,7 @@ namespace ClientApp.ViewModels
             {
                 //need to update PID to match the person to uplaod photos
                 // 0 is a place holder until it is tied to the PID
-               await UploadPhoto(y, true, 5);
+                await UploadPhoto(y, true, 5);
                 /*
                 foreach (var path in y)
                 {
@@ -277,11 +268,5 @@ namespace ClientApp.ViewModels
                 //Console.WriteLine(y[0]);
             }
         }
-
-
-
-
-
-
     }
 }

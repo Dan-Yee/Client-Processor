@@ -9,20 +9,12 @@ using System.Threading.Tasks;
 
 namespace ClientApp
 {
-    public class MakeProcedureViewLocator : ReactiveUI.IViewLocator
+    public class MakeAProcedureViewLocator : ReactiveUI.IViewLocator
     {
-        /*
         IViewFor? IViewLocator.ResolveView<T>(T viewModel, string? contract) => viewModel switch
         {
-            MakeProcedureViewModel context => new MakeProcedureView { DataContext = context },
+            MakeAProcedureViewModel context => new MakeAProcedureView { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
-
-
         };
-        */
-        public IViewFor? ResolveView<T>(T viewModel, string? contract = null)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

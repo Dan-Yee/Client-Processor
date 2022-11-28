@@ -41,13 +41,15 @@ namespace ClientApp.ViewModels
         public RoutingState Router { get; } = new RoutingState();
         public RoutingState Router2 { get; } = new RoutingState();
         public RoutingState GoToReadProcedureRouter { get; } = new RoutingState();
+        public RoutingState GoToInitializeProcedureRouter { get; } = new RoutingState();
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> MakeProcedurePage { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> GoToReadProcedureView { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToInitializeProcedure { get; }
 
         public RoutingState Router0 { get; } = new RoutingState();
-        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
+        
 
         public List<int> ListOfProcedureIDs { get; set; } = new();
 
@@ -57,10 +59,48 @@ namespace ClientApp.ViewModels
             // ... handle selection changed
         }
 
+
+        public ClientProcedureListingViewModel()
+        {
+            // localhost for testing purposes
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");
+            //var client = new Client.ClientClient(channel);
+            var client = new Procedure.ProcedureClient(channel);
+
+            //Getting the clients from the database
+            AllProcedures info = client.getProcedures(new ClientID { CID = HomePageViewModel.Client_ID });
+
+            foreach (ProcedureInfo procedure in info.Procedures)
+            {
+                //Add procedures to the list
+                _procedures.Add(new ProcedureModel(procedure.ProcedureID, procedure.ProcedureName, procedure.ProcedureDatetime, procedure.ClientID, procedure.EmployeeID, procedure.ProcedureNotes));
+                ListOfProcedureIDs.Add(procedure.ProcedureID);
+                _displayedProcedures.Add(procedure.ProcedureDatetime.Split(" ")[0] + " - " + procedure.ProcedureName);
+            }
+            //Makes the list of procedures publicly available
+            Procedures = _procedures;
+            DisplayedProcedures = _displayedProcedures;
+
+            //Selection = new SelectionModel<ProcedureModel>();
+            Selection = new SelectionModel<string>();
+            Selection.SelectionChanged += SelectionChanged;
+
+            //IsAdmin = false;
+            _clientId = HomePageViewModel.Client_ID;
+
+            GoHome = ReactiveCommand.CreateFromObservable(
+             () => Router.Navigate.Execute(new HomePageViewModel()));
+            GoToReadProcedureView = ReactiveCommand.CreateFromObservable(
+              () => GoToReadProcedureRouter.Navigate.Execute(new ProcedureReadViewModel()));
+            NavigateToInitializeProcedure= ReactiveCommand.CreateFromObservable(
+              () => GoToInitializeProcedureRouter.Navigate.Execute(new InitializeProcedureViewModel()));
+        }
+
         /// <summary>
         /// Constructor for the viewmodel. Initializes the procedure list and subscribes the list to being able to be selected
         /// </summary>
         /// <param name="c_ID"></param>
+        /*
         public ClientProcedureListingViewModel(int c_ID)
         {
             // localhost for testing purposes
@@ -91,26 +131,18 @@ namespace ClientApp.ViewModels
 
             GoHome = ReactiveCommand.CreateFromObservable(
              () => Router.Navigate.Execute(new HomePageViewModel()));
-
-            GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
-              () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(c_ID)));
             GoToReadProcedureView = ReactiveCommand.CreateFromObservable(
               () => GoToReadProcedureRouter.Navigate.Execute(new ProcedureReadViewModel()));
+            NavigateToMakeProcedure = ReactiveCommand.CreateFromObservable(
+              () => GoToMakeProcedureRouter.Navigate.Execute(new MakeProcedureViewModel()));
             //MakeProcedurePage = ReactiveCommand.CreateFromObservable(
             //() => Router2.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
-
-
         }
-
+        */
         public void GoToMakeProcedurePageCommand()
         {
-            //new MakeProcedureView(_clientId).Show();
-            new InitializeProcedureView(_clientId).Show();
-            //Locator.CurrentMutable.Register(() => new MakeProcedureView(), typeof(IViewFor<MakeProcedureViewModel>));
-            //MakeProcedurePage.Execute();
-            //= ReactiveCommand.CreateFromObservable(
-            //() => Router.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
-
+            //new InitializeProcedureView(_clientId).Show();
+            NavigateToInitializeProcedure.Execute();
         }
 
         public void DeleteProcedureCommand()

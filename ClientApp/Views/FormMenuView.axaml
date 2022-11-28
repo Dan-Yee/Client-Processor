@@ -1,25 +1,29 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 xmlns:vm="using:ClientApp.ViewModels"
-			 xmlns:views="clr-namespace:ClientApp.Views"
-			 x:DataType="vm:FormMenuViewModel"
-			 Icon="/Assets/avalonia-logo.ico"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
              x:Class="ClientApp.Views.FormMenuView">
-
-	<Window.Styles>
+	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="Background" Value="#161616"/>
 		</Style>
-	</Window.Styles>
+	</UserControl.Styles>
 
+
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFillOutForms}">
+		<rxui:RoutedViewHost.DefaultContent>
+	
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToMakeProcedure}">
+		<rxui:RoutedViewHost.DefaultContent>
+	
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*"  ShowGridLines="False">
 			<TextBlock Text="Form" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
-			<TextBox Watermark="Search..." Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"></TextBox>
-			<Button Content="Search" Grid.Row="1" Grid.Column="2" Margin="10 0 0 0"/>
+			
+			
 			<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
 				<Label VerticalAlignment="Center" HorizontalAlignment="Center">Find Form</Label>
 				<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
@@ -30,15 +34,30 @@
 			<Button Content="Select" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0" Command="{Binding GoToFillOutForm}"/>
 
 			<StackPanel Grid.Row="4" Grid.Column="1" Margin="0 20 0 0">
-				<Label VerticalAlignment="Center" HorizontalAlignment="Center">Current Selection</Label>
+				<Label VerticalAlignment="Center" HorizontalAlignment="Center">Filled out forms</Label>
 				<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
 					<!--
 					<ListBox Items="{Binding CurrentlySelectedForms}" Selection="{Binding CurrentFormSelection}"></ListBox>
 					-->
-					<ListBox Items="{Binding ListOfFilledOutFormNames}" Selection="{Binding CurrentFormSelection}"></ListBox>
+					<ListBox Items="{Binding ListOfFilledOutFormNames}"></ListBox>
 				</ScrollViewer>
 			</StackPanel>
-			<Button Content="Select" Grid.Row="4" Grid.Column="2" Margin="10 0 0 0" Command="{Binding GoToFillOutForm}"/>
+			<Button Content="Back" Grid.Row="4" Grid.Column="2" Margin="10 0 0 0" Command="{Binding GoToMakeProcedureCommand}"/>
 		</Grid>
 	</ScrollViewer>
-</Window>
+
+	
+		</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:MakeAProcedureViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+
+	
+	</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:FormFillingViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+	
+</UserControl>

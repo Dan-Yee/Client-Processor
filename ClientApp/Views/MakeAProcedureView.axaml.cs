@@ -6,9 +6,9 @@ using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class FormMenuView : ReactiveUserControl<FormMenuViewModel>
+    public partial class MakeAProcedureView : ReactiveUserControl<MakeAProcedureViewModel>
     {
-        public FormMenuView()
+        public MakeAProcedureView()
         {
             this.WhenActivated(disposables => { /* Handle interactions etc. */ });
             AvaloniaXamlLoader.Load(this);

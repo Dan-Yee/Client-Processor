@@ -126,7 +126,7 @@ namespace ClientApp.ViewModels
 
 
             GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
-                () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(Selection.SelectedItem.Client_ID)));
+                () => Router0.Navigate.Execute(new ClientProcedureListingViewModel()));
             GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
                () => Router1.Navigate.Execute(new CreateCustomerViewModel()));
             GoGoToAdminHomeCommand = ReactiveCommand.CreateFromObservable(
@@ -230,8 +230,7 @@ namespace ClientApp.ViewModels
             }
             else
             {
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null");
-                loginSuccessMessage.Show();
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null").Show();
             }
 
         }

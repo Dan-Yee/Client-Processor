@@ -1,29 +1,26 @@
 ﻿using Avalonia.Controls.Selection;
 using ClientApp.Models;
 using ClientApp.Views;
-using DynamicData;
 using Grpc.Net.Client;
 using GrpcServer.Protos;
-using Org.BouncyCastle.Utilities;
 using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {
     public class FormMenuViewModel : ReactiveObject, IRoutableViewModel
     {
-        //View that this viewmodel is attached to
-        private FormMenuView _formMenuView;
-        //Id of the client
-        private int _clientId;
+        public string? UrlPathSegment => throw new NotImplementedException();
 
+        public IScreen HostScreen { get; }
         public static List<string> ListOfFilledOutFormNames { get; set; } = new();
 
 
@@ -49,36 +46,32 @@ namespace ClientApp.ViewModels
                 this.RaiseAndSetIfChanged(ref _formTemplateList, value);
             }
         }
-
         public SelectionModel<FormModel> FormTemplateSelection { get; } = new SelectionModel<FormModel>();
+        public RoutingState RouterToMakeProcedure { get; } = new RoutingState();
+        public RoutingState RouterToFillOutForms{ get; } = new RoutingState();
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToMakeProcedure{ get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFillOutForms{ get; }
 
-        public string? UrlPathSegment => throw new NotImplementedException();
 
-        public IScreen HostScreen => throw new NotImplementedException();
-
-        /// <summary>
-        /// Constructor of the view model. Initializes the view and the client id
-        /// </summary>
-        /// <param name="fmv"></param>
-        /// <param name="c_ID"></param>
-        public FormMenuViewModel(FormMenuView fmv, int c_ID)
+        public FormMenuViewModel()
         {
-            _formMenuView = fmv;
-            _clientId = c_ID;
             CurrentFormSelection.SelectionChanged += SelectionChanged;
 
 
             TemplatesResponse templates = GetTemplateNames();
 
-            
-            foreach(var template in templates.TemplateNames)
+
+            foreach (var template in templates.TemplateNames)
             {
                 FormTemplateList.Add(new FormModel(template.FormTemplateName, null, null));
 
             }
+            NavigateToMakeProcedure = ReactiveCommand.CreateFromObservable(
+                () => RouterToMakeProcedure.Navigate.Execute(new MakeAProcedureViewModel()));
+
+            NavigateToFillOutForms = ReactiveCommand.CreateFromObservable(
+                () => RouterToFillOutForms.Navigate.Execute(new FormFillingViewModel()));
         }
-        
-        
         public static TemplatesResponse GetTemplateNames()
         {
             TemplatesResponse templates = new TemplatesResponse();
@@ -89,7 +82,7 @@ namespace ClientApp.ViewModels
 
             return templates;
         }
-        
+
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
@@ -102,12 +95,16 @@ namespace ClientApp.ViewModels
             //MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: "+ FormTemplateSelection.SelectedItem).Show();
         }
 
-
+        public static string FormName { get; set; }
         public void GoToFillOutForm()
         {
-            _formMenuView.Close();
-            //new FormFillingView(_clientId, CurrentFormSelection.SelectedItem.FileName).Show();
-            new FormFillingView(_clientId, FormTemplateSelection.SelectedItem.FileName).Show();
+            FormName = FormTemplateSelection.SelectedItem.FileName;
+            NavigateToFillOutForms.Execute();
+        }
+
+        public void GoToMakeProcedureCommand()
+        {
+            NavigateToMakeProcedure.Execute();
         }
     }
 }

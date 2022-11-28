@@ -1,18 +1,17 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
+using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class InitializeProcedureView : Window
+    public partial class InitializeProcedureView : ReactiveUserControl<InitializeProcedureViewModel>
     {
         public InitializeProcedureView()
         {
-            InitializeComponent();
-        }
-        public InitializeProcedureView(int c_id)
-        {
-            InitializeComponent();
-            DataContext = new InitializeProcedureViewModel(this, c_id);
+            this.WhenActivated(disposables => { /* Handle interactions etc. */ });
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

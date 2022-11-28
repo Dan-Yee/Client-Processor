@@ -1,75 +1,37 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="ClientApp.Views.FormFillingView"
-        Title="FormFillingView">
-
-	<!--
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
-	<StackPanel>
-		<ItemsRepeater Items="{Binding InputFields}" Margin="20 0 0 0">
-			<ItemsRepeater.ItemTemplate>
-				<DataTemplate>
-					<StackPanel Margin="0 20 0 0">
-						<Grid x:Name="notes" x:FieldModifier="public" ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto">
-
-							<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding FieldName}" Margin="0 10 0 0" />
-
-							<TextBox Grid.Row="0" Grid.Column="0" Text="{Binding UserInputList}" IsVisible="{Binding IsTextInput}" Margin="100 0 0 0" Width="200"/>
-							
-
-							<ItemsRepeater Items="{Binding CheckListParameters}" IsVisible="{Binding IsRadioBtn}" Margin="0 10 0 0">
-								<ItemsRepeater.ItemTemplate>
-									<DataTemplate>
-										<StackPanel Margin="0 20 0 0">
-											<Grid ColumnDefinitions="Auto" RowDefinitions="Auto">
-												<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding OptionName}" VerticalAlignment="Center" />
-												<RadioButton Grid.Row="0" Grid.Column="0" Margin="100 0 0 0"/>
-											</Grid>
-										</StackPanel>
-									</DataTemplate>
-								</ItemsRepeater.ItemTemplate>
-							</ItemsRepeater>
-
-							<ItemsRepeater Items="{Binding CheckListParameters}" IsVisible="{Binding IsCheckBox}" Margin="0 10 0 0">
-								<ItemsRepeater.ItemTemplate>
-									<DataTemplate>
-										<StackPanel Margin="0 20 0 0">
-											<Grid ColumnDefinitions="Auto" RowDefinitions="Auto">
-												<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding OptionName}" VerticalAlignment="Center"/>
-												<CheckBox Grid.Row="0" Grid.Column="0" Margin="100 0 0 0"/>
-											</Grid>
-										</StackPanel>
-									</DataTemplate>
-								</ItemsRepeater.ItemTemplate>
-							</ItemsRepeater>
-						</Grid>
-					</StackPanel>
-				</DataTemplate>
-			</ItemsRepeater.ItemTemplate>
-		</ItemsRepeater>
-		<Button Content="Submit" Command="{Binding SubmitFormCommand}"/>
-	</StackPanel>
-	</ScrollViewer>
-	-->
-
-	<Window.Styles>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.FormFillingView">
+	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="Background" Value="#161616"/>
 		</Style>
-	</Window.Styles>
-	<ScrollViewer>
+	</UserControl.Styles>
+		
+		
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}">
+		<rxui:RoutedViewHost.DefaultContent>
+		<ScrollViewer>
+
 		<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
 			<StackPanel Grid.Row="0" Grid.Column="1" x:Name="notes" x:FieldModifier="public" Orientation="Vertical" Margin="0 50 0 0">
 
 
 			</StackPanel>
+			<!--
 			<Button Grid.Row="1" Grid.Column="1" Content="Submit" Command="{Binding SubmitFormCommand}" Margin="0 50 0 0"/>
+			-->
+			<Button Name="SubmitBtn" Grid.Row="1" Grid.Column="1" Content="Submit"  Margin="0 50 0 0"/>
 		</Grid>
 	</ScrollViewer>
-	<!--
-	-->
-
-</Window>
+	
+		</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:FormMenuViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+</UserControl>

@@ -39,7 +39,7 @@ namespace ClientApp.ViewModels
             GoToViewForms = ReactiveCommand.CreateFromObservable(
               () => ViewFormRouter.Navigate.Execute(new FormViewingViewModel()));
             GoBackToListing = ReactiveCommand.CreateFromObservable(
-              () => ProcedureViewingRouter.Navigate.Execute(new ClientProcedureListingViewModel(HomePageViewModel.Client_ID)));
+              () => ProcedureViewingRouter.Navigate.Execute(new ClientProcedureListingViewModel()));
         }
 
         public void GoToFormViewingMenu()

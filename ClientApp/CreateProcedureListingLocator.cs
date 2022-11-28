@@ -9,11 +9,11 @@ using ReactiveUI;
 
 namespace ClientApp
 {
-    internal class ImportViewLocator : ReactiveUI.IViewLocator
+    internal class CreateProcedureListingLocator : ReactiveUI.IViewLocator
     {
         IViewFor? IViewLocator.ResolveView<T>(T viewModel, string? contract) => viewModel switch
         {
-            ImportFormViewModel context => new ImportFormView { DataContext = context },
+            ClientProcedureListingViewModel context => new ClientProcedureListingView { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };
 
