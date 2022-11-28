@@ -165,7 +165,6 @@ namespace Server.Services
                             Email = reader["email_address"].ToString()
                         };
                         clients.Clients.Add(current);
-                        Console.WriteLine(current.FirstName);
                     }
                 }
                 reader.Close();
