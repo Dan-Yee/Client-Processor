@@ -4,6 +4,7 @@ using Npgsql;
 using iText.Kernel.Pdf;
 using iText.Forms;
 using iText.Forms.Fields;
+using Microsoft.AspNetCore.Connections.Features;
 
 namespace Server.Services
 {
@@ -225,26 +226,64 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "DELETE FROM Client_Procedures WHERE procedure_id = $1;";
-                command = new NpgsqlCommand(@query, conn)
+                try
                 {
-                    Parameters =
+                    // Delete all foreign key references to this procedure from the Procedure_Photos table first.
+                    query = "DELETE FROM Procedure_Photos WHERE procedure_id = $1;";
+                    command = new NpgsqlCommand(@query, conn)
                     {
-                        new() {Value = pID.PID}
-                    }
-                };
-                conn.Open();
-                status = command.ExecuteNonQuery();
-                conn.Close();
+                        Parameters =
+                        {
+                            new() {Value = pID.PID},
+                        }
+                    };
+                    conn.Open();
+                    status = command.ExecuteNonQuery();
+                    conn.Close();
+
+                    // Delete all foreign key references to this procedure from the Procedure_Forms table first.
+                    query = "DELETE FROM Procedure_Forms WHERE procedure_id = $1;";
+                    command = new NpgsqlCommand(@query, conn)
+                    {
+                        Parameters =
+                        {
+                            new() {Value = pID.PID},
+                        }
+                    };
+                    conn.Open();
+                    status = command.ExecuteNonQuery();
+                    conn.Close();
+
+                    // Finally, delete from the Client_Procedures table once all foreign key references have been removed.
+                    query = "DELETE FROM Client_Procedures WHERE procedure_id = $1;";
+                    command = new NpgsqlCommand(@query, conn)
+                    {
+                        Parameters =
+                        {
+                            new() {Value = pID.PID}
+                        }
+                    };
+                    conn.Open();
+                    status = command.ExecuteNonQuery();
+                    conn.Close();
+                }
+                catch (NpgsqlException pgE)
+                {
+                    status = 0;
+                }
+
+                if (conn != null && conn.State != System.Data.ConnectionState.Closed)
+                    conn.Close();
             }
-            if(status == 1)
+            if(status > 0)
             {
                 sStatus.IsSuccessfulOperation = true;
                 sStatus.StatusMessage = "Success: Procedure deleted.";
-            } else
+            }
+            else
             {
                 sStatus.IsSuccessfulOperation = false;
-                sStatus.StatusMessage = "Error: Unable to delete procedure. Does the procedure exist?";
+                sStatus.StatusMessage = "Error: Unable to delete Procedure";
             }
             return sStatus;
         }
