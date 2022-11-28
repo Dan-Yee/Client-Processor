@@ -13,7 +13,7 @@
 	</UserControl.Styles>
 		
 		
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 		<ScrollViewer>
 

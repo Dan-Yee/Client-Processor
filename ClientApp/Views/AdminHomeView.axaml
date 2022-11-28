@@ -24,13 +24,13 @@
 
 
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterRegister}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterRegister}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToImport}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToImport}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ViewEmployeeRouter}">
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ViewEmployeeRouter}" PageTransition="{x:Null}">
 				<rxui:RoutedViewHost.DefaultContent>
 	<Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" ShowGridLines="False">
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Admin View" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 10 0 0"/>

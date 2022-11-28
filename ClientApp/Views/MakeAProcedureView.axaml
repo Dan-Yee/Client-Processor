@@ -15,10 +15,10 @@
 	</UserControl.Styles>
 
 	
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 			
-			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToProcedureListing}">
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToProcedureListing}" PageTransition="{x:Null}">
 				<rxui:RoutedViewHost.DefaultContent>
 			
 	

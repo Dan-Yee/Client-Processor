@@ -19,7 +19,7 @@
 	</UserControl.Styles>
 
 
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter }">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter }" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 			<ScrollViewer VerticalScrollBarVisibility="Auto">
 				<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">

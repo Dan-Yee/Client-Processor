@@ -13,9 +13,9 @@
 	</UserControl.Styles>
 
 	
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToMakeProcedure}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToMakeProcedure}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToClientProcedureListing}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToClientProcedureListing}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*">
 		<TextBlock Grid.Row="0" Grid.Column="1" Text="Procedure Type" Margin="0 20 0 0"/>

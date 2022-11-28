@@ -22,16 +22,16 @@
 	</UserControl.Styles>
 
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToReadProcedureRouter}">
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToReadProcedureRouter}" PageTransition="{x:Null}">
 				<rxui:RoutedViewHost.DefaultContent>
 					
-					<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToInitializeProcedureRouter}">
+					<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToInitializeProcedureRouter}" PageTransition="{x:Null}">
 						<rxui:RoutedViewHost.DefaultContent>
 
 							
-							<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToUpdateProcedureRouter}">
+							<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToUpdateProcedureRouter}" PageTransition="{x:Null}">
 								<rxui:RoutedViewHost.DefaultContent>
 								
 						

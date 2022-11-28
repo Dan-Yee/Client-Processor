@@ -32,7 +32,7 @@
 
 
 
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePage}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePage}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 			<Grid HorizontalAlignment="Center" >
 				<Grid.RowDefinitions>

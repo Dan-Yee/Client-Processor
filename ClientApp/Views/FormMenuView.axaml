@@ -13,10 +13,10 @@
 	</UserControl.Styles>
 
 
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFillOutForms}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFillOutForms}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 	
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToMakeProcedure}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToMakeProcedure}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 	
 	<ScrollViewer VerticalScrollBarVisibility="Auto">

@@ -18,7 +18,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 			<StackPanel HorizontalAlignment="Center" Spacing="20" VerticalAlignment="Top" Margin="0,50,0,0">
 				<TextBlock Text="Login" HorizontalAlignment="Center" FontSize="30.0" />

@@ -13,7 +13,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
 			<StackPanel Margin="0 20 0 0">
 				<Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto, Auto, Auto, Auto,Auto">
