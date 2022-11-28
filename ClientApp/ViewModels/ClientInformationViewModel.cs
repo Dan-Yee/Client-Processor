@@ -39,7 +39,7 @@ namespace ClientApp.ViewModels
             var client = new Client.ClientClient(channel);
 
             AllClients info = client.searchClientsByName(new ClientName() { CName = HomePageViewModel.ClientName });
-            MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + info.Clients[0].FirstName).Show();
+            
             if (info.Clients.Count > 0)
             {
                 var c = info.Clients[0];
