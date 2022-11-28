@@ -56,6 +56,8 @@ namespace ClientApp.ViewModels
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
+            Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
+            SelectedProcedure = _procedures[Selection.SelectedIndex];
         }
 
 
@@ -112,8 +114,7 @@ namespace ClientApp.ViewModels
 
         public void GoToReadProcedurePageCommand()
         {
-            Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
-            SelectedProcedure = _procedures[Selection.SelectedIndex];
+            
             GoToReadProcedureView.Execute();
         }
 
