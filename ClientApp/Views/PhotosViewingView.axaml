@@ -11,8 +11,14 @@
 	<UserControl.Resources>
 		<ext:BitmapAssetValueConverter x:Key="variableImage"/>
 	</UserControl.Resources>
-	
-	
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
+
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter }">
 		<rxui:RoutedViewHost.DefaultContent>
 			<ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -24,7 +30,7 @@
 					</Image>
 					<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoBackCommand}"/>
 				</Grid>
-				</ScrollViewer>
+			</ScrollViewer>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
 			<!-- See ViewLocator.cs section below -->

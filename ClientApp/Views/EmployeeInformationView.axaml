@@ -6,6 +6,13 @@
 			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
 			 xmlns:app="clr-namespace:ClientApp"
              x:Class="ClientApp.Views.EmployeeInformationView">
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
 		<rxui:RoutedViewHost.DefaultContent>
 			<StackPanel Margin="0 20 0 0">

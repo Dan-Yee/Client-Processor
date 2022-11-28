@@ -16,27 +16,27 @@ namespace ClientApp.ViewModels
     {
         public IScreen HostScreen { get; }
 
-        public static EmployeeModel SelectedEmployee {get;set;}
+        public static EmployeeModel SelectedEmployee { get; set; }
 
         public SelectionModel<EmployeeModel> Selection { get; }
 
         public string UrlPathSegment { get; } = "AdminHome";
         public RoutingState Router2 { get; } = new RoutingState();
-        public RoutingState ViewEmployeeRouter{ get; } = new RoutingState();
+        public RoutingState ViewEmployeeRouter { get; } = new RoutingState();
 
         public RoutingState RouterHomePageProcedure { get; } = new RoutingState();
 
         public RoutingState RouterToImport { get; } = new RoutingState();
 
         public RoutingState RouterRegister { get; } = new RoutingState();
-        
+
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToImport { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToRegister { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToEmployeeInformation{ get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToEmployeeInformation { get; }
 
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
@@ -132,7 +132,7 @@ namespace ClientApp.ViewModels
         public void GoToHomeFromAdminHomeCommand()
         {
             GoHome.Execute();
-            
+
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace ClientApp.ViewModels
         public void OpenImportFormView()
         {
             GoToImport.Execute();
-        
+
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace ClientApp.ViewModels
         {
 
             GoToRegister.Execute();
-            
+
         }
 
         /// <summary>
@@ -162,10 +162,10 @@ namespace ClientApp.ViewModels
 
             //Want yes no dialog here
             ButtonResult result = await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Confirm deletion", ButtonEnum.YesNo).Show();
-            if(result == ButtonResult.Yes)
+            if (result == ButtonResult.Yes)
             {
 
-                
+
                 MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "To delete").Show();
             }
             else
@@ -176,7 +176,7 @@ namespace ClientApp.ViewModels
 
         public void GoToReadProcedurePageCommand()
         {
-            SelectedEmployee=Selection.SelectedItem;
+            SelectedEmployee = Selection.SelectedItem;
             GoToEmployeeInformation.Execute();
         }
     }

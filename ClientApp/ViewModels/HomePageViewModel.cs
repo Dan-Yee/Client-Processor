@@ -18,15 +18,16 @@ using Microsoft.AspNetCore.Components.Routing;
 using System.ComponentModel;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ClientApp.ViewModels
 {
-    
+
     public class HomePageViewModel : ReactiveObject, IRoutableViewModel
     {
         //Holds whether the user has admin privilages or not
         public bool ShowAdminButton { get; set; }
-   
+
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
         public bool SelectButtonEnabled
@@ -37,7 +38,7 @@ namespace ClientApp.ViewModels
             }
             set
             {
-                _selectButtonEnabled  = value;
+                _selectButtonEnabled = value;
                 //Updates that a value has been selected
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
             }
@@ -54,11 +55,11 @@ namespace ClientApp.ViewModels
             }
         }
 
-        
+
         public SelectionModel<Customer> Selection { get; }
 
         private ObservableCollection<Customer> _items = new();
-        
+
 
         public IScreen HostScreen { get; }
 
@@ -88,11 +89,11 @@ namespace ClientApp.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> GoToClientInformationCommand { get; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> BackToLogin { get; }
-       
+
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
 
-        public static string ClientName{ get; set; }
+        public static string ClientName { get; set; }
 
         public static int Client_ID { get; set; }
 
@@ -103,7 +104,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public HomePageViewModel()
         {
-            
+
             // localhost for testing purposes
             /*
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
@@ -124,10 +125,10 @@ namespace ClientApp.ViewModels
             ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
 
 
-          GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
-              () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(Selection.SelectedItem.Client_ID)));
-          GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
-             () => Router1.Navigate.Execute(new CreateCustomerViewModel()));
+            GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
+                () => Router0.Navigate.Execute(new ClientProcedureListingViewModel(Selection.SelectedItem.Client_ID)));
+            GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
+               () => Router1.Navigate.Execute(new CreateCustomerViewModel()));
             GoGoToAdminHomeCommand = ReactiveCommand.CreateFromObservable(
               () => Router2.Navigate.Execute(new AdminHomeViewModel()));
             GoToLogin = ReactiveCommand.CreateFromObservable(
@@ -138,10 +139,23 @@ namespace ClientApp.ViewModels
         }
 
         /* Event Handlers Below */
-        public string SearchNameTextInput { get; set; }
+        //public string SearchNameTextInput { get; set; }
+        private string searchNameTextInput;
+        public string SearchNameTextInput
+        {
+            get
+            {
+                return searchNameTextInput;
+            }
+            set
+            {
+                searchNameTextInput = value;
+                SearchForClientCommand();
+            }
+        }
         public void SearchForClientCommand()
         {
-            if(SearchNameTextInput!=null && SearchNameTextInput.Length > 0)
+            if (SearchNameTextInput != null && SearchNameTextInput.Length > 0)
             {
                 _items.Clear();
                 ListOfClientIDs.Clear();
@@ -150,9 +164,11 @@ namespace ClientApp.ViewModels
                 AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
                 if (info.Clients.Count > 0)
                 {
-                    var c = info.Clients[0];
-                    _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
-                    ListOfClientIDs.Add(c.ClientId);
+                    foreach (var clientInformation in info.Clients)
+                    {
+                        _items.Add(new Customer(clientInformation.ClientId, clientInformation.FirstName, clientInformation.LastName, clientInformation.PhoneNumber, clientInformation.Email));
+                        ListOfClientIDs.Add(clientInformation.ClientId);
+                    }
                 }
             }
         }
@@ -163,9 +179,9 @@ namespace ClientApp.ViewModels
         public void CreateCustomerCommand()
         {
             GoCreateCustomerCommand.Execute();
-           
+
         }
-       
+
 
         /// <summary>
         /// Takes user to admin home view
@@ -173,7 +189,7 @@ namespace ClientApp.ViewModels
         public void GoToAdminHomeCommand()
         {
             GoGoToAdminHomeCommand.Execute();
-            
+
         }
 
         public void GoGoToClientInformationCommand()
@@ -195,7 +211,7 @@ namespace ClientApp.ViewModels
         public void LogoutCommand()
         {
             GoToLogin.Execute();
-          
+
         }
 
         /// <summary>
@@ -206,11 +222,11 @@ namespace ClientApp.ViewModels
             //If a client is selected
             if (Selection != null)
             {
-                
+
                 GoGoToClientProceduresCommand.Execute();
                 //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
                 //loginSuccessMessage.Show();
-                
+
             }
             else
             {

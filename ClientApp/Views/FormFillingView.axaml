@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ClientApp.Views.FormFillingView"
         Title="FormFillingView">
-	
+
 	<!--
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 	<StackPanel>
@@ -55,14 +55,19 @@
 	</ScrollViewer>
 	-->
 
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</Window.Styles>
 	<ScrollViewer>
-	<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
-		<StackPanel Grid.Row="0" Grid.Column="1" x:Name="notes" x:FieldModifier="public" Orientation="Vertical" Margin="0 50 0 0">
-		
-			
-		</StackPanel>
-		<Button Grid.Row="1" Grid.Column="1" Content="Submit" Command="{Binding SubmitFormCommand}" Margin="0 50 0 0"/>
-	</Grid>
+		<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+			<StackPanel Grid.Row="0" Grid.Column="1" x:Name="notes" x:FieldModifier="public" Orientation="Vertical" Margin="0 50 0 0">
+
+
+			</StackPanel>
+			<Button Grid.Row="1" Grid.Column="1" Content="Submit" Command="{Binding SubmitFormCommand}" Margin="0 50 0 0"/>
+		</Grid>
 	</ScrollViewer>
 	<!--
 	-->

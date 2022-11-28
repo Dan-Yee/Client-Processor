@@ -9,6 +9,11 @@
 		x:DataType="vm:MakeProcedureViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="ClientApp">
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</Window.Styles>
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 	<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
 		<!--form photos pay-->

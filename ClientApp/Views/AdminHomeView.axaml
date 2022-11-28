@@ -18,6 +18,7 @@
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="Background" Value="#161616"/>
 		</Style>
 	</UserControl.Styles>
 

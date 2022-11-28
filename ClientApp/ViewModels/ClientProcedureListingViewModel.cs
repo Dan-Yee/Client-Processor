@@ -70,7 +70,7 @@ namespace ClientApp.ViewModels
 
             //Getting the clients from the database
             AllProcedures info = client.getProcedures(new ClientID { CID = c_ID });
-            
+
             foreach (ProcedureInfo procedure in info.Procedures)
             {
                 //Add procedures to the list
@@ -81,7 +81,7 @@ namespace ClientApp.ViewModels
             //Makes the list of procedures publicly available
             Procedures = _procedures;
             DisplayedProcedures = _displayedProcedures;
-            
+
             //Selection = new SelectionModel<ProcedureModel>();
             Selection = new SelectionModel<string>();
             Selection.SelectionChanged += SelectionChanged;
@@ -109,20 +109,21 @@ namespace ClientApp.ViewModels
             //Locator.CurrentMutable.Register(() => new MakeProcedureView(), typeof(IViewFor<MakeProcedureViewModel>));
             //MakeProcedurePage.Execute();
             //= ReactiveCommand.CreateFromObservable(
-             //() => Router.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
+            //() => Router.Navigate.Execute(new MakeProcedureViewModel(c_ID)));
 
         }
 
         public void DeleteProcedureCommand()
         {
             new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureID() { PID = ListOfProcedureIDs[Selection.SelectedIndex] });
-            MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: "+ ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
+            MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
             _displayedProcedures.RemoveAt(Selection.SelectedIndex);
         }
 
         public void GoToReadProcedurePageCommand()
         {
             Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
+
             SelectedProcedure = _procedures[Selection.SelectedIndex];
             GoToReadProcedureView.Execute();
         }
@@ -133,9 +134,9 @@ namespace ClientApp.ViewModels
         public void GoHomeCommand()
         {
             GoHome.Execute();
-            
+
         }
-        
+
         public ObservableCollection<ProcedureModel> Procedures
         {
             get => _procedures;
@@ -154,7 +155,7 @@ namespace ClientApp.ViewModels
         }
         //public SelectionModel<ProcedureModel> Selection { get; }
         public SelectionModel<string> Selection { get; }
-        
+
 
     }
 

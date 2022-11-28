@@ -8,6 +8,13 @@
 			 x:DataType="vm:FormMenuViewModel"
 			 Icon="/Assets/avalonia-logo.ico"
              x:Class="ClientApp.Views.FormMenuView">
+
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</Window.Styles>
+
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
 		<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*"  ShowGridLines="False">
 			<TextBlock Text="Form" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
@@ -21,7 +28,7 @@
 			</StackPanel>
 			<!--<Button Content="Select" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0" Command="{Binding SelectFormTemplate}"/>-->
 			<Button Content="Select" Grid.Row="2" Grid.Column="2" Margin="10 0 0 0" Command="{Binding GoToFillOutForm}"/>
-		
+
 			<StackPanel Grid.Row="4" Grid.Column="1" Margin="0 20 0 0">
 				<Label VerticalAlignment="Center" HorizontalAlignment="Center">Current Selection</Label>
 				<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">

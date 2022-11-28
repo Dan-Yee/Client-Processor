@@ -10,9 +10,9 @@
    xmlns:reactiveUi="http://reactiveui.net"
    xmlns:vm="using:ClientApp.ViewModels"
    mc:Ignorable="d">
-	
-	
-	
+
+
+
 	<UserControl.Styles>
 		<Style Selector="Button">
 			<Setter Property="FontSize" Value="30"/>
@@ -20,35 +20,36 @@
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="Background" Value="#161616"/>
 		</Style>
 	</UserControl.Styles>
 	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterAdmimHomePageProcedure}">
 		<rxui:RoutedViewHost.DefaultContent>
-	<Grid HorizontalAlignment="Center">
-		<Grid.RowDefinitions>
-			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
-			<RowDefinition MinHeight="50" Height="50"></RowDefinition>
-			<RowDefinition MinHeight="100" Height="100"></RowDefinition>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-			<ColumnDefinition MinWidth="350"></ColumnDefinition>
-		</Grid.ColumnDefinitions>
+			<Grid HorizontalAlignment="Center">
+				<Grid.RowDefinitions>
+					<RowDefinition MinHeight="100" Height="100"></RowDefinition>
+					<RowDefinition MinHeight="50" Height="50"></RowDefinition>
+					<RowDefinition MinHeight="100" Height="100"></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
 
-		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import Form" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
-		<Button Content="import" Command="{Binding Files}" Grid.Row="1" Grid.Column="1"></Button>
-		<TextBlock Text="Selected File(s): " Grid.Row="2" Grid.Column="1" Margin="0 0 0 0"></TextBlock>
-		<TextBlock Text="{Binding FilePaths}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0, 20, 0, 0"></TextBlock>
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import Form" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+				<Button Content="import" Command="{Binding Files}" Grid.Row="1" Grid.Column="1"></Button>
+				<TextBlock Text="Selected File(s): " Grid.Row="2" Grid.Column="1" Margin="0 0 0 0"></TextBlock>
+				<TextBlock Text="{Binding FilePaths}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0, 20, 0, 0"></TextBlock>
 
-		<!--<TextBox Text="{Binding FilePaths}" Grid.Row="3" Grid.Column="1" Height="50" Margin="0, 50, 0, 0"/>-->
-		<Button Content="Store" Command="{Binding StoreFileCommand}" Grid.Row="3" Grid.Column="1" Margin="0, 150, 0, 0"/>
-	</Grid>
-	</rxui:RoutedViewHost.DefaultContent>
+				<!--<TextBox Text="{Binding FilePaths}" Grid.Row="3" Grid.Column="1" Height="50" Margin="0, 50, 0, 0"/>-->
+				<Button Content="Store" Command="{Binding StoreFileCommand}" Grid.Row="3" Grid.Column="1" Margin="0, 150, 0, 0"/>
+			</Grid>
+		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
-	<!-- See ViewLocator.cs section below -->
-	<app:AdminHomeViewLocator />
+			<!-- See ViewLocator.cs section below -->
+			<app:AdminHomeViewLocator />
 		</rxui:RoutedViewHost.ViewLocator>
-		</rxui:RoutedViewHost>
+	</rxui:RoutedViewHost>
 </UserControl>

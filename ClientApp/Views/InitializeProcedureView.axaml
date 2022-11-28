@@ -5,6 +5,13 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ClientApp.Views.InitializeProcedureView"
         Title="InitializeProcedureView">
+
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</Window.Styles>
+
 	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*">
 		<TextBlock Grid.Row="0" Grid.Column="1" Text="Procedure Type" Margin="0 20 0 0"/>
 		<TextBox Grid.Row="1" Grid.Column="1" Margin="0 10 0 0" Text="{Binding _ProcedureName}"/>

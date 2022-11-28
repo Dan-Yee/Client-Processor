@@ -17,6 +17,7 @@ namespace ClientApp.ViewModels
         public IScreen HostScreen { get; }
 
         public string NameOfProcedure { get; set; }
+        public string NotesOfProcedure { get; set; }
 
         public RoutingState ViewPhotosRouter { get; } = new RoutingState();
         public RoutingState ViewFormRouter { get; } = new RoutingState();
@@ -32,6 +33,7 @@ namespace ClientApp.ViewModels
             //ClientProcedureListingViewModel.Procedure_Id
             //ClientProcedureListingViewModel.SelectedProcedure
             NameOfProcedure = ClientProcedureListingViewModel.SelectedProcedure.ProcedureName;
+            NotesOfProcedure = ClientProcedureListingViewModel.SelectedProcedure.procedureNotes;
             GoToViewPhotos = ReactiveCommand.CreateFromObservable(
               () => ViewPhotosRouter.Navigate.Execute(new PhotosViewingViewModel()));
             GoToViewForms = ReactiveCommand.CreateFromObservable(

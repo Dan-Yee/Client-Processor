@@ -11,7 +11,13 @@
 	<UserControl.Resources>
 		<ext:BitmapAssetValueConverter x:Key="variableImage"/>
 	</UserControl.Resources>
-	
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter }">
 		<rxui:RoutedViewHost.DefaultContent>
 			<ScrollViewer VerticalScrollBarVisibility="Auto">

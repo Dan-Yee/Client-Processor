@@ -25,38 +25,42 @@
 		<Style Selector="TextBox">
 			<Setter Property="Height" Value="50"/>
 		</Style>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
 	</UserControl.Styles>
+
 
 
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePage}">
 		<rxui:RoutedViewHost.DefaultContent>
-		<Grid HorizontalAlignment="Center" >
-			<Grid.RowDefinitions>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-				<RowDefinition></RowDefinition>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition MinWidth="350"></ColumnDefinition>
-				<ColumnDefinition MinWidth="350"></ColumnDefinition>
-				<ColumnDefinition MinWidth="350"></ColumnDefinition>
-			</Grid.ColumnDefinitions>
-			<TextBlock Grid.Row="0" Grid.Column="1" Text="Customer Registration" FontSize="20"/>
-			<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20"/>
-			<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FirstName}"/>
-			<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
-			<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LastName}"/>
-			<TextBlock Grid.Row="3" Grid.Column="0" Text="Phone Number" HorizontalAlignment="Center" FontSize="20"/>
-			<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding PhoneNumber}"/>
-			<TextBlock Grid.Row="4" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
-			<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Email}"/>
-			<Button Grid.Row="5" Grid.Column="1" x:Name="RegisterBtn"  Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
-			<Button Grid.Row="6" Grid.Column="1" x:Name="HomeBtn"  Content="Home" Command="{Binding ToHomeScreenCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
-		</Grid>
+			<Grid HorizontalAlignment="Center" >
+				<Grid.RowDefinitions>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+					<ColumnDefinition MinWidth="350"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="Customer Registration" FontSize="20"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FirstName}"/>
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LastName}"/>
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Phone Number" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding PhoneNumber}"/>
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Email}"/>
+				<Button Grid.Row="5" Grid.Column="1" x:Name="RegisterBtn"  Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+				<Button Grid.Row="6" Grid.Column="1" x:Name="HomeBtn"  Content="Home" Command="{Binding ToHomeScreenCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+			</Grid>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
 			<!-- See ViewLocator.cs section below -->
