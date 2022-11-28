@@ -56,6 +56,7 @@ namespace ClientApp.ViewModels
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
+            //Automatically uploads procedure id
             Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
             SelectedProcedure = _procedures[Selection.SelectedIndex];
         }
