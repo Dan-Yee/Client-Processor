@@ -34,7 +34,10 @@ namespace ClientApp.ViewModels
         {
             public static string GName;
             public static string GExtent;
+            public static string GName2;
+            public static string GExtent2;
             public static byte[] GBytes;
+            public static byte[] GBytes2;
         }
         public PhotosViewingViewModel()
         {
@@ -54,9 +57,19 @@ namespace ClientApp.ViewModels
             {
                 //loads the byte array into the image function
                 byteArrayToImage(Globals.GBytes);
+                CallToDownloadPhotos2();
             }
         }
-
+        public async void CallToDownloadPhotos2()
+        {
+            //procedure ID is now implented will show the after photo
+            await PhotosViewingViewModel.DownloadPhoto2(ProcedureID, true);
+            if (Globals.GBytes2 != null && Globals.GBytes2.Length > 0)
+            {
+                //loads the byte array into the image function
+                byteArrayToImage2(Globals.GBytes2);
+            }
+        }
         /// <summary>
         /// Method that sends a request to the server to get Procedure photos and listens for responses
         /// to create photo objects from the messags received
@@ -143,6 +156,99 @@ namespace ClientApp.ViewModels
             return photos;
             //return new ServiceStatus { IsSuccessfulOperation = true, StatusMessage ="Files Downloaded!!!"};
         }
+
+        /// <summary>
+        /// Method that sends a request to the server to get Procedure photos and listens for responses
+        /// to create photo objects from the messags received
+        /// </summary>
+        /// <param name="PID"></param> procedure ID of the pictures requested
+        /// <param name="IsBefore"></param> indicates whether the requested photos are the befor or after photos 
+        /// <returns></returns>
+        private static async Task<List<Photo>> DownloadPhoto2(int PID, bool IsBefore)
+        {
+
+            //connect to server
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");
+            //var client = new FileUpload.FileUploadClient(channel);
+            var client = new PhotoDownload.PhotoDownloadClient(channel);
+            var response = client.PhotosDownload(new PhotosRequest { ProcedureID = PID, IsBefore = IsBefore });
+
+            String name = String.Empty;
+            String extension = String.Empty;
+            var ByteList = new List<byte>();
+            int i = 0;//counter to keep track of first message
+
+            List<Photo> photos = new List<Photo>();//list to hold photos received from the server
+
+            //iterate while the server is still sending messages
+            while (await response.ResponseStream.MoveNext(CancellationToken.None))
+            {
+                if (response.ResponseStream.Current.PhotoDownloadCase.Equals(PhotoResponse.PhotoDownloadOneofCase.Status))
+                {
+                    //Console.WriteLine("STATUS");
+                    //return response.ResponseStream.Current.Status;
+                }
+                else if (response.ResponseStream.Current.PhotoDownloadCase.Equals(PhotoResponse.PhotoDownloadOneofCase.NameAndExtention))
+                {
+                    //if first save the name and extention
+                    if (i == 0)
+                    {
+                        name = response.ResponseStream.Current.NameAndExtention.PhotoName;
+                        Globals.GName2 = name;
+                        extension = response.ResponseStream.Current.NameAndExtention.PhotoExtension;
+                        Globals.GExtent2 = extension;
+                        i++;
+                    }
+                    else //if not first save the received bytes(ie. previous file was fully sent)
+                    {
+                        if ((!String.IsNullOrEmpty(name)) && (!String.IsNullOrEmpty(extension)))
+                        {
+                            //create a new photo object and add it to the List
+                            photos.Add(new Photo(name, extension, ByteList.ToArray()));
+
+                            //clear the variables
+                            name = String.Empty;
+                            extension = String.Empty;
+                            ByteList.Clear();
+
+                            //set the variables to the new values
+                            name = response.ResponseStream.Current.NameAndExtention.PhotoName;
+                            extension = response.ResponseStream.Current.NameAndExtention.PhotoExtension;
+
+                        }
+                        else
+                        {
+                            //return new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "Photo info not received"};  
+                        }
+
+
+                    }
+
+                }
+                else if (response.ResponseStream.Current.PhotoDownloadCase.Equals(PhotoResponse.PhotoDownloadOneofCase.PhotoBytes))
+                {
+                    //add the bytes
+                    ByteList.AddRange(response.ResponseStream.Current.PhotoBytes.ToByteArray());
+
+                }
+
+            }
+
+            //the last photo bytes were sent
+            //create the last file
+            photos.Add(new Photo(name, extension, ByteList.ToArray()));
+            Globals.GBytes2 = ByteList.ToArray();
+
+
+            return photos;
+            //return new ServiceStatus { IsSuccessfulOperation = true, StatusMessage ="Files Downloaded!!!"};
+        }
+
+
+
+
+
+
         /// <summary>
         /// takes a byte array and converts it to an image
         /// </summary>
@@ -155,12 +261,22 @@ namespace ClientApp.ViewModels
             }
         
         }
+
+
+        public void byteArrayToImage2(byte[] byteArrayIn)
+        {
+            using (Image image = Image.FromStream(new MemoryStream(byteArrayIn)))
+            {
+                image.Save(Globals.GName2 + Globals.GExtent2, ImageFormat.Png);  // Or Png
+            }
+
+        }
         /// <summary>
         /// Binding to display image uses the globals to determine name and extension
         /// </summary>
         public string ImaPath => Globals.GName + Globals.GExtent;
 
-
+        public string ImaPath2 => Globals.GName2 + Globals.GExtent2;
 
 
         public void GoBackCommand()

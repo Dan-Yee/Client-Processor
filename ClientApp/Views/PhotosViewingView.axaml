@@ -24,9 +24,15 @@
 			<ScrollViewer VerticalScrollBarVisibility="Auto">
 				<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Photos" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
-					<Image Width="1000"
-					Height="1000"
+					<Image Width="500"
+					Height="500" 
+					Grid.Row="2" Grid.Column="1"
 					Source="{Binding ImaPath, Converter={StaticResource variableImage}}}">
+					</Image>
+					<Image Width="500"
+					Height="500"
+					Grid.Row="3" Grid.Column="1"
+					Source="{Binding ImaPath2, Converter={StaticResource variableImage}}}">
 					</Image>
 					<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoBackCommand}"/>
 				</Grid>
