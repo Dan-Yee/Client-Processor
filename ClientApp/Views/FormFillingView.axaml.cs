@@ -44,9 +44,13 @@ namespace ClientApp.Views
             List<TextBox> textBoxesForInput = this.FindControl<StackPanel>("notes").Children.OfType<TextBox>().ToList();
             for (int index = 0; index < textBoxesForInput.Count; index++)
             {
-                if(textBoxesForInput[index] != null)
+                if(textBoxesForInput[index] != null && textBoxesForInput[index].Text!=null)
                 {
                     myFields.Fields.Add(new Field() { FieldName = ListOfFieldNames[index], FieldValue = textBoxesForInput[index].Text });
+                }
+                else
+                {
+                    myFields.Fields.Add(new Field() { FieldName = ListOfFieldNames[index], FieldValue = "" });
                 }
                 //MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", textBoxesForInput[index].Text).Show();
             }
