@@ -38,7 +38,7 @@ namespace ClientApp.ViewModels
         }
         public PhotosViewingViewModel()
         {
-            ProcedureID = InitializeProcedureViewModel.CurrentProcedureID;
+            ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
 
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));

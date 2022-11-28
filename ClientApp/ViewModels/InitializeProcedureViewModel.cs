@@ -45,7 +45,7 @@ namespace ClientApp.ViewModels
                 ProcedureNotes = _ProcedureDescription
             };
             ProcedureID pid = RPCProcedure.addProcedure(i);
-            CurrentProcedureID = pid.PID;
+            ClientProcedureListingViewModel.Procedure_Id = pid.PID;
             NavigateToMakeProcedure.Execute();
         }
 
