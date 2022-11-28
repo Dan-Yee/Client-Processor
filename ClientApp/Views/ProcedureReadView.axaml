@@ -21,7 +21,7 @@
 						<rxui:RoutedViewHost.DefaultContent>
 							<ScrollViewer VerticalScrollBarVisibility="Auto">
 								<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
-									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding NameOfProcedure}" Margin="0 20 0 0" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding NameOfProcedure}" Margin="0 20 0 0" FontSize="30.0" Grid.ColumnSpan="3" Grid.Row="0" Grid.Column="1"/>
 									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Notes:" Margin="0 50 0 0" FontSize="30.0" Grid.Row="1" Grid.Column="1"/>
 
 									<Border BorderBrush="White" BorderThickness="2" CornerRadius="3" Padding="4" HorizontalAlignment="Left" VerticalAlignment="Center" Width="300" Height="100" Grid.Row="2" Grid.Column="1">
