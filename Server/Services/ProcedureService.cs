@@ -102,7 +102,7 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Client_Procedures WHERE client_id = $1;";
+                query = "SELECT * FROM Client_Procedures WHERE client_id = $1 ORDER BY procedure_datetime DESC;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -451,7 +451,7 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Client_Procedures WHERE LOWER(procedure_name) LIKE LOWER($1);";
+                query = "SELECT * FROM Client_Procedures WHERE LOWER(procedure_name) LIKE LOWER($1) ORDER BY procedure_datetime DESC;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
