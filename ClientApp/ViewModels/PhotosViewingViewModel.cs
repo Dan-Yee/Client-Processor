@@ -27,6 +27,8 @@ namespace ClientApp.ViewModels
         
         public RoutingState BackRouter { get; } = new RoutingState();
 
+        public static int ProcedureID { get; set; }
+
         public ReactiveCommand<Unit, IRoutableViewModel> GoBack { get; }
         public static class Globals
         {
@@ -36,6 +38,8 @@ namespace ClientApp.ViewModels
         }
         public PhotosViewingViewModel()
         {
+            ProcedureID = InitializeProcedureViewModel.CurrentProcedureID;
+
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
             CallToDownloadPhotos();
@@ -44,7 +48,8 @@ namespace ClientApp.ViewModels
 
         public async void CallToDownloadPhotos()
         {
-            await PhotosViewingViewModel.DownloadPhoto(5, true);
+            //procedure ID is now implented will show the after photo
+            await PhotosViewingViewModel.DownloadPhoto(ProcedureID, false);
             if(Globals.GBytes != null && Globals.GBytes.Length > 0)
             {
                 //loads the byte array into the image function

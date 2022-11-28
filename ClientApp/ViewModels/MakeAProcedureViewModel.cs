@@ -223,6 +223,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public async void Before()
         {
+
+
             var wind = new Window();
             var ofd = new OpenFileDialog();
             // ofd.InitialDirectory = @"C:\Users";
