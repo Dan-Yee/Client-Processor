@@ -173,5 +173,70 @@ namespace Server.Services
             }
             return clients;
         }
+
+        /// <summary>
+        /// Implementation of the updateClient RPC that updates the information stored about a client (name, phone number, etc.).
+        /// </summary>
+        /// <param name="request">An object containing the (possibly) new information of the Client</param>
+        /// <param name="context"></param>
+        /// <returns>An object that states whether or not this operation was successful.</returns>
+        public override Task<ServiceStatus> updateClient(ClientInfo request, ServerCallContext context)
+        {
+            return Task.FromResult(UpdateClient(request));
+        }
+
+        /// <summary>
+        /// Method <c>UpdateClient</c> sends an UPDATE statement to the Clients table and updates information about the client such as their name, phone number and email address.
+        /// </summary>
+        /// <param name="newInfo">An object containing the new information of the Client.</param>
+        /// <returns>An object that states whether or not this operation was successful.</returns>
+        private static ServiceStatus UpdateClient(ClientInfo newInfo)
+        {
+            ServiceStatus sStatus = new();
+            NpgsqlCommand command;
+            string query;
+            int status;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "UPDATE Clients " +
+                    "SET first_name = $1, " +
+                    "last_name = $2, " +
+                    "phone_number = $3, " +
+                    "email_address = $4 " +
+                    "WHERE client_id = $5;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = newInfo.FirstName},
+                        new() {Value = newInfo.LastName},
+                        new() {Value = newInfo.PhoneNumber},
+                        new() {Value = newInfo.Email},
+                    }
+                };
+                conn.Open();
+                try
+                {
+                    status = command.ExecuteNonQuery();
+                } catch (NpgsqlException pgE)
+                {
+                    status = 0;
+                }
+                conn.Close();
+
+                if (status == 1)
+                {
+                    sStatus.IsSuccessfulOperation = true;
+                    sStatus.StatusMessage = "Success: Client information updated.";
+                }
+                else
+                {
+                    sStatus.IsSuccessfulOperation = false;
+                    sStatus.StatusMessage = "Error: Unable to update client information.";
+                }
+            }
+            return sStatus;
+        }
     }
 }
