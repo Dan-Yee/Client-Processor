@@ -360,5 +360,129 @@ namespace Server.Services
             }
             return sStatus;
         }
+
+        /// <summary>
+        /// Implementation of the updateProcedure RPC that updates a procedures name and notes that are currently stored in the database.
+        /// </summary>
+        /// <param name="request">An object containing the (possibly) new procedure name and notes.</param>
+        /// <param name="context"></param>
+        /// <returns>An object that states whether or not the operation was successful.</returns>
+        public override Task<ServiceStatus> updateProcedure(ProcedureInfo request, ServerCallContext context)
+        {
+            return Task.FromResult(UpdateProcedure(request));
+        }
+
+        /// <summary>
+        /// Method <c>UpdateProcedure</c> updates a Procedure record in the database with the new name and notes.
+        /// </summary>
+        /// <param name="newInfo">An object containing the (possibly) new procedure name and notes.</param>
+        /// <returns>An object that states whether or not the operation was successful.</returns>
+        private static ServiceStatus UpdateProcedure(ProcedureInfo newInfo)
+        {
+            ServiceStatus sStatus = new();
+            NpgsqlCommand command;
+            string query;
+            int status;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "UPDATE Client_Procedures " +
+                        "SET procedure_name = $1, " +
+                        "procedure_notes = $2 " +
+                        "WHERE procedure_id = $3;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = newInfo.ProcedureName},
+                        new() {Value = newInfo.ProcedureNotes},
+                        new() {Value = newInfo.ProcedureID},
+                    }
+                };
+                conn.Open();
+                try
+                {
+                    status = command.ExecuteNonQuery();
+                }
+                catch (NpgsqlException pgE)
+                {
+                    status = 0;
+                }
+                conn.Close();
+
+                if (status == 1)
+                {
+                    sStatus.IsSuccessfulOperation = true;
+                    sStatus.StatusMessage = "Success: Procedure was updated.";
+                }
+                else
+                {
+                    sStatus.IsSuccessfulOperation = false;
+                    sStatus.StatusMessage = "Error: Unable to update procedure.";
+                }
+            }
+            return sStatus;
+        }
+
+        /// <summary>
+        /// Implementation of the searchProcedure RPC that searches for procedures given a name.
+        /// </summary>
+        /// <param name="request">The name of the procedure being searched for.</param>
+        /// <param name="context"></param>
+        /// <returns>An object containing zero or more sub-objects where each sub-object represents a procedure that fit the search criteria.</returns>
+        public override Task<AllProcedures> searchProcedure(ProcedureName request, ServerCallContext context)
+        {
+            return Task.FromResult(SearchProcedureByName(request));
+        }
+
+        /// <summary>
+        /// Method <c>SearchProcedureByName</c> queries the Client_Procedures table for records that match the provided search term.
+        /// </summary>
+        /// <param name="procName">The name of the procedure being searched for.</param>
+        /// <returns>An object containing zero or more sub-objects where each sub-object represents a procedure that fit the search criteria.</returns>
+        private static AllProcedures SearchProcedureByName(ProcedureName procName)
+        {
+            AllProcedures allProcedures = new();
+            NpgsqlCommand command;
+            NpgsqlDataReader reader;
+            string query;
+            string searchTerm = procName.PName + "%";
+            DateTime dt;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "SELECT * FROM Client_Procedures WHERE LOWER(procedure_name) LIKE LOWER($1);";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = searchTerm},
+                    }
+                };
+                conn.Open();
+                reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while(reader.Read())
+                    {
+                        dt = Convert.ToDateTime(reader["procedure_datetime"]);
+                        dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        ProcedureInfo current = new()
+                        {
+                            ProcedureID = Convert.ToInt32(reader["procedure_id"]),
+                            ProcedureName = Convert.ToString(reader["procedure_name"]),
+                            ProcedureDatetime = dt.ToLocalTime().ToString(),
+                            ClientID = Convert.ToInt32(reader["client_id"]),
+                            EmployeeID = Convert.ToInt32(reader["employee_id"]),
+                            ProcedureNotes = Convert.ToString(reader["procedure_notes"]),
+                        };
+                        allProcedures.Procedures.Add(current);
+                    }
+                }
+                reader.Close();
+                conn.Close();
+            }
+            return allProcedures;
+        }
     }
 }
