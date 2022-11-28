@@ -213,6 +213,7 @@ namespace Server.Services
                         new() {Value = newInfo.LastName},
                         new() {Value = newInfo.PhoneNumber},
                         new() {Value = newInfo.Email},
+                        new() {Value = newInfo.ClientId},
                     }
                 };
                 conn.Open();
