@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Selection;
 using ClientApp.Models;
+using ClientApp.Views;
 using Google.Protobuf;
 using Grpc.Net.Client;
 using GrpcServer.Protos;
@@ -20,7 +21,7 @@ namespace ClientApp.ViewModels
     public class MakeAProcedureViewModel : ReactiveObject, IRoutableViewModel
     {
         public string? UrlPathSegment => throw new NotImplementedException();
-
+        
         public IScreen HostScreen { get; }
 
         private ObservableCollection<FormModel> _formTemplateList = new();
@@ -217,6 +218,8 @@ namespace ClientApp.ViewModels
         /// </summary>
         public async void Before()
         {
+            var ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
+
 
             var wind = new Window();
             var ofd = new OpenFileDialog();
@@ -228,7 +231,7 @@ namespace ClientApp.ViewModels
             {
                 //need to update PID to match the person to uplaod photos
                 // 0 is a place holder until it is tied to the PID
-                await UploadPhoto(y, true, 5);
+                await UploadPhoto(y, true, ProcedureID);
                 /*
                 foreach (var path in y)
                 {
@@ -245,7 +248,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public async void After()
         {
-
+            var ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
             var wind = new Window();
             var ofd = new OpenFileDialog();
             // ofd.InitialDirectory = @"C:\Users";
@@ -256,7 +259,7 @@ namespace ClientApp.ViewModels
             {
                 //need to update PID to match the person to uplaod photos
                 // 0 is a place holder until it is tied to the PID
-                await UploadPhoto(y, false, 1);
+                await UploadPhoto(y, false, ProcedureID);
                 /*
                 foreach (var path in y)
                 {

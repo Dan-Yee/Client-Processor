@@ -44,7 +44,7 @@ namespace ClientApp.ViewModels
 
         public async void CallToDownloadPhotos()
         {
-            await PhotosViewingViewModel.DownloadPhoto(5, false);
+            await PhotosViewingViewModel.DownloadPhoto(5, true);
             if(Globals.GBytes != null && Globals.GBytes.Length > 0)
             {
                 //loads the byte array into the image function
