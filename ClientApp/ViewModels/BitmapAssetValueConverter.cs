@@ -26,7 +26,15 @@ namespace ClientApp.ViewModels
         {
             string path = (string)value;
 
-            return new Bitmap(path);
+            if(path != "")
+            {
+                return new Bitmap(path);
+            }
+            else
+            {
+                return "";
+            }
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

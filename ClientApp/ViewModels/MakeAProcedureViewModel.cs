@@ -213,6 +213,8 @@ namespace ClientApp.ViewModels
             finally
             {
                 ms.Close();
+                //here
+                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "File uploaded: "+MetaData.PhotoMeta.PhotoName).Show();
             }
         }
 

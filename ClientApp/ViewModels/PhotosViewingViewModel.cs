@@ -3,6 +3,7 @@ using Google.Protobuf;
 using Grpc.Net.Client;
 using GrpcClient;
 using GrpcServer.Protos;
+//using GrpcServer.Protos;
 using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
 using Server;
@@ -24,7 +25,7 @@ namespace ClientApp.ViewModels
         public string? UrlPathSegment => "PhotosViewingViewModel";
 
         public IScreen HostScreen { get; }
-        
+
         public RoutingState BackRouter { get; } = new RoutingState();
 
         public static int ProcedureID { get; set; }
@@ -33,8 +34,8 @@ namespace ClientApp.ViewModels
         public static class Globals
         {
             public static string GName;
-            public static string GExtent;
             public static string GName2;
+            public static string GExtent;
             public static string GExtent2;
             public static byte[] GBytes;
             public static byte[] GBytes2;
@@ -46,19 +47,25 @@ namespace ClientApp.ViewModels
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
             CallToDownloadPhotos();
-            
+
         }
 
         public async void CallToDownloadPhotos()
         {
             //procedure ID is now implented will show the after photo
             await PhotosViewingViewModel.DownloadPhoto(ProcedureID, false);
-            if(Globals.GBytes != null && Globals.GBytes.Length > 0)
+            if (Globals.GBytes != null && Globals.GBytes.Length > 0)
             {
                 //loads the byte array into the image function
-                byteArrayToImage(Globals.GBytes);
-                CallToDownloadPhotos2();
+                await byteArrayToImage(Globals.GBytes);
             }
+            await PhotosViewingViewModel.DownloadPhoto2(ProcedureID, true);
+            if (Globals.GBytes2 != null && Globals.GBytes2.Length > 0)
+            {
+                //loads the byte array into the image function
+                await byteArrayToImage2(Globals.GBytes2);
+            }
+            //CallToDownloadPhotos2();
         }
         public async void CallToDownloadPhotos2()
         {
@@ -79,15 +86,15 @@ namespace ClientApp.ViewModels
         /// <returns></returns>
         private static async Task<List<Photo>> DownloadPhoto(int PID, bool IsBefore)
         {
-           
+
             //connect to server
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
             //var client = new FileUpload.FileUploadClient(channel);
             var client = new PhotoDownload.PhotoDownloadClient(channel);
-            var response = client.PhotosDownload(new PhotosRequest { ProcedureID = PID, IsBefore = IsBefore });
+            var response = client.PhotosDownload(new PhotosRequest() { ProcedureID = PID, IsBefore = IsBefore });
 
-            String name = String.Empty;
-            String extension = String.Empty;
+            String name = "";
+            String extension = "";
             var ByteList = new List<byte>();
             int i = 0;//counter to keep track of first message
 
@@ -142,17 +149,17 @@ namespace ClientApp.ViewModels
                 {
                     //add the bytes
                     ByteList.AddRange(response.ResponseStream.Current.PhotoBytes.ToByteArray());
-                   
+
                 }
 
             }
+            photos.Add(new Photo(name, extension, ByteList.ToArray()));
+            Globals.GBytes = ByteList.ToArray();
 
             //the last photo bytes were sent
             //create the last file
-            photos.Add(new Photo(name, extension, ByteList.ToArray()));
-            Globals.GBytes = ByteList.ToArray();
-            
-            
+
+
             return photos;
             //return new ServiceStatus { IsSuccessfulOperation = true, StatusMessage ="Files Downloaded!!!"};
         }
@@ -253,22 +260,23 @@ namespace ClientApp.ViewModels
         /// takes a byte array and converts it to an image
         /// </summary>
         /// <param name="byteArrayIn"></param>
-        public void byteArrayToImage(byte[] byteArrayIn)
+        public async Task<int> byteArrayToImage(byte[] byteArrayIn)
         {
             using (Image image = Image.FromStream(new MemoryStream(byteArrayIn)))
             {
                 image.Save(Globals.GName + Globals.GExtent, ImageFormat.Png);  // Or Png
             }
-        
+            return 0;
         }
 
 
-        public void byteArrayToImage2(byte[] byteArrayIn)
+        public async Task<int> byteArrayToImage2(byte[] byteArrayIn)
         {
             using (Image image = Image.FromStream(new MemoryStream(byteArrayIn)))
             {
                 image.Save(Globals.GName2 + Globals.GExtent2, ImageFormat.Png);  // Or Png
             }
+            return 0;
 
         }
         /// <summary>
