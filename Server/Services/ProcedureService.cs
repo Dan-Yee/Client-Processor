@@ -50,16 +50,16 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "INSERT INTO Client_Procedures (procedure_name, procedure_datetime, client_id, employee_id, procedure_notes) VALUES ($1, $2, $3, $4, $5) RETURNING procedure_id;";
+                query = "INSERT INTO Client_Procedures (procedure_name, procedure_notes, client_id, employee_id, last_edited_by) VALUES ($1, $2, $3, $4, $5) RETURNING procedure_id;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
                     {
                         new() {Value = info.ProcedureName},
-                        new() {Value = DateTime.UtcNow},
+                        new() {Value = info.ProcedureNotes},
                         new() {Value = info.ClientID},
                         new() {Value = info.EmployeeID},
-                        new() {Value = info.ProcedureNotes}
+                        new() {Value = info.EmployeeID},
                     }
                 };
                 conn.Open();
@@ -97,12 +97,12 @@ namespace Server.Services
             AllProcedures procedures = new();
             NpgsqlCommand command;
             NpgsqlDataReader reader;
-            DateTime dt;
+            DateTime createDT, editDT;
             string query;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Client_Procedures WHERE client_id = $1 ORDER BY procedure_datetime DESC;";
+                query = "SELECT * FROM Client_Procedures WHERE client_id = $1 AND isDeleted = false ORDER BY create_datetime DESC;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -116,16 +116,20 @@ namespace Server.Services
                 {
                     while(reader.Read())
                     {
-                        dt = Convert.ToDateTime(reader["procedure_datetime"]);
-                        dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        createDT = Convert.ToDateTime(reader["create_datetime"]);
+                        createDT = DateTime.SpecifyKind(createDT, DateTimeKind.Utc);
+                        editDT = Convert.ToDateTime(reader["last_edited_datetime"]);
+                        editDT = DateTime.SpecifyKind(editDT, DateTimeKind.Utc);
                         var currentProcedure = new ProcedureInfo
                         {
                             ProcedureID = Convert.ToInt32(reader["procedure_id"]),
                             ProcedureName = reader["procedure_name"].ToString(),
-                            ProcedureDatetime = dt.ToLocalTime().ToString(),
+                            ProcedureDatetime = createDT.ToLocalTime().ToString(),
                             ClientID = Convert.ToInt32(reader["client_id"]),
                             EmployeeID = Convert.ToInt32(reader["employee_id"]),
-                            ProcedureNotes = reader["procedure_notes"].ToString()
+                            ProcedureNotes = reader["procedure_notes"].ToString(),
+                            ProcedureLastEditDatetime = editDT.ToLocalTime().ToString(),
+                            LastEditEmployeeID = Convert.ToInt32(reader["last_edited_by"]),
                         };
                         procedures.Procedures.Add(currentProcedure);
                     }
@@ -206,7 +210,7 @@ namespace Server.Services
         /// <param name="request">The procedure ID being referenced for deletion.</param>
         /// <param name="context"></param>
         /// <returns>An object that states whether or not the operation was successful.</returns>
-        public override Task<ServiceStatus> deleteProcedure(ProcedureID request, ServerCallContext context)
+        public override Task<ServiceStatus> deleteProcedure(ProcedureUpdateInfo request, ServerCallContext context)
         {
             return Task.FromResult(DeleteProcedure(request));
         }
@@ -216,7 +220,7 @@ namespace Server.Services
         /// </summary>
         /// <param name="pID">The procedure ID being referenced for deletion.</param>
         /// <returns>An object that states whether or not the operation was successful.</returns>
-        private static ServiceStatus DeleteProcedure(ProcedureID pID)
+        private static ServiceStatus DeleteProcedure(ProcedureUpdateInfo info)
         {
             ServiceStatus sStatus = new();
             NpgsqlCommand command;
@@ -228,12 +232,17 @@ namespace Server.Services
                 try
                 {
                     // Delete all foreign key references to this procedure from the Procedure_Photos table first.
-                    query = "DELETE FROM Procedure_Photos WHERE procedure_id = $1;";
+                    query = "UPDATE Procedure_Photos SET " +
+                            "isDeleted = true, " +
+                            "last_edited_by = $1, " +
+                            "last_edited_datetime = DEFAULT " +
+                            "WHERE procedure_id = $2;";
                     command = new NpgsqlCommand(@query, conn)
                     {
                         Parameters =
                         {
-                            new() {Value = pID.PID},
+                            new() {Value = info.EmployeeID},
+                            new() {Value = info.PID},
                         }
                     };
                     conn.Open();
@@ -241,12 +250,17 @@ namespace Server.Services
                     conn.Close();
 
                     // Delete all foreign key references to this procedure from the Procedure_Forms table first.
-                    query = "DELETE FROM Procedure_Forms WHERE procedure_id = $1;";
+                    query = "UPDATE Procedure_Forms SET " +
+                            "isDeleted = true, " +
+                            "last_edited_by = $1, " +
+                            "last_edited_datetime = DEFAULT " +
+                            "WHERE procedure_id = $2;";
                     command = new NpgsqlCommand(@query, conn)
                     {
                         Parameters =
                         {
-                            new() {Value = pID.PID},
+                            new() {Value = info.EmployeeID},
+                            new() {Value = info.PID},
                         }
                     };
                     conn.Open();
@@ -254,12 +268,17 @@ namespace Server.Services
                     conn.Close();
 
                     // Finally, delete from the Client_Procedures table once all foreign key references have been removed.
-                    query = "DELETE FROM Client_Procedures WHERE procedure_id = $1;";
+                    query = "UPDATE Client_Procedures SET " +
+                            "isDeleted = true, " +
+                            "last_edited_by = $1, " +
+                            "last_edited_datetime = DEFAULT " +
+                            "WHERE procedure_id = $2;";
                     command = new NpgsqlCommand(@query, conn)
                     {
                         Parameters =
                         {
-                            new() {Value = pID.PID}
+                            new() {Value = info.EmployeeID},
+                            new() {Value = info.PID}
                         }
                     };
                     conn.Open();
@@ -282,7 +301,7 @@ namespace Server.Services
             else
             {
                 sStatus.IsSuccessfulOperation = false;
-                sStatus.StatusMessage = "Error: Unable to delete Procedure";
+                sStatus.StatusMessage = "Error: Unable to delete Procedure.";
             }
             return sStatus;
         }
@@ -361,7 +380,7 @@ namespace Server.Services
                 if (fileToStore != null)
                 {
                     // store the completed form (file) into the Procedure_Forms table
-                    query = "INSERT INTO Procedure_Forms (procedure_id, filename, file_extension, file_bytes) VALUES ($1, $2, $3, $4);";
+                    query = "INSERT INTO Procedure_Forms (procedure_id, filename, file_extension, file_bytes, created_by, last_edited_by) VALUES ($1, $2, $3, $4, $5, $6);";
                     command = new NpgsqlCommand(@query, conn)
                     {
                         Parameters =
@@ -370,6 +389,8 @@ namespace Server.Services
                             new() {Value = info.Form.FName.FormName_},
                             new() {Value = fileToStoreExt},
                             new() {Value = fileToStore},
+                            new() {Value = info.EmployeeID},
+                            new() {Value = info.EmployeeID},
                         }
                     };
                     conn.Open();
@@ -424,16 +445,19 @@ namespace Server.Services
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "UPDATE Client_Procedures " +
-                        "SET procedure_name = $1, " +
-                        "procedure_notes = $2 " +
-                        "WHERE procedure_id = $3;";
+                query = "UPDATE Client_Procedures SET " +
+                        "procedure_name = $1, " +
+                        "procedure_notes = $2, " +
+                        "last_edited_by = $3, " +
+                        "last_edited_datetime = DEFAULT " +
+                        "WHERE procedure_id = $4;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
                     {
                         new() {Value = newInfo.ProcedureName},
                         new() {Value = newInfo.ProcedureNotes},
+                        new() {Value = newInfo.EmployeeID},
                         new() {Value = newInfo.ProcedureID},
                     }
                 };
@@ -485,11 +509,11 @@ namespace Server.Services
             NpgsqlDataReader reader;
             string query;
             string searchTerm = procName.PName + "%";
-            DateTime dt;
+            DateTime createDT, editDT;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Client_Procedures WHERE LOWER(procedure_name) LIKE LOWER($1) ORDER BY procedure_datetime DESC;";
+                query = "SELECT * FROM Client_Procedures WHERE LOWER(procedure_name) LIKE LOWER($1) AND isDeleted = false ORDER BY procedure_datetime DESC;";
                 command = new NpgsqlCommand(@query, conn)
                 {
                     Parameters =
@@ -503,16 +527,20 @@ namespace Server.Services
                 {
                     while(reader.Read())
                     {
-                        dt = Convert.ToDateTime(reader["procedure_datetime"]);
-                        dt = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                        createDT = Convert.ToDateTime(reader["create_datetime"]);
+                        createDT = DateTime.SpecifyKind(createDT, DateTimeKind.Utc);
+                        editDT = Convert.ToDateTime(reader["last_edited_datetime"]);
+                        editDT = DateTime.SpecifyKind(editDT, DateTimeKind.Utc);
                         ProcedureInfo current = new()
                         {
                             ProcedureID = Convert.ToInt32(reader["procedure_id"]),
                             ProcedureName = Convert.ToString(reader["procedure_name"]),
-                            ProcedureDatetime = dt.ToLocalTime().ToString(),
+                            ProcedureDatetime = createDT.ToLocalTime().ToString(),
                             ClientID = Convert.ToInt32(reader["client_id"]),
                             EmployeeID = Convert.ToInt32(reader["employee_id"]),
                             ProcedureNotes = Convert.ToString(reader["procedure_notes"]),
+                            ProcedureLastEditDatetime = editDT.ToLocalTime().ToString(),
+                            LastEditEmployeeID = Convert.ToInt32(reader["last_edited_by"]),
                         };
                         allProcedures.Procedures.Add(current);
                     }
