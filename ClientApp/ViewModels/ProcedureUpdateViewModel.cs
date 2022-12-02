@@ -40,6 +40,7 @@ namespace ClientApp.ViewModels
                 ProcedureID = ClientProcedureListingViewModel.Procedure_Id,
                 ProcedureName = _ProcedureName,
                 ProcedureNotes = _ProcedureDescription,
+                EmployeeID = LoginPageViewModel.GlobalEmployeeID
             };
             ServiceStatus status = RPCProcedure.updateProcedure(newInfo);
             MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", status.ToString()).Show();

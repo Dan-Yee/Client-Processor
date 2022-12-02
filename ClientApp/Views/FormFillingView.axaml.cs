@@ -56,7 +56,7 @@ namespace ClientApp.Views
             }
             FormName fName = new() { FormName_ = FormMenuViewModel.FormName };
             myFields.FName = fName;
-            CompleteFormInfo info = new() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id, Form = myFields };
+            CompleteFormInfo info = new() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id, Form = myFields, EmployeeID = LoginPageViewModel.GlobalEmployeeID };
             var channel = GrpcChannel.ForAddress("https://localhost:7123");
             var resultStatus = new Procedure.ProcedureClient(channel).completeForm(info);
             MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Status: " + resultStatus).Show();

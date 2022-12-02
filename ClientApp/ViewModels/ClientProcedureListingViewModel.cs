@@ -117,7 +117,7 @@ namespace ClientApp.ViewModels
 
         public void DeleteProcedureCommand()
         {
-            new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureID() { PID = ListOfProcedureIDs[Selection.SelectedIndex] });
+            new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureUpdateInfo() { PID = ListOfProcedureIDs[Selection.SelectedIndex], EmployeeID = LoginPageViewModel.GlobalEmployeeID });
             MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
             _displayedProcedures.RemoveAt(Selection.SelectedIndex);
         }
