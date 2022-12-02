@@ -7,7 +7,7 @@ CREATE TABLE Procedure_Photos (
 	created_by integer,													-- The employee that uploaded this photo
 	create_datetime timestamp DEFAULT (NOW() AT TIME ZONE 'UTC'),		-- The date and time this photo was uploaded
 	last_edited_by integer,												-- The employee that last edited (deleted) this photo
-	last_edit_datetime timestamp DEFAULT (NOW() AT TIME ZONE 'UTC'),	-- The date and time this photo was edited (deleted)
+	last_edited_datetime timestamp DEFAULT (NOW() AT TIME ZONE 'UTC'),	-- The date and time this photo was edited (deleted)
 	isDeleted bool DEFAULT false,
 	PRIMARY KEY (procedure_ID, photo_name),
 	FOREIGN KEY (procedure_ID) REFERENCES Client_Procedures,
