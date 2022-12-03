@@ -123,7 +123,7 @@ namespace Server.Services
 
         public static byte[] GetFormBytes(int FID)
         {
-            
+
 
 
 
@@ -188,30 +188,9 @@ namespace Server.Services
             {
 
                 conn.Open();
-                string SQL = $"DELETE FROM procedure_forms WHERE form_id = {request.FormID}";
+                //$"UPDATE procedure_photos SET isDeleted = true, last_edited_by = {request.EID}, last_edited_datetime = DEFAULT WHERE procedure_id = {request.PID} AND photo_name = \'{request.PhotoName}\'";
+                string SQL = $"UPDATE procedure_forms SET isDeleted = true, last_edited_by = {request.EID}, last_edited_datetime = DEFAULT WHERE form_id = {request.FormID}";
                 NpgsqlCommand cmd = new NpgsqlCommand(SQL, conn);
-                /*cmd.Connection = conn;
-
-                cmd.Parameters.Add(new NpgsqlParameter(":procedure_id", NpgsqlTypes.NpgsqlDbType.Integer));
-                cmd.Parameters[0].Value = PID;
-
-                cmd.Parameters.Add(new NpgsqlParameter(":filename", NpgsqlTypes.NpgsqlDbType.Text));
-                cmd.Parameters[1].Value = FName;
-
-                cmd.Parameters.Add(new NpgsqlParameter(":file_extension", NpgsqlTypes.NpgsqlDbType.Text));
-                cmd.Parameters[2].Value = FExtension;
-
-                cmd.Parameters.Add(new NpgsqlParameter(":file_bytes", NpgsqlTypes.NpgsqlDbType.Bytea));
-                cmd.Parameters[3].Value = x;
-
-                byte[] data = new byte[3];
-                data[0] = 0;
-                data[1] = 0;
-                data[2] = 0;*/
-
-
-                //InsertRecord(5, "DO NOT", "DELETE PLZ", data);
-
 
                 int n;
                 try
@@ -222,6 +201,11 @@ namespace Server.Services
                 catch (PostgresException pgE)
                 {
                     conn.Close();
+                    return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
+                }
+
+                if (n == 0)
+                {
                     return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
                 }
             }
@@ -236,11 +220,6 @@ namespace Server.Services
 
 
         //////////////////////////////////////////STORING COMPLETED FORMS//////////////////////////////////////////////////////////
-        ///
-
-        //insert into public.procedure_forms(/*form_id, */procedure_id, filename, file_extension, file_bytes) values (66, 'hi', '.x', null)
-        //
-        //
 
         private static void InsertRecord(int PID, string FName, string FExtension, byte[] x)
         {
@@ -279,14 +258,6 @@ namespace Server.Services
                 }
             }
         }
-
-
-        /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
 
 
         private static NpgsqlConnection GetConnection()

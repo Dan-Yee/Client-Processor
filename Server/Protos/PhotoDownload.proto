@@ -30,5 +30,7 @@ message PhotoInfo{
 message DeleteRequest{
     string PhotoName = 1;
     int32 PID = 2;
+    int32 EID = 3;
 }
+
 

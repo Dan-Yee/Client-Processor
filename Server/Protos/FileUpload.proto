@@ -30,11 +30,14 @@ message PhotoMeta{
     string PhotoName = 2;
     string PhotoExtension = 3;
     bool isBefore = 4;
+    int32 EmployeeID = 5;
 }
 
 message FormTemplateMeta{
     string FormName = 1;
     string FormExtension = 2;
 }
+
+
 
 

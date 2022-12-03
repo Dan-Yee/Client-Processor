@@ -125,7 +125,7 @@ namespace Server.Services
                 {
                     conn.Open();
                     //crafting the SQL command to inser the record
-                    SQL = "insert into procedure_photos values(:procedure_id,:photo_name,:photo_extension,:isbefore,:photo_bytes)";
+                    SQL = "insert into procedure_photos (procedure_id,photo_name,photo_extension,isbefore,photo_bytes,created_by,last_edited_by) values(:procedure_id,:photo_name,:photo_extension,:isbefore,:photo_bytes,:created_by,:last_edited_by)";
                     cmd = new NpgsqlCommand(SQL);
                     cmd.Connection = conn;
 
@@ -143,6 +143,12 @@ namespace Server.Services
 
                     cmd.Parameters.Add(new NpgsqlParameter(":photo_bytes", NpgsqlTypes.NpgsqlDbType.Bytea));
                     cmd.Parameters[4].Value = FileContent;
+
+                    cmd.Parameters.Add(new NpgsqlParameter(":created_by", NpgsqlTypes.NpgsqlDbType.Integer));
+                    cmd.Parameters[5].Value = Meta.PhotoMeta.EmployeeID;
+
+                    cmd.Parameters.Add(new NpgsqlParameter(":last_edited_by", NpgsqlTypes.NpgsqlDbType.Integer));
+                    cmd.Parameters[6].Value = Meta.PhotoMeta.EmployeeID;
 
                 }
                 else

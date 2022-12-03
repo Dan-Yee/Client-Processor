@@ -8,12 +8,14 @@ service FileUpload {
   rpc FileUpload(stream UploadRequest) returns (ServiceStatus) {}
 }
 
+
 message UploadRequest{
     oneof UploadMessage{
         FileMetaData FileMeta = 1;
         bytes FileChunk = 2;
     }
 }
+
 
 message FileMetaData{
     oneof FileMeta{
@@ -22,17 +24,22 @@ message FileMetaData{
      }
 }
 
+
 message PhotoMeta{
     int32 ProcedureID = 1;
     string PhotoName = 2;
     string PhotoExtension = 3;
     bool isBefore = 4;
+    int32 EmployeeID = 5;
 }
 
 message FormTemplateMeta{
     string FormName = 1;
     string FormExtension = 2;
 }
+
+
+
 
 
 

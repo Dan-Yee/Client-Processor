@@ -167,7 +167,7 @@ namespace Server.Services
             {
 
                 conn.Open();
-                string SQL = $"DELETE FROM procedure_photos WHERE procedure_id = {request.PID} AND photo_name = \'{request.PhotoName}\'";
+                string SQL = $"UPDATE procedure_photos SET isDeleted = true, last_edited_by = {request.EID}, last_edited_datetime = DEFAULT WHERE procedure_id = {request.PID} AND photo_name = \'{request.PhotoName}\'";
                 NpgsqlCommand cmd = new NpgsqlCommand(SQL, conn);
 
                 int n;

@@ -12,6 +12,7 @@ service CompletedForm {
 
 message SelectedFormRequest{
 	int32 FormID = 1;
+	int32 EID = 2;
 }
 
 message SelectedFormResponse{
