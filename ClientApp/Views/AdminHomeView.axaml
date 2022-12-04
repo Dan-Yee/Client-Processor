@@ -17,65 +17,54 @@
 			<Setter Property="Width" Value="125"/>
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
 			<Setter Property="CornerRadius" Value="0"/>
 			<Setter Property="Background" Value="#161616"/>
 		</Style>
 	</UserControl.Styles>
 
-
-	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterRegister}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToImport}" PageTransition="{x:Null}">
-		<rxui:RoutedViewHost.DefaultContent>
-	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}" PageTransition="{x:Null}">
-		<rxui:RoutedViewHost.DefaultContent>
-			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ViewEmployeeRouter}" PageTransition="{x:Null}">
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToImport}" PageTransition="{x:Null}">
 				<rxui:RoutedViewHost.DefaultContent>
-	<Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" ShowGridLines="False">
-		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Admin View" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 10 0 0"/>
+					<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterHomePageProcedure}" PageTransition="{x:Null}">
+						<rxui:RoutedViewHost.DefaultContent>
+							<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToViewEmployee}" PageTransition="{x:Null}">
+								<rxui:RoutedViewHost.DefaultContent>
+									<Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto,*" ShowGridLines="False">
+										<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Admin View" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 50 0 0"/>
 
-		<TextBox Watermark="Search..." Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Height="50"/>
-		<Button Content="Home" Command="{Binding GoToHomeFromAdminHomeCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 10 0 0"/>
-		<Button Content="Search"  Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 70 0 0"/>
-		<Button Content="Insert Form" Command="{Binding OpenImportFormView}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 130 0 0"/>
+										<Button Content="Home" Command="{Binding GoToHomeFromAdminHomeCommand}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
+										<Button Content="Insert Form" Command="{Binding OpenImportFormView}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Top" Margin="150 50 0 0"/>
 
-		<StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Margin="0 20 0 0">
-			<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
-			<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-				<ListBox Items="{Binding Employees}" Selection="{Binding Selection}"></ListBox>
-			</ScrollViewer>
-		</StackPanel>
+										<StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Width="500" Margin="0 20 0 0">
+											<Label VerticalAlignment="Center" HorizontalAlignment="Center">Employees</Label>
+											<ScrollViewer Height="300" VerticalScrollBarVisibility="Auto">
+												<ListBox Items="{Binding Employees}" Selection="{Binding EmployeeSelection}"></ListBox>
+											</ScrollViewer>
+										</StackPanel>
 
-		<Button Content="Add" Command="{Binding CreateEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
-		<Button Content="Delete" IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding DeleteEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 100 0 0"/>
-		<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 150 0 0"/>
-		<!--
-		<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
-		-->
-		<!--<Button Content="Delete" IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding DeleteEmployeeCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>-->
-	</Grid>
+										<Button Content="Add"  Command="{Binding CreateEmployeeCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
+										<Button Content="Info"  IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding GoToReadEmployeeInfoCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
+
+									</Grid>
+								</rxui:RoutedViewHost.DefaultContent>
+								<rxui:RoutedViewHost.ViewLocator>
+									<app:EmployeeInformationViewLocator />
+								</rxui:RoutedViewHost.ViewLocator>
+							</rxui:RoutedViewHost>
+						</rxui:RoutedViewHost.DefaultContent>
+						<rxui:RoutedViewHost.ViewLocator>
+							<app:ViewLocator />
+						</rxui:RoutedViewHost.ViewLocator>
+					</rxui:RoutedViewHost>
 				</rxui:RoutedViewHost.DefaultContent>
 				<rxui:RoutedViewHost.ViewLocator>
-					<!-- See ViewLocator.cs section below -->
-					<app:EmployeeInformationViewLocator />
+					<app:ImportViewLocator />
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
-			<app:ViewLocator />
-		</rxui:RoutedViewHost.ViewLocator>
-	</rxui:RoutedViewHost>
-		</rxui:RoutedViewHost.DefaultContent>
-		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
-			<app:ImportViewLocator />
-		</rxui:RoutedViewHost.ViewLocator>
-	</rxui:RoutedViewHost>
-	</rxui:RoutedViewHost.DefaultContent>
-		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
 			<app:RegisterViewLocator />
 		</rxui:RoutedViewHost.ViewLocator>
 	</rxui:RoutedViewHost>

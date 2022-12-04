@@ -16,14 +16,14 @@ namespace ClientApp.ViewModels
     {
         public IScreen HostScreen { get; }
 
+        //Holds onto the selected employee so that other pages can access the employee's information
         public static EmployeeModel SelectedEmployee { get; set; }
 
-        public SelectionModel<EmployeeModel> Selection { get; }
+        //Current employee selected
+        public SelectionModel<EmployeeModel> EmployeeSelection { get; } = new();
 
         public string UrlPathSegment { get; } = "AdminHome";
-        public RoutingState Router2 { get; } = new RoutingState();
-        public RoutingState ViewEmployeeRouter { get; } = new RoutingState();
-
+        public RoutingState RouterToViewEmployee { get; } = new RoutingState();
         public RoutingState RouterHomePageProcedure { get; } = new RoutingState();
 
         public RoutingState RouterToImport { get; } = new RoutingState();
@@ -31,12 +31,12 @@ namespace ClientApp.ViewModels
         public RoutingState RouterRegister { get; } = new RoutingState();
 
 
-        public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateHome { get; }
 
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToImport { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToImport { get; }
 
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToRegister { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToEmployeeInformation { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegister { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToEmployeeInformation { get; }
 
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
@@ -57,60 +57,6 @@ namespace ClientApp.ViewModels
 
         //List of employees. Binded in view to display the employees
         private ObservableCollection<Models.EmployeeModel> _employees = new();
-
-        public AdminHomeViewModel()
-        {
-            //Pass view to the viewmodel
-            //_adminHomeView = adminHomeView;
-            // localhost for testing purposes
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Server.Employee.EmployeeClient(channel);
-            //AllEmployeesInfo info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
-            //Get employees from database
-            AllEmployees info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
-            foreach (EmployeeInfo e in info.Employees)
-            {
-                //Add employees to the list
-                _employees.Add(new Models.EmployeeModel(e.EmployeeId, e.FirstName, e.LastName, e.Credentials.Username, e.IsAdmin));
-            }
-            //Employees = _employees;
-            SelectButtonEnabled = false;
-            Selection = new SelectionModel<EmployeeModel>();
-            Selection.SelectionChanged += SelectionChanged;
-
-            GoHome = ReactiveCommand.CreateFromObservable(
-             () => RouterHomePageProcedure.Navigate.Execute(new HomePageViewModel()));
-
-            GoToImport = ReactiveCommand.CreateFromObservable(
-             () => RouterToImport.Navigate.Execute(new ImportFormViewModel()));
-
-            GoToRegister = ReactiveCommand.CreateFromObservable(
-             () => RouterRegister.Navigate.Execute(new RegisterEmployeeViewModel()));
-
-            GoToEmployeeInformation = ReactiveCommand.CreateFromObservable(
-             () => ViewEmployeeRouter.Navigate.Execute(new EmployeeInformationViewModel()));
-        }
-
-        /*
-        string _user =string.Empty;
-        bool _isAdmin = false;
-        public AdminHomeViewModel(AdminHomeView adminHomeView,string user, bool isAdmin)
-        {
-            _user = user;
-            _isAdmin = isAdmin;
-            _adminHomeView = adminHomeView;
-            // localhost for testing purposes
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Server.Employee.EmployeeClient(channel);
-            //AllEmployeesInfo info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
-            AllEmployees info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
-            foreach (EmployeeInfo e in info.Employees)
-            {
-                _employees.Add(new Models.EmployeeModel(e.EmployeeId,e.FirstName,e.LastName,e.Credentials.Username,e.IsAdmin));
-            }
-            Employees = _employees;
-        }
-        */
         public ObservableCollection<Models.EmployeeModel> Employees
         {
             get => _employees;
@@ -120,6 +66,43 @@ namespace ClientApp.ViewModels
             }
         }
 
+
+        public AdminHomeViewModel()
+        {
+            // localhost for testing purposes
+            var channel = GrpcChannel.ForAddress("https://localhost:7123");
+            var client = new Server.Employee.EmployeeClient(channel);
+            //Get employees from database
+            AllEmployees info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
+            foreach (EmployeeInfo e in info.Employees)
+            {
+                //Add employees to the list
+                _employees.Add(new Models.EmployeeModel(e.EmployeeId, e.FirstName, e.LastName, e.Credentials.Username, e.IsAdmin));
+            }
+            //Disables button every time the page is loaded
+            SelectButtonEnabled = false;
+
+            //Subscribes the selection to an event listener
+            EmployeeSelection.SelectionChanged += SelectionChanged;
+
+            NavigateHome = ReactiveCommand.CreateFromObservable(
+             () => RouterHomePageProcedure.Navigate.Execute(new HomePageViewModel()));
+
+            NavigateToImport = ReactiveCommand.CreateFromObservable(
+             () => RouterToImport.Navigate.Execute(new ImportFormViewModel()));
+
+            NavigateToRegister = ReactiveCommand.CreateFromObservable(
+             () => RouterRegister.Navigate.Execute(new RegisterEmployeeViewModel()));
+
+            NavigateToEmployeeInformation = ReactiveCommand.CreateFromObservable(
+             () => RouterToViewEmployee.Navigate.Execute(new EmployeeInformationViewModel()));
+        }
+
+        /// <summary>
+        /// When the user selects an employee, the button(s) are enabled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
@@ -131,7 +114,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void GoToHomeFromAdminHomeCommand()
         {
-            GoHome.Execute();
+            NavigateHome.Execute();
 
         }
 
@@ -140,7 +123,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void OpenImportFormView()
         {
-            GoToImport.Execute();
+            NavigateToImport.Execute();
 
         }
 
@@ -149,9 +132,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void CreateEmployeeCommand()
         {
-
-            GoToRegister.Execute();
-
+            NavigateToRegister.Execute();
         }
 
         /// <summary>
@@ -164,8 +145,6 @@ namespace ClientApp.ViewModels
             ButtonResult result = await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Confirm deletion", ButtonEnum.YesNo).Show();
             if (result == ButtonResult.Yes)
             {
-
-
                 MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "To delete").Show();
             }
             else
@@ -174,10 +153,13 @@ namespace ClientApp.ViewModels
             }
         }
 
-        public void GoToReadProcedurePageCommand()
+        /// <summary>
+        /// Takes user to view the employee information
+        /// </summary>
+        public void GoToReadEmployeeInfoCommand()
         {
-            SelectedEmployee = Selection.SelectedItem;
-            GoToEmployeeInformation.Execute();
+            SelectedEmployee = EmployeeSelection.SelectedItem;
+            NavigateToEmployeeInformation.Execute();
         }
     }
 }
