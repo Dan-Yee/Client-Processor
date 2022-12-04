@@ -131,8 +131,7 @@ namespace ClientApp.ViewModels
             //If there is a name to search
             if (SearchNameTextInput != null && SearchNameTextInput.Length > 0)
             {
-                var channel = GrpcChannel.ForAddress("https://localhost:7123");
-                var client = new Client.ClientClient(channel);
+                var client = new Client.ClientClient(Program.gRPCChannel);
                 AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
                 if (info.Clients.Count > 0)
                 {

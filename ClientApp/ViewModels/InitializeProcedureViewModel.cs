@@ -34,9 +34,7 @@ namespace ClientApp.ViewModels
         }
         public void ProceedToMakeProcedure()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var RPCProcedure = new Procedure.ProcedureClient(channel);
-            //LoginPageViewModel.
+            var RPCProcedure = new Procedure.ProcedureClient(Program.gRPCChannel);
             ProcedureInfo i = new()
             {
                 ClientID = HomePageViewModel.Client_ID,

@@ -95,10 +95,7 @@ namespace ClientApp.ViewModels
 
         public ClientProcedureListingViewModel()
         {
-            // localhost for testing purposes
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            //var client = new Client.ClientClient(channel);
-            var client = new Procedure.ProcedureClient(channel);
+            var client = new Procedure.ProcedureClient(Program.gRPCChannel);
 
             //Getting the clients from the database
             AllProcedures info = client.getProcedures(new ClientID { CID = HomePageViewModel.Client_ID});
@@ -143,7 +140,7 @@ namespace ClientApp.ViewModels
             ButtonResult result = await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Confirm deletion", ButtonEnum.YesNo).Show();
             if (result == ButtonResult.Yes)
             {
-                new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureUpdateInfo() { PID = ListOfProcedureIDs[Selection.SelectedIndex], EmployeeID = LoginPageViewModel.GlobalEmployeeID });
+                new Procedure.ProcedureClient(Program.gRPCChannel).deleteProcedure(new ProcedureUpdateInfo() { PID = ListOfProcedureIDs[Selection.SelectedIndex], EmployeeID = LoginPageViewModel.GlobalEmployeeID });
                 SelectButtonEnabled = false;
                 _displayedProcedures.RemoveAt(Selection.SelectedIndex);
             }

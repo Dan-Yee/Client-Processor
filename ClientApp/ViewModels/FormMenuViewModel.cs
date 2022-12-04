@@ -75,9 +75,7 @@ namespace ClientApp.ViewModels
         public static TemplatesResponse GetTemplateNames()
         {
             TemplatesResponse templates = new TemplatesResponse();
-
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new FormTemplateNames.FormTemplateNamesClient(channel);
+            var client = new FormTemplateNames.FormTemplateNamesClient(Program.gRPCChannel);
             templates = client.GetTemplateNames(new TemplatesRequest { });
 
             return templates;

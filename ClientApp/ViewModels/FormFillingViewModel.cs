@@ -40,8 +40,6 @@ namespace ClientApp.ViewModels
             }
         }
 
-
-        public GrpcChannel channel;
         public Server.Procedure.ProcedureClient procedureClient;
         public FormName name;
         public Server.FormFields formFields;
@@ -53,9 +51,7 @@ namespace ClientApp.ViewModels
         public static ReactiveCommand<Unit, IRoutableViewModel> NavigateToFormMenu { get; set; }
         public FormFillingViewModel()
         {
-            
-            channel = GrpcChannel.ForAddress("https://localhost:7123");
-            procedureClient = new Procedure.ProcedureClient(channel);
+            procedureClient = new Procedure.ProcedureClient(Program.gRPCChannel);
             name = new() { FormName_ = FormMenuViewModel.FormName };
             formFields = procedureClient.getFormFields(name);
             int index = 0;

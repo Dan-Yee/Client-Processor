@@ -44,8 +44,7 @@ namespace ClientApp.ViewModels
             //Makes sure that required fields have values
             if(FirstName != null && FirstName!="" && LastName!=null && LastName!="" && PhoneNumber!=null && PhoneNumber != "")
             {
-                var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-                var client = new Client.ClientClient(channel);
+                var client = new Client.ClientClient(Program.gRPCChannel);
 
                 //Initializing the client
                 var clientInfo = new ClientInfo

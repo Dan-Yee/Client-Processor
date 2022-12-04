@@ -35,9 +35,7 @@ namespace ClientApp.ViewModels
              () => Router.Navigate.Execute(new HomePageViewModel()));
             //HomePageViewModel.Client_ID
 
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Client.ClientClient(channel);
-
+            var client = new Client.ClientClient(Program.gRPCChannel);
             AllClients info = client.searchClientsByName(new ClientName() { CName = HomePageViewModel.ClientName });
             
             if (info.Clients.Count > 0)

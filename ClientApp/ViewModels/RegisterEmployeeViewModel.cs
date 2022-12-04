@@ -63,8 +63,7 @@ namespace ClientApp.ViewModels
             //If all of the fields are filled in
             if (EmployeeUserName != null && EmployeeUserName != "" && EmployeePassword != null && EmployeePassword != "" && EmployeeFirstName != null && EmployeeFirstName != "" && EmployeeLastName != null && EmployeeLastName != "")
             {
-                var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-                var employee = new Server.Employee.EmployeeClient(channel);
+                var employee = new Server.Employee.EmployeeClient(Program.gRPCChannel);
                 var loginCredentials = new LoginCredentials 
                 {
                     Username = EmployeeUserName,

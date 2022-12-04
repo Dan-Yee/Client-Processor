@@ -43,10 +43,7 @@ namespace ClientApp.ViewModels
         /// <exception cref="Exception"></exception>
         private static async Task UploadFile(byte[] bytes, string fName, string fExtension, int PID, int destination)
         {
-
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            ///var client = new FileTransfer.FileTransferClient(channel);
-            var client = new FileTransfer.FileTransferClient(channel);
+            var client = new FileTransfer.FileTransferClient(Program.gRPCChannel);
             var stream = client.UploadFile();
 
             if ((destination < 0) || (destination > 2))

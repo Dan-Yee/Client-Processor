@@ -40,8 +40,7 @@ namespace ClientApp.ViewModels
             GoToHomePage = ReactiveCommand.CreateFromObservable(
              () => RouterToHomePage.Navigate.Execute(new HomePageViewModel()));
 
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Client.ClientClient(channel);
+            var client = new Client.ClientClient(Program.gRPCChannel);
 
             AllClients info = client.searchClientsByName(new ClientName() { CName = HomePageViewModel.ClientName });
 
@@ -72,8 +71,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void UpdateCommand()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Client.ClientClient(channel);
+            var client = new Client.ClientClient(Program.gRPCChannel);
             if(ClientFirstNameInfo != null && ClientFirstNameInfo != "")
             {
                 CurrentFirstName = ClientFirstNameInfo;

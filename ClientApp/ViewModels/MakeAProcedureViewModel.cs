@@ -87,8 +87,7 @@ namespace ClientApp.ViewModels
         {
             TemplatesResponse templates = new TemplatesResponse();
 
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new FormTemplateNames.FormTemplateNamesClient(channel);
+            var client = new FormTemplateNames.FormTemplateNamesClient(Program.gRPCChannel);
             templates = client.GetTemplateNames(new TemplatesRequest { });
 
             return templates;
@@ -156,9 +155,7 @@ namespace ClientApp.ViewModels
         /// <exception cref="Exception"></exception>
         private static async Task UploadFile(byte[] bytes, FileMetaData MetaData)
         {
-            //connect to server
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new FileUpload.FileUploadClient(channel);
+            var client = new FileUpload.FileUploadClient(Program.gRPCChannel);
             var stream = client.FileUpload();
 
             //send the MetaData

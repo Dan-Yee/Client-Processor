@@ -59,8 +59,7 @@ namespace ClientApp.ViewModels
             //Only runs code if username and password fields are filled
             if (UserName != null && UserName != "" && Password != null && Password != "")
             {
-                var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-                var ClientApp = new Employee.EmployeeClient(channel);
+                var ClientApp = new Employee.EmployeeClient(Program.gRPCChannel);
 
                 var credentials = new LoginCredentials
                 {
@@ -68,7 +67,7 @@ namespace ClientApp.ViewModels
                     Password = Password,
                 };
 
-                var serviceResponse = ClientApp.doLogin(credentials);                               // assynchronous rpc to Server to verify login credentials
+                var serviceResponse = ClientApp.doLogin(credentials);
                 //If the credentials are valid
                 if (serviceResponse.IsSuccessfulLogin)
                 {

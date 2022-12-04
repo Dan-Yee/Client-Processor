@@ -32,9 +32,8 @@ namespace ClientApp.ViewModels
         }
 
         public void UpdateProcedureCommand()
-        {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var RPCProcedure = new Procedure.ProcedureClient(channel);
+        {                              // localhost for testing purposes
+            var RPCProcedure = new Procedure.ProcedureClient(Program.gRPCChannel);
             ProcedureInfo newInfo = new()
             {
                 ProcedureID = ClientProcedureListingViewModel.Procedure_Id,

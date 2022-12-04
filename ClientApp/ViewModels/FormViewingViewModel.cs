@@ -40,9 +40,8 @@ namespace ClientApp.ViewModels
         {
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
-            
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new CompletedForm.CompletedFormClient(channel);
+
+            var client = new CompletedForm.CompletedFormClient(Program.gRPCChannel);
             var response = client.CompletedFormNames(new CompletedFormsRequest() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id });
             foreach(var formInformation in response.FormInfo)
             {
@@ -84,8 +83,7 @@ namespace ClientApp.ViewModels
 
         public static async Task<byte[]> getCompletedForm(int FID)
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new CompletedForm.CompletedFormClient(channel);
+            var client = new CompletedForm.CompletedFormClient(Program.gRPCChannel);
             var response = client.CompletedFormDownload(new SelectedFormRequest { FormID = FID });
             var ByteList = new List<byte>();
 

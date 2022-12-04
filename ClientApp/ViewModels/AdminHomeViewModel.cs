@@ -69,9 +69,7 @@ namespace ClientApp.ViewModels
 
         public AdminHomeViewModel()
         {
-            // localhost for testing purposes
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Server.Employee.EmployeeClient(channel);
+            var client = new Server.Employee.EmployeeClient(Program.gRPCChannel);
             //Get employees from database
             AllEmployees info = client.getEmployees(new Google.Protobuf.WellKnownTypes.Empty());
             foreach (EmployeeInfo e in info.Employees)

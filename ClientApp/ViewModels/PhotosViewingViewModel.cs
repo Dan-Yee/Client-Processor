@@ -86,11 +86,7 @@ namespace ClientApp.ViewModels
         /// <returns></returns>
         private static async Task<List<Photo>> DownloadPhoto(int PID, bool IsBefore)
         {
-
-            //connect to server
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            //var client = new FileUpload.FileUploadClient(channel);
-            var client = new PhotoDownload.PhotoDownloadClient(channel);
+            var client = new PhotoDownload.PhotoDownloadClient(Program.gRPCChannel);
             var response = client.PhotosDownload(new PhotosRequest() { ProcedureID = PID, IsBefore = IsBefore });
 
             String name = "";
@@ -173,11 +169,7 @@ namespace ClientApp.ViewModels
         /// <returns></returns>
         private static async Task<List<Photo>> DownloadPhoto2(int PID, bool IsBefore)
         {
-
-            //connect to server
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            //var client = new FileUpload.FileUploadClient(channel);
-            var client = new PhotoDownload.PhotoDownloadClient(channel);
+            var client = new PhotoDownload.PhotoDownloadClient(Program.gRPCChannel);
             var response = client.PhotosDownload(new PhotosRequest { ProcedureID = PID, IsBefore = IsBefore });
 
             String name = String.Empty;
