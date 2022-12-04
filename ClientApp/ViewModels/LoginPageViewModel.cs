@@ -3,10 +3,12 @@ using Grpc.Net.Client;
 using Server;
 using ReactiveUI;
 using System.Reactive;
+using System.ComponentModel;
+using System;
 
 namespace ClientApp.ViewModels
 {
-    public class LoginPageViewModel : ReactiveObject,IRoutableViewModel
+    public class LoginPageViewModel : ReactiveObject, INotifyPropertyChanged,IRoutableViewModel
     {
         //Holds current user
         public static string GlobalUserName { get; set; }
@@ -14,10 +16,16 @@ namespace ClientApp.ViewModels
 
         //Holds whether the user has admin privilages
         public static bool GlobalIsAdmin { get; set; }
+        
+        //Holds the username input
         public string UserName { get; set; }
+        
+        //Holds the password input
+        public string Password {get;set;}
 
-        //private string _password= string.Empty;
-        public string Password { get; set; }
+        //Tracks number of invalid login attempts
+        public static int InvalidCredentialsCount { get; set; }
+
 
         public IScreen HostScreen { get; }
 
@@ -28,10 +36,6 @@ namespace ClientApp.ViewModels
 
         // The command that navigates a user to first view model.
         public ReactiveCommand<Unit, IRoutableViewModel> GoNext { get;}
-        
-
-       
-
 
 
         /// <summary>
@@ -39,6 +43,9 @@ namespace ClientApp.ViewModels
         /// </summary>
         public LoginPageViewModel()
         {
+            //Resets count every time this page loads
+            InvalidCredentialsCount = 0;
+            //Function for going to home page
             GoNext = ReactiveCommand.CreateFromObservable(
               () => Router.Navigate.Execute(new HomePageViewModel()));
         }
@@ -49,32 +56,33 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void LoginCommand()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var ClientApp = new Employee.EmployeeClient(channel);
-
-            var credentials = new LoginCredentials
+            //Only runs code if username and password fields are filled
+            if (UserName != null && UserName != "" && Password != null && Password != "")
             {
-                Username = UserName,
-                Password = Password,
-            };
-            var serviceResponse = ClientApp.doLogin(credentials);                               // assynchronous rpc to Server to verify login credentials
-            //If the credentials are valid
-            if (serviceResponse.IsSuccessfulLogin)
-            {
-                GlobalUserName = UserName;
-                GlobalIsAdmin = serviceResponse.IsAdmin;
+                var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
+                var ClientApp = new Employee.EmployeeClient(channel);
 
-                //Takes user to home page
-                GoNext.Execute();
+                var credentials = new LoginCredentials
+                {
+                    Username = UserName,
+                    Password = Password,
+                };
 
-                GlobalEmployeeID = serviceResponse.EmployeeId;
-                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Success", "User: "+GlobalUserName+", logged in successfully.").Show();
-            }
-            else
-            {
-                //Display message that log in failed 
-                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Failed", "Login failed").Show();
+                var serviceResponse = ClientApp.doLogin(credentials);                               // assynchronous rpc to Server to verify login credentials
+                //If the credentials are valid
+                if (serviceResponse.IsSuccessfulLogin)
+                {
+                    GlobalUserName = UserName;
+                    GlobalIsAdmin = serviceResponse.IsAdmin;
 
+                    //Takes user to home page
+                    GoNext.Execute();
+
+                    GlobalEmployeeID = serviceResponse.EmployeeId;
+
+                    //Uncomment if you want a message that lets the user know that they logged in
+                    //MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("Success", "User: " + GlobalUserName + ", logged in successfully.").Show();
+                }
             }
 
         }

@@ -79,7 +79,7 @@ namespace ClientApp.ViewModels
             var client = new Procedure.ProcedureClient(channel);
 
             //Getting the clients from the database
-            AllProcedures info = client.getProcedures(new ClientID { CID = HomePageViewModel.Client_ID });
+            AllProcedures info = client.getProcedures(new ClientID { CID = HomePageViewModel.Client_ID});
 
             foreach (ProcedureInfo procedure in info.Procedures)
             {

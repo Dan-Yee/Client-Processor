@@ -18,16 +18,20 @@
 		</Style>
 	</UserControl.Styles>
 
+
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-			<StackPanel HorizontalAlignment="Center" Spacing="20" VerticalAlignment="Top" Margin="0,50,0,0">
-				<TextBlock Text="Login" HorizontalAlignment="Center" FontSize="30.0" />
-				<TextBlock Text="Username" HorizontalAlignment="Center" FontSize="20" Margin="0,50,0,0"/>
-				<TextBox Width="200" Text="{CompiledBinding UserName}"/>
-				<TextBlock Text="Password" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
-				<TextBox Width="200"  Text="{CompiledBinding Password}" PasswordChar="*"/>
-				<Button x:Name="loginBtn" Command="{Binding LoginCommand}" Content="Login" HorizontalAlignment="Center" Margin="0,30,0,0" Width="150" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25"/>
-			</StackPanel>
+			<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*,*">
+				<TextBlock Text="Login" Grid.Row="0" Grid.Column="1" FontSize="30.0" HorizontalAlignment="Center" Margin="0 50 0 0"/>
+				<TextBlock  Text="Username" Grid.Row="1" Grid.Column="1" FontSize="20" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				<TextBox x:Name="UsernameInput" Text="{CompiledBinding UserName}" Width="200" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"/>
+				<TextBlock Text="Password" FontSize="20" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				<TextBox x:Name="PasswordInput" Text="{CompiledBinding Password}" Width="200" PasswordChar="*" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center"/>
+				<Button x:Name="loginBtn" Command="{Binding LoginCommand}" Content="Login" Grid.Row="5" Grid.Column="1" Width="150" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="25" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				<TextBlock x:Name="Warning" Foreground="#d10202" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				
+				
+			</Grid>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
 			<!-- See ViewLocator.cs section below -->
