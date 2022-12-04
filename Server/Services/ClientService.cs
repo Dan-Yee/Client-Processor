@@ -68,55 +68,6 @@ namespace Server.Services
         }
 
         /// <summary>
-        /// Implementation of the getClients RPC that retrieves all records of all Clients from the database.
-        /// </summary>
-        /// <param name="request">Empty. This RPC does not require any arguments</param>
-        /// <param name="context"></param>
-        /// <returns>An object of objects where each sub-object represents an entry in the Clients table in the database</returns>
-        public override Task<AllClients> getClients(Empty request, ServerCallContext context)
-        {
-            return Task.FromResult(SelectAllClients());
-        }
-
-        /// <summary>
-        /// Method <c>SelectAllClients</c> selects all rows from the Clients table and packs it into a message to be sent back.
-        /// </summary>
-        /// <returns>A protobuf message object containing information about every Client in the database.</returns>
-        private static AllClients SelectAllClients()
-        {
-            AllClients clients = new();
-            NpgsqlCommand command;
-            NpgsqlDataReader reader;
-            string query;
-
-            using (NpgsqlConnection conn = GetConnection())
-            {
-                query = "SELECT * FROM Clients;";
-                command = new NpgsqlCommand(@query, conn);
-                conn.Open();
-                reader = command.ExecuteReader();
-                if(reader.HasRows)
-                {
-                    while(reader.Read())
-                    {
-                        var current = new ClientInfo
-                        {
-                            ClientId = Convert.ToInt32(reader["client_id"]),
-                            FirstName = reader["first_name"].ToString(),
-                            LastName = reader["last_name"].ToString(),
-                            PhoneNumber = reader["phone_number"].ToString(),
-                            Email = reader["email_address"].ToString()
-                        };
-                        clients.Clients.Add(current);
-                    }
-                }
-                reader.Close();
-                conn.Close();
-            }
-            return clients;
-        }
-
-        /// <summary>
         /// Implementation of the searchClientsByName RPC that retrieves all records of all Clients that fulfill a search pattern
         /// </summary>
         /// <param name="request">The phrase being used to search the Client table.</param>
