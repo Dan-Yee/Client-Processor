@@ -31,11 +31,11 @@
 		<rxui:RoutedViewHost.DefaultContent>
 			<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto,Auto">
 				<TextBlock Grid.Row="0" Grid.Column="1" Margin="0 50 0 0" Text="Customer Registration" FontSize="20"/>
-				<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name*" HorizontalAlignment="Center" FontSize="20"/>
 				<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding FirstName}" FontSize="20" VerticalContentAlignment="Center" Width="200"/>
-				<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name*" HorizontalAlignment="Center" FontSize="20"/>
 				<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding LastName}" FontSize="20" VerticalContentAlignment="Center" Width="200"/>
-				<TextBlock Grid.Row="3" Grid.Column="0" Text="Phone Number" HorizontalAlignment="Center" FontSize="20"/>
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Phone Number*" HorizontalAlignment="Center" FontSize="20"/>
 				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding PhoneNumber}" FontSize="20" VerticalContentAlignment="Center" Width="200"/>
 				<TextBlock Grid.Row="4" Grid.Column="0" Text="Email" HorizontalAlignment="Center" FontSize="20"/>
 				<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Email}" FontSize="20" VerticalContentAlignment="Center" Width="200"/>
