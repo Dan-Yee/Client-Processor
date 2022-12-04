@@ -31,93 +31,19 @@ namespace ClientApp.ViewModels
             GoToAdminHome = ReactiveCommand.CreateFromObservable(
              () => RouterAdmimHomePageProcedure.Navigate.Execute(new AdminHomeViewModel()));
         }
-
-        /*
-        string _user = string.Empty;
-        bool _isAdmin = false;
-        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView, string user, bool isAdmin)
-        {
-            _registerEmployeeView = registerEmployeeView;
-            _user = user;
-            _isAdmin = isAdmin;
-        }
-        */
-        private string _employeeFirstName = string.Empty;
-
-        public string EmployeeFirstName
-        {
-
-            get
-            {
-                return _employeeFirstName;
-            }
-
-            set
-            {
-                _employeeFirstName = value;
-                OnPropertyChanged(nameof(EmployeeFirstName));
-
-            }
-        }
-
-        private string _employeeLastName = string.Empty;
-
-        public string EmployeeLastName
-        {
-
-            get
-            {
-                return _employeeLastName;
-            }
-
-            set
-            {
-                _employeeLastName = value;
-                OnPropertyChanged(nameof(EmployeeLastName));
-
-            }
-        }
-
-        private string _employeeUserName = string.Empty;
-
-        public string EmployeeUserName
-        {
-
-            get
-            {
-                return _employeeUserName;
-            }
-
-            set
-            {
-                _employeeUserName = value;
-                OnPropertyChanged(nameof(EmployeeUserName));
-
-            }
-        }
-
-        private string _employeePassword = string.Empty;
-
-        public string EmployeePassword
-        {
-
-            get
-            {
-                return _employeePassword;
-            }
-
-            set
-            {
-                _employeePassword = value;
-                OnPropertyChanged(nameof(EmployeePassword));
-
-            }
-        }
-
-        private bool _employeeIsAdmin = false;
-
         public event PropertyChangingEventHandler? PropertyChanging;
 
+        //Holds first name of employee
+        public string EmployeeFirstName { get; set; } = string.Empty;
+        //Holds last name of employee
+        public string EmployeeLastName { get; set; } = string.Empty;
+        //Holds user name of employee
+        public string EmployeeUserName{ get; set; } = string.Empty;
+        //Holds password of employee
+        public string EmployeePassword { get; set; } = string.Empty;
+
+        //Holds admin status of employee
+        private bool _employeeIsAdmin = false;
         public bool EmployeeIsAdmin
         {
             get { return _employeeIsAdmin; }
@@ -134,27 +60,31 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void EmployeeRegisterCommand()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var employee = new Server.Employee.EmployeeClient(channel);
-            var loginCredentials = new LoginCredentials 
+            //If all of the fields are filled in
+            if (EmployeeUserName != null && EmployeeUserName != "" && EmployeePassword != null && EmployeePassword != "" && EmployeeFirstName != null && EmployeeFirstName != "" && EmployeeLastName != null && EmployeeLastName != "")
             {
-                Username = EmployeeUserName,
-                Password = EmployeePassword
-            };
+                var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
+                var employee = new Server.Employee.EmployeeClient(channel);
+                var loginCredentials = new LoginCredentials 
+                {
+                    Username = EmployeeUserName,
+                    Password = EmployeePassword
+                };
 
-            var employeeInfo = new EmployeeInfo
-            {
-                FirstName = EmployeeFirstName,
-                LastName = EmployeeLastName,
-                Credentials = loginCredentials,
-                IsAdmin = EmployeeIsAdmin,
-            };
-            //Makes employee in database
-            var createResponse = employee.newEmployee(employeeInfo);
+                var employeeInfo = new EmployeeInfo
+                {
+                    FirstName = EmployeeFirstName,
+                    LastName = EmployeeLastName,
+                    Credentials = loginCredentials,
+                    IsAdmin = EmployeeIsAdmin,
+                };
+                //Makes employee in database
+                var createResponse = employee.newEmployee(employeeInfo);
 
 
-            //Takes user back to admin home view
-            GoToAdminHome.Execute();
+                //Takes user back to admin home view
+                GoToAdminHome.Execute();
+            }
         }
 
         /// <summary>
@@ -163,7 +93,6 @@ namespace ClientApp.ViewModels
         public void ToAdminHomeCommand()
         {
             GoToAdminHome.Execute();
-
         }
 
         public void RaisePropertyChanging(PropertyChangingEventArgs args)

@@ -20,6 +20,7 @@
 		</Style>
 		<Style Selector="TextBox">
 			<Setter Property="Height" Value="50"/>
+			<Setter Property="Margin" Value="20 0 0 0"/>
 		</Style>
 		<Style Selector="Button">
 			<Setter Property="Background" Value="#161616"/>
@@ -30,35 +31,22 @@
 
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterAdmimHomePageProcedure}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
-			<Grid HorizontalAlignment="Center" >
-				<Grid.RowDefinitions>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-					<RowDefinition></RowDefinition>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition MinWidth="350"></ColumnDefinition>
-					<ColumnDefinition MinWidth="350"></ColumnDefinition>
-					<ColumnDefinition MinWidth="350"></ColumnDefinition>
-				</Grid.ColumnDefinitions>
-				<TextBlock Grid.Row="0" Grid.Column="1" Text="Employee Registration" FontSize="20"/>
-				<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20"/>
-				<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeFirstName}"/>
-				<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20"/>
-				<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeLastName}"/>
-				<TextBlock Grid.Row="3" Grid.Column="0" Text="Username" HorizontalAlignment="Center" FontSize="20"/>
-				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeUserName}"/>
-				<TextBlock Grid.Row="4" Grid.Column="0" Text="Password" HorizontalAlignment="Center" FontSize="20"/>
-				<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" PasswordChar="*" Text="{Binding EmployeePassword}"/>
-				<TextBlock Grid.Row="5" Grid.Column="0" Text="Is Admin" HorizontalAlignment="Center" FontSize="20"/>
-				<ToggleButton Grid.Row="5" Grid.Column="1" IsChecked="{Binding EmployeeIsAdmin}"/>
-				<Button Grid.Row="6" Grid.Column="1" x:Name="EmployeeRegisterBtn"  Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
-				<Button Grid.Row="7" Grid.Column="1" x:Name="AdminHomeBtn"  Content="Back" Command="{Binding ToAdminHomeCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center"/>
+			<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto,Auto">
+				
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="Employee Registration" FontSize="20" Margin="0 50 0 0"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="First Name" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeFirstName}" Margin="0 20 0 0"/>
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeLastName}" Margin="0 20 0 0"/>
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Username" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding EmployeeUserName}" Margin="0 20 0 0"/>
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Password" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" PasswordChar="*" Text="{Binding EmployeePassword}" Margin="0 20 0 0"/>
+				<TextBlock Grid.Row="5" Grid.Column="0" Text="Is Admin" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<ToggleButton Grid.Row="5" Grid.Column="1"  CornerRadius="100" Width="30" Height="30" IsChecked="{Binding EmployeeIsAdmin}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20 20 0 0"/>
+				<Button Grid.Row="6" Grid.Column="1" x:Name="EmployeeRegisterBtn" Content="Register" Command="{Binding EmployeeRegisterCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center" Margin="0 20 0 0"/>
+				<TextBlock Grid.Row="7" Grid.Column="1" Classes="msg" x:Name="Warning" HorizontalAlignment="Center" FontSize="20"/>
+				<Button Grid.Row="8" Grid.Column="1" x:Name="AdminHomeBtn"  Content="Back" Command="{Binding ToAdminHomeCommand}" HorizontalAlignment="Center" Width="100" HorizontalContentAlignment="Center" Margin="0 20 0 0"/>
 			</Grid>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>

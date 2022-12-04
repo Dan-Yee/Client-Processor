@@ -131,10 +131,14 @@ namespace ClientApp.ViewModels
         /* Event Handlers Below */
         public void SearchForClientCommand()
         {
+            //Clear displayed list
+            if(CustomerItems!=null)CustomerItems.Clear();
+            //Clear Id list associated with displayed clients
+            ListOfClientIDs.Clear();
+
+            //If there is a name to search
             if (SearchNameTextInput != null && SearchNameTextInput.Length > 0)
             {
-                if(CustomerItems!=null)CustomerItems.Clear();
-                ListOfClientIDs.Clear();
                 var channel = GrpcChannel.ForAddress("https://localhost:7123");
                 var client = new Client.ClientClient(channel);
                 AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
@@ -149,11 +153,13 @@ namespace ClientApp.ViewModels
                 }
                 else
                 {
+                    //There are no clients to pick from, so disables buttons
                     SelectButtonEnabled = false;
                 }
             }
             else
             {
+                //There are no clients to pick from, so disables buttons
                 SelectButtonEnabled = false;
             }
         }
@@ -164,7 +170,6 @@ namespace ClientApp.ViewModels
         public void CreateCustomerCommand()
         {
             NavigateToCreateCustomer.Execute();
-
         }
 
 
@@ -174,7 +179,6 @@ namespace ClientApp.ViewModels
         public void GoToAdminHomeCommand()
         {
             NavigateToAdminHome.Execute();
-
         }
 
         public void GoGoToClientInformationCommand()
@@ -200,7 +204,6 @@ namespace ClientApp.ViewModels
         public void LogoutCommand()
         {
             NavigateToLogin.Execute();
-
         }
 
         /// <summary>

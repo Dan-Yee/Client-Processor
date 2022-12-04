@@ -1,8 +1,12 @@
+using Avalonia.Animation;
+using Avalonia.Animation.Animators;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
 using ReactiveUI;
+using System;
 
 namespace ClientApp.Views
 {
@@ -12,15 +16,19 @@ namespace ClientApp.Views
         {
             this.WhenActivated(disposables => { /* Handle interactions etc. */ });
             AvaloniaXamlLoader.Load(this);
-            //InitializeComponent();
-            // DataContext = new CreateCustomerViewModel(this);
+            //Subscribles click event to button
+            this.FindControl<Button>("RegisterBtn").Click += Button_Click;
         }
-        /*
-        public CreateCustomerPage(string user,bool isAdmin)
+        /// <summary>
+        /// Onclick event for button. Will display that field(s) are blank
+        /// If the fields are all filled out, the page will move to home view, so the user won't see the message.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click(object? sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-            DataContext = new CreateCustomerViewModel(this,user,isAdmin);
+            //Sets textblock to display that the user has to fill in empty fields
+            this.FindControl<TextBlock>("Warning").Text = "Please fill in required fields.";
         }
-        */
     }
 }
