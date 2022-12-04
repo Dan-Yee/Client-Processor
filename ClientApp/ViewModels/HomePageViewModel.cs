@@ -28,6 +28,7 @@ namespace ClientApp.ViewModels
         //Holds whether the user has admin privilages or not
         public bool ShowAdminButton { get; set; }
 
+        
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
         public bool SelectButtonEnabled
@@ -43,103 +44,7 @@ namespace ClientApp.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        //The client list
-        public ObservableCollection<Customer> Items
-        {
-            get => _items;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _items, value);
-            }
-        }
-
-
-        public SelectionModel<Customer> Selection { get; }
-
-        private ObservableCollection<Customer> _items = new();
-
-
-        public IScreen HostScreen { get; }
-
-        public string UrlPathSegment { get; } = "Homepage";
-
-        public RoutingState Router { get; } = new RoutingState();
-
-        public RoutingState Router0 { get; } = new RoutingState();
-
-        public RoutingState Router1 { get; } = new RoutingState();
-
-        public RoutingState Router2 { get; } = new RoutingState();
-
-        public RoutingState Router3 { get; } = new RoutingState();
-
-        public RoutingState RouterToLogin { get; } = new RoutingState();
-
-
-        // The command that navigates a user to a view model.
-        public ReactiveCommand<Unit, IRoutableViewModel> GoCreateCustomerCommand { get; }
-
-        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToAdminLoginCommand { get; }
-
-        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToAdminHomeCommand { get; }
-
-        public ReactiveCommand<Unit, IRoutableViewModel> GoGoToClientProceduresCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToClientInformationCommand { get; }
-
-        public ReactiveCommand<Unit, IRoutableViewModel> BackToLogin { get; }
-
-
-        public ReactiveCommand<Unit, IRoutableViewModel> GoToLogin { get; }
-
-        public static string ClientName { get; set; }
-
-        public static int Client_ID { get; set; }
-
-        public List<int> ListOfClientIDs { get; set; } = new();
-
-        /// <summary>
-        /// Constructor for the viewmodel. initializes the list of employees
-        /// </summary>
-        public HomePageViewModel()
-        {
-
-            // localhost for testing purposes
-            /*
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Client.ClientClient(channel);
-
-            AllClients info = client.getClients(new Google.Protobuf.WellKnownTypes.Empty());
-            foreach (ClientInfo c in info.Clients)
-            {
-                //Adds employees to the list
-                _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
-            }
-            Items = _items;
-            */
-            //enables employee selection
-            Selection = new SelectionModel<Customer>();
-            Selection.SelectionChanged += SelectionChanged;
-            SelectButtonEnabled = false;
-            ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
-
-
-            GoGoToClientProceduresCommand = ReactiveCommand.CreateFromObservable(
-                () => Router0.Navigate.Execute(new ClientProcedureListingViewModel()));
-            GoCreateCustomerCommand = ReactiveCommand.CreateFromObservable(
-               () => Router1.Navigate.Execute(new CreateCustomerViewModel()));
-            GoGoToAdminHomeCommand = ReactiveCommand.CreateFromObservable(
-              () => Router2.Navigate.Execute(new AdminHomeViewModel()));
-            GoToLogin = ReactiveCommand.CreateFromObservable(
-             () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
-            GoToClientInformationCommand = ReactiveCommand.CreateFromObservable(
-              () => Router3.Navigate.Execute(new ClientInformationViewModel()));
-
-        }
-
-        /* Event Handlers Below */
-        //public string SearchNameTextInput { get; set; }
         private string searchNameTextInput;
         public string SearchNameTextInput
         {
@@ -150,14 +55,85 @@ namespace ClientApp.ViewModels
             set
             {
                 searchNameTextInput = value;
+                //Search for the updated string
                 SearchForClientCommand();
             }
         }
+
+        //Holds the client name
+        public static string ClientName { get; set; }
+
+        //Holds the client Id
+        public static int Client_ID { get; set; }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        //The client list
+        public ObservableCollection<Customer> CustomerItems { get; set; } = new();
+        
+        //Holds the Ids of the clients that are listed
+        public List<int> ListOfClientIDs { get; set; } = new();
+
+        //Holds the selected client
+        public SelectionModel<Customer> ClientSelection { get; } = new();
+
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "Homepage";
+
+        public RoutingState RouterToClientProcedureListing { get; } = new RoutingState();
+
+        public RoutingState RouterToCreateCustomer { get; } = new RoutingState();
+
+        public RoutingState RouterToAdminHome { get; } = new RoutingState();
+
+        public RoutingState RouterToClientInformation { get; } = new RoutingState();
+
+        public RoutingState RouterToLogin { get; } = new RoutingState();
+
+
+        // The command that navigates a user to a view model.
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCreateCustomer { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAdminHome { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientProcedures { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientInformation { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToLogin { get; }
+
+        
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the list of employees
+        /// </summary>
+        public HomePageViewModel()
+        {
+            //Subscribes the selection event listener
+            ClientSelection.SelectionChanged += SelectionChanged;
+            //Sets button to false when page is loaded
+            SelectButtonEnabled = false;
+            //Determines whether or not to show the admin button
+            ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
+
+
+            NavigateToClientProcedures = ReactiveCommand.CreateFromObservable(
+                () => RouterToClientProcedureListing.Navigate.Execute(new ClientProcedureListingViewModel()));
+            NavigateToCreateCustomer = ReactiveCommand.CreateFromObservable(
+               () => RouterToCreateCustomer.Navigate.Execute(new CreateCustomerViewModel()));
+            NavigateToAdminHome = ReactiveCommand.CreateFromObservable(
+              () => RouterToAdminHome.Navigate.Execute(new AdminHomeViewModel()));
+            NavigateToLogin = ReactiveCommand.CreateFromObservable(
+             () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
+            NavigateToClientInformation = ReactiveCommand.CreateFromObservable(
+              () => RouterToClientInformation.Navigate.Execute(new ClientInformationViewModel()));
+
+        }
+
+        /* Event Handlers Below */
         public void SearchForClientCommand()
         {
             if (SearchNameTextInput != null && SearchNameTextInput.Length > 0)
             {
-                _items.Clear();
+                if(CustomerItems!=null)CustomerItems.Clear();
                 ListOfClientIDs.Clear();
                 var channel = GrpcChannel.ForAddress("https://localhost:7123");
                 var client = new Client.ClientClient(channel);
@@ -166,10 +142,19 @@ namespace ClientApp.ViewModels
                 {
                     foreach (var clientInformation in info.Clients)
                     {
-                        _items.Add(new Customer(clientInformation.ClientId, clientInformation.FirstName, clientInformation.LastName, clientInformation.PhoneNumber, clientInformation.Email));
+                        CustomerItems.Add(new Customer(clientInformation.ClientId, clientInformation.FirstName, clientInformation.LastName, clientInformation.PhoneNumber, clientInformation.Email));
+
                         ListOfClientIDs.Add(clientInformation.ClientId);
                     }
                 }
+                else
+                {
+                    SelectButtonEnabled = false;
+                }
+            }
+            else
+            {
+                SelectButtonEnabled = false;
             }
         }
 
@@ -178,7 +163,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void CreateCustomerCommand()
         {
-            GoCreateCustomerCommand.Execute();
+            NavigateToCreateCustomer.Execute();
 
         }
 
@@ -188,21 +173,25 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void GoToAdminHomeCommand()
         {
-            GoGoToAdminHomeCommand.Execute();
+            NavigateToAdminHome.Execute();
 
         }
 
         public void GoGoToClientInformationCommand()
         {
-            ClientName = Selection.SelectedItem.FirstName;
-            GoToClientInformationCommand.Execute();
+            //Makes sure that a client is selected
+            if (ClientSelection.SelectedItem != null)
+            {
+                ClientName = ClientSelection.SelectedItem.FirstName;
+                NavigateToClientInformation.Execute();
+            }
         }
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
             SelectButtonEnabled = true;
-            Client_ID = ListOfClientIDs[Selection.SelectedIndex];
+            Client_ID = ListOfClientIDs[ClientSelection.SelectedIndex];
         }
 
         /// <summary>
@@ -210,7 +199,7 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void LogoutCommand()
         {
-            GoToLogin.Execute();
+            NavigateToLogin.Execute();
 
         }
 
@@ -220,19 +209,10 @@ namespace ClientApp.ViewModels
         public void GoToClientProceduresCommand()
         {
             //If a client is selected
-            if (Selection != null)
+            if (ClientSelection != null)
             {
-
-                GoGoToClientProceduresCommand.Execute();
-                //var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
-                //loginSuccessMessage.Show();
-
+                NavigateToClientProcedures.Execute();
             }
-            else
-            {
-                MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null").Show();
-            }
-
         }
     }
 }

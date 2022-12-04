@@ -15,13 +15,5 @@ namespace ClientApp.Views
             AvaloniaXamlLoader.Load(this);
         }
 
-        /*
-        public HomePage(string user,bool isAdmin)
-        {
-            InitializeComponent();
-            DataContext = new HomePageViewModel(this,user,isAdmin);
-        }
-        */
-
     }
 }
