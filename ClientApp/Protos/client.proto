@@ -1,12 +1,10 @@
 syntax = "proto3";
-import "google/protobuf/empty.proto";
 import "Protos/shared.proto";
 
 option csharp_namespace = "Server";
 
 service Client {
 	rpc newClient(ClientInfo) returns (ServiceStatus);					// rpc to create a new Client in the database
-	rpc getClients(google.protobuf.Empty) returns (AllClients);			// rpc to get all Clients currently stored in the database.
 	rpc searchClientsByName(ClientName) returns (AllClients);			// rpc to get Client(s) that fit a search criteria by name.
 	rpc updateClient(ClientInfo) returns (ServiceStatus);				// rpc for updating an existing clients information.
 }
