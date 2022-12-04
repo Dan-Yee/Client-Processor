@@ -5,6 +5,7 @@ using ClientApp.Views;
 using DynamicData;
 using Grpc.Net.Client;
 using GrpcServer.Protos;
+using MessageBox.Avalonia.Enums;
 using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
 using Server;
@@ -12,6 +13,7 @@ using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Text;
@@ -30,6 +32,24 @@ namespace ClientApp.ViewModels
 
         public static int Procedure_Id { get; set; }
         public static ProcedureModel SelectedProcedure { get; set; }
+
+        //Determines if an element has been selected in the list view
+        private bool _selectButtonEnabled;
+        public bool SelectButtonEnabled
+        {
+            get
+            {
+                return _selectButtonEnabled;
+            }
+            set
+            {
+                _selectButtonEnabled = value;
+                //Updates that a value has been selected
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
 
         public IScreen HostScreen { get; }
 
@@ -61,11 +81,13 @@ namespace ClientApp.ViewModels
             {
                 Procedure_Id = ListOfProcedureIDs[Selection.SelectedIndex];
                 SelectedProcedure = _procedures[Selection.SelectedIndex];
+                SelectButtonEnabled = true;
             }
             catch (Exception exception)
             {
                 Procedure_Id = ListOfProcedureIDs[0];
                 SelectedProcedure = _procedures[0];
+                SelectButtonEnabled = true;
             }
             
         }
@@ -91,6 +113,7 @@ namespace ClientApp.ViewModels
             //Makes the list of procedures publicly available
             Procedures = _procedures;
             DisplayedProcedures = _displayedProcedures;
+            SelectButtonEnabled = false;
 
             //Selection = new SelectionModel<ProcedureModel>();
             Selection = new SelectionModel<string>();
@@ -115,11 +138,20 @@ namespace ClientApp.ViewModels
             NavigateToInitializeProcedure.Execute();
         }
 
-        public void DeleteProcedureCommand()
+        public async void DeleteProcedureCommand()
         {
-            new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureUpdateInfo() { PID = ListOfProcedureIDs[Selection.SelectedIndex], EmployeeID = LoginPageViewModel.GlobalEmployeeID });
-            MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + ListOfProcedureIDs[Selection.SelectedIndex] + " deleted.").Show();
-            _displayedProcedures.RemoveAt(Selection.SelectedIndex);
+            ButtonResult result = await MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Confirm deletion", ButtonEnum.YesNo).Show();
+            if (result == ButtonResult.Yes)
+            {
+                new Procedure.ProcedureClient(GrpcChannel.ForAddress("https://localhost:7123")).deleteProcedure(new ProcedureUpdateInfo() { PID = ListOfProcedureIDs[Selection.SelectedIndex], EmployeeID = LoginPageViewModel.GlobalEmployeeID });
+                SelectButtonEnabled = false;
+                _displayedProcedures.RemoveAt(Selection.SelectedIndex);
+            }
+            else
+            {
+                //User picked no
+            }
+            
         }
 
         public void GoToReadProcedurePageCommand()

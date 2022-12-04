@@ -21,53 +21,36 @@
 		</Style>
 	</UserControl.Styles>
 
-	<!--<Grid HorizontalAlignment="Center" ShowGridLines="True">-->
+	
 	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}" PageTransition="{x:Null}">
 		<rxui:RoutedViewHost.DefaultContent>
+
 			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToReadProcedureRouter}" PageTransition="{x:Null}">
 				<rxui:RoutedViewHost.DefaultContent>
 					
 					<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToInitializeProcedureRouter}" PageTransition="{x:Null}">
 						<rxui:RoutedViewHost.DefaultContent>
 
-							
 							<rxui:RoutedViewHost Grid.Row="0" Router="{Binding GoToUpdateProcedureRouter}" PageTransition="{x:Null}">
 								<rxui:RoutedViewHost.DefaultContent>
 								
-						
-					<Grid HorizontalAlignment="Center" >
-						<Grid.RowDefinitions>
-							<RowDefinition MinHeight="50" Height="50"></RowDefinition>
-							<RowDefinition MinHeight="50" Height="50"></RowDefinition>
-							<RowDefinition MinHeight="100" Height="100"></RowDefinition>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition MinWidth="350"></ColumnDefinition>
-							<ColumnDefinition MinWidth="350"></ColumnDefinition>
-							<ColumnDefinition MinWidth="350"></ColumnDefinition>
-						</Grid.ColumnDefinitions>
-
-						<TextBlock Text="" FontSize="30.0" Grid.Row="0" Grid.Column="0"/>
-
-						
-						<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Procedure Listing" FontSize="30.0" Grid.Row="1" Grid.Column="1"/>
-						<Button Content="Home" Command="{Binding GoHomeCommand}" Grid.Row="1" Grid.Column="2" Margin="20 0 0 0"/>
+									<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto,Auto">
+										<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Procedure Listing" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 50 0 0"/>
+										<Button Content="Home" Command="{Binding GoHomeCommand}" Grid.Row="0" Grid.Column="2" Margin="20 50 0 0"/>
 
 
-						<StackPanel Grid.Row="2" Grid.Column="1" Margin="0 20 0 0">
-							<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
-							<ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-								<ListBox Items="{Binding DisplayedProcedures}" Selection="{Binding Selection}"></ListBox>
-							</ScrollViewer>
-						</StackPanel>
+										<StackPanel Grid.Row="1" Grid.Column="1" Width="500" Margin="0 20 0 0">
+											<Label VerticalAlignment="Center" HorizontalAlignment="Center">List</Label>
+											<ScrollViewer Height="300" VerticalScrollBarVisibility="Auto">
+												<ListBox Items="{Binding DisplayedProcedures}" Selection="{Binding Selection}"></ListBox>
+											</ScrollViewer>
+										</StackPanel>
 
-						<Button Content="Create" Command="{Binding GoToMakeProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
-						<Button Content="Read" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
-						<Button Content="Delete" Command="{Binding DeleteProcedureCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
-						<Button Content="Update" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
-					</Grid>
-
-									
+										<Button Content="Create" Command="{Binding GoToMakeProcedurePageCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 50 0 0"/>
+										<Button Content="Read"   IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding GoToReadProcedurePageCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 110 0 0"/>
+										<Button Content="Delete" IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding DeleteProcedureCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 170 0 0"/>
+										<Button Content="Update" IsEnabled="{Binding SelectButtonEnabled}" Command="{Binding GoToUpdateProcedurePageCommand}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="20 230 0 0"/>
+									</Grid>
 								</rxui:RoutedViewHost.DefaultContent>
 								<rxui:RoutedViewHost.ViewLocator>
 									<app:ProcedureUpdateViewLocator/>
@@ -79,17 +62,15 @@
 							<app:InitializeProcedureViewLocator/>
 						</rxui:RoutedViewHost.ViewLocator>
 					</rxui:RoutedViewHost>
-					
+				
 				</rxui:RoutedViewHost.DefaultContent>
 				<rxui:RoutedViewHost.ViewLocator>
-					<!-- See ViewLocator.cs section below -->
 					<app:ProcedureReadViewLocator />
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
-
+			
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
 			<app:ViewLocator />
 		</rxui:RoutedViewHost.ViewLocator>
 	</rxui:RoutedViewHost>
