@@ -1,24 +1,12 @@
 ﻿using ClientApp.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ReactiveUI;
-using Avalonia.Controls.ApplicationLifetimes;
-using System.Windows.Input;
-using ClientApp.Views;
-using Avalonia.Controls;
 using Grpc.Net.Client;
 using Server;
 using Avalonia.Controls.Selection;
 using System.Reactive;
-using Microsoft.AspNetCore.Components.Routing;
 using System.ComponentModel;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ClientApp.ViewModels
 {
@@ -91,6 +79,7 @@ namespace ClientApp.ViewModels
         public RoutingState RouterToClientInformation { get; } = new RoutingState();
 
         public RoutingState RouterToLogin { get; } = new RoutingState();
+        public RoutingState RouterToUpdateClientInfo{ get; } = new RoutingState();
 
 
         // The command that navigates a user to a view model.
@@ -99,6 +88,7 @@ namespace ClientApp.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientProcedures { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientInformation { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToLogin { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToUpdateClientInfo { get; }
 
         
 
@@ -125,6 +115,8 @@ namespace ClientApp.ViewModels
              () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
             NavigateToClientInformation = ReactiveCommand.CreateFromObservable(
               () => RouterToClientInformation.Navigate.Execute(new ClientInformationViewModel()));
+            NavigateToUpdateClientInfo = ReactiveCommand.CreateFromObservable(
+              () => RouterToUpdateClientInfo.Navigate.Execute(new UpdateClientViewModel()));
 
         }
 
@@ -183,12 +175,7 @@ namespace ClientApp.ViewModels
 
         public void GoGoToClientInformationCommand()
         {
-            //Makes sure that a client is selected
-            if (ClientSelection.SelectedItem != null)
-            {
-                ClientName = ClientSelection.SelectedItem.FirstName;
                 NavigateToClientInformation.Execute();
-            }
         }
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
@@ -196,6 +183,7 @@ namespace ClientApp.ViewModels
             // ... handle selection changed
             SelectButtonEnabled = true;
             Client_ID = ListOfClientIDs[ClientSelection.SelectedIndex];
+            ClientName = ClientSelection.SelectedItem.FirstName;
         }
 
         /// <summary>
@@ -216,6 +204,11 @@ namespace ClientApp.ViewModels
             {
                 NavigateToClientProcedures.Execute();
             }
+        }
+
+        public void GoToUpdateClientCommand()
+        {
+            NavigateToUpdateClientInfo.Execute();
         }
     }
 }

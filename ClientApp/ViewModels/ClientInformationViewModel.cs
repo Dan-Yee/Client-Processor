@@ -14,8 +14,8 @@ namespace ClientApp.ViewModels
 {
     public class ClientInformationViewModel : ReactiveObject, IRoutableViewModel
     {
-        public ObservableCollection<string> ListOfInformationFields { get; set; } = new()
-        { "First name: ","Last name:","Phone number: ", "Email: "};
+        //public ObservableCollection<string> ListOfInformationFields { get; set; } = new()
+        //{ "First name: ","Last name:","Phone number: ", "Email: "};
 
         public string ClientFirstNameInfo { get; set; }
         public string ClientLastNameInfo { get; set; }

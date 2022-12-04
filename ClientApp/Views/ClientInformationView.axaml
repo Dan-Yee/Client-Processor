@@ -34,7 +34,6 @@
 			</StackPanel>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
 			<app:ViewLocator />
 		</rxui:RoutedViewHost.ViewLocator>
 	</rxui:RoutedViewHost>
