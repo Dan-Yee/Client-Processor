@@ -172,6 +172,7 @@ namespace Server.Services
                     status = command.ExecuteNonQuery();
                 } catch (NpgsqlException pgE)
                 {
+                    Console.WriteLine("ClientService.updateClient RPC Postgresql Error State: " + pgE.SqlState);
                     status = 0;
                 }
                 conn.Close();

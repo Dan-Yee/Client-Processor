@@ -15,7 +15,7 @@ namespace Server.Services
         /// <param name="input">The plaintext string to be hashed</param>
         /// <param name="salt">The salt applied to this string</param>
         /// <returns>The base64 encoded string after it has been hashed</returns>
-        private static string GetHashed(string input, string salt)
+        private static string GetHashed(string? input, string? salt)
         {
             using (var sha512 = SHA512.Create())
             {
@@ -146,9 +146,8 @@ namespace Server.Services
             NpgsqlCommand command;
             NpgsqlDataReader reader;
             string query;
-            string? passwordSalt = string.Empty;
+            string? passwordSalt;
             int status;
-            bool needUpdate = false;                                                // assume the record does not need to be updated until a check can be performed
             bool isUsernameDiff = false;                                            // assume the username is not changing until a check can be performed
 
             using (NpgsqlConnection conn = GetConnection())
@@ -179,94 +178,81 @@ namespace Server.Services
                     else
                         info.Credentials.Password = GetHashed(info.Credentials.Password, passwordSalt);
 
-                    needUpdate = !((reader["first_name"].ToString()).Equals(info.FirstName) &&
-                        reader["last_name"].ToString().Equals(info.LastName) &&
-                        reader["first_name"].ToString().Equals(info.FirstName) &&
-                        reader["employee_username"].ToString().Equals(info.Credentials.Username) &&
-                        reader["employee_password"].ToString().Equals(info.Credentials.Password) &&
-                        (Convert.ToBoolean(reader["isAdministrator"]) == info.IsAdmin));
-
-                    isUsernameDiff = !(reader["employee_username"].ToString().Equals(info.Credentials.Username));
+                    isUsernameDiff = !reader["employee_username"].ToString().Equals(info.Credentials.Username);
                 }
                 conn.Close();
                 reader.Close();
 
-                Console.WriteLine(needUpdate);
-                // if some information received from the Client side did not match what was stored in the database, update the database.
-                if (needUpdate)
+                // Attempting to update the value of a column with the UNIQUE constraint with the same existing value will throw exception code 23505
+                // This conditional removes the username field from the UPDATE statement unless it is the value being updated.
+                if (isUsernameDiff)
                 {
-                    // Attempting to update the value of a column with the UNIQUE constraint with the same existing value will throw exception code 23505
-                    // This conditional removes the username field from the UPDATE statement unless it is the value being updated.
-                    if (isUsernameDiff)
+                    query = "UPDATE Employees SET " +
+                        "first_name = $1, " +
+                        "last_name = $2, " +
+                        "employee_username = $3, " +
+                        "employee_password = $4, " +
+                        "isAdministrator = $5 " +
+                        "WHERE employee_id = $6;";
+                    command = new NpgsqlCommand(@query, conn)
                     {
-                        query = "UPDATE Employees SET " +
-                            "first_name = $1, " +
-                            "last_name = $2, " +
-                            "employee_username = $3, " +
-                            "employee_password = $4, " +
-                            "isAdministrator = $5 " +
-                            "WHERE employee_id = $6;";
-                        command = new NpgsqlCommand(@query, conn)
+                        Parameters =
                         {
-                            Parameters =
-                            {
-                                new() {Value = info.FirstName},
-                                new() {Value = info.LastName},
-                                new() {Value = info.Credentials.Username},
-                                new() {Value = info.Credentials.Password},
-                                new() {Value = info.IsAdmin},
-                                new() {Value = info.EmployeeId}
-                            }
-                        };
-                    } else
-                    {
-                        query = "UPDATE Employees SET " +
-                                "first_name = $1, " +
-                                "last_name = $2, " +
-                                "employee_password = $3, " +
-                                "isAdministrator = $4 " +
-                                "WHERE employee_id = $5;";
-                        command = new NpgsqlCommand(@query, conn)
-                        {
-                            Parameters =
-                            {
-                                new() {Value = info.FirstName},
-                                new() {Value = info.LastName},
-                                new() {Value = info.Credentials.Password},
-                                new() {Value = info.IsAdmin},
-                                new() {Value = info.EmployeeId}
-                            }
-                        };
-                    }
-                    conn.Open();
-
-                    // if the username already exists, PostgreSQL will throw exception code 23505: duplicate key value violates unique contraint "..."
-                    try
-                    {
-                        status = command.ExecuteNonQuery();
-                    }
-                    catch (PostgresException pgE)
-                    {
-                        if (pgE.SqlState.Equals("23505"))
-                        {
-                            sStatus.IsSuccessfulOperation = false;
-                            sStatus.StatusMessage = "Error: Username already exists.";
-                            conn.Close();
-                            return sStatus;
+                            new() {Value = info.FirstName},
+                            new() {Value = info.LastName},
+                            new() {Value = info.Credentials.Username},
+                            new() {Value = info.Credentials.Password},
+                            new() {Value = info.IsAdmin},
+                            new() {Value = info.EmployeeId}
                         }
-                        else
-                        {
-                            sStatus.IsSuccessfulOperation = false;
-                            sStatus.StatusMessage = "Error: Unable to update the employee.";
-                            conn.Close();
-                            return sStatus;
-                        }
-                    }
-                    conn.Close();
+                    };
                 } else
                 {
-                    status = 1;                                                     // if no update is needed, assume the service status was successful.
+                    query = "UPDATE Employees SET " +
+                            "first_name = $1, " +
+                            "last_name = $2, " +
+                            "employee_password = $3, " +
+                            "isAdministrator = $4 " +
+                            "WHERE employee_id = $5;";
+                    command = new NpgsqlCommand(@query, conn)
+                    {
+                        Parameters =
+                        {
+                            new() {Value = info.FirstName},
+                            new() {Value = info.LastName},
+                            new() {Value = info.Credentials.Password},
+                            new() {Value = info.IsAdmin},
+                            new() {Value = info.EmployeeId}
+                        }
+                    };
                 }
+                conn.Open();
+
+                // if the username already exists, PostgreSQL will throw exception code 23505: duplicate key value violates unique contraint "..."
+                try
+                {
+                    status = command.ExecuteNonQuery();
+                }
+                catch (PostgresException pgE)
+                {
+                    Console.WriteLine("EmployeeService.updateEmployee RPC Postgresql Error State: " + pgE.SqlState);
+                    if (pgE.SqlState.Equals("23505"))
+                    {
+                        sStatus.IsSuccessfulOperation = false;
+                        sStatus.StatusMessage = "Error: Username already exists.";
+                        conn.Close();
+                        return sStatus;
+                    }
+                    else
+                    {
+                        sStatus.IsSuccessfulOperation = false;
+                        sStatus.StatusMessage = "Error: Unable to update the employee.";
+                        conn.Close();
+                        return sStatus;
+                    }
+                }
+                conn.Close();
+
                 sStatus.IsSuccessfulOperation = (status == 1);                      // UPDATE returns the number of rows affected. We expect this value to be 1 if this operation was successful.
                 sStatus.StatusMessage = sStatus.IsSuccessfulOperation ? "Success: Employee record was updated" : "Error: Unable to update the employee.";
                 return sStatus;

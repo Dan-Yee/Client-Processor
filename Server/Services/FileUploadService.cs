@@ -25,8 +25,8 @@ namespace Server.Services
             int i = 0; //to check for the first message
             var ByteList = new List<byte>(); //create a List of bytes to store received bytes
 
-            string FileName = null;
-            string Extension = null;
+            string? FileName = null;
+            string? Extension = null;
             int ProcedureID = -2;
             int Destination = -2;
 

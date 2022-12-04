@@ -180,6 +180,7 @@ namespace Server.Services
                 catch (PostgresException pgE)
                 {
                     conn.Close();
+                    Console.WriteLine("DownloadPhotosService.PhotoDelete RPC Postgresql Error State: " + pgE.SqlState);
                     return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
                 }
             }

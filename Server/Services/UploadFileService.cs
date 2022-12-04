@@ -97,7 +97,7 @@ namespace Server.Services
         {
             //variables used in executing the SQL statement
             int n;
-            string SQL = null;
+            string? SQL = null;
             NpgsqlCommand cmd;
 
             ServiceStatus status = new ServiceStatus(); //to return

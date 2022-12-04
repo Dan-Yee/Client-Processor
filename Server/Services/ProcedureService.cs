@@ -69,6 +69,7 @@ namespace Server.Services
                     newPID.PID = procedureID;
                 } catch (NpgsqlException pgE)
                 {
+                    Console.WriteLine("ProcedureService.addProcedure RPC Postgresql Error State: " + pgE.SqlState);
                     newPID.PID = -1;
                 }
                 conn.Close();
@@ -287,6 +288,7 @@ namespace Server.Services
                 }
                 catch (NpgsqlException pgE)
                 {
+                    Console.WriteLine("ProcedureService.deleteProcedure RPC Postgresql Error State: " + pgE.SqlState);
                     status = 0;
                 }
 
@@ -400,6 +402,7 @@ namespace Server.Services
                     }
                     catch (NpgsqlException pgE)
                     {
+                        Console.WriteLine("ProcedureService.completeForm RPC Postgresql Error State: " + pgE.SqlState);
                         insertStatus = 0;
                     }
                     conn.Close();
@@ -468,6 +471,7 @@ namespace Server.Services
                 }
                 catch (NpgsqlException pgE)
                 {
+                    Console.WriteLine("ProcedureService.updateProcedure RPC Postgresql Error State: " + pgE.SqlState);
                     status = 0;
                 }
                 conn.Close();

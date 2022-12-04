@@ -213,6 +213,7 @@ namespace Server.Services
                 catch (PostgresException pgE)
                 {
                     conn.Close();
+                    Console.WriteLine("TemplateNameService.DeleteTemplate RPC Postgresql Error State: " + pgE.SqlState);
                     return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
                 }
             }

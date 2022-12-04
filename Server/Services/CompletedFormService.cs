@@ -121,21 +121,6 @@ namespace Server.Services
             }
         }
 
-        public static byte[] GetFormBytes(int FID)
-        {
-
-
-
-
-            return null;
-        }
-
-
-
-
-
-
-
         //****************************************GET FORM NAMES OF A PROCEDURE ******************************
 
         public override Task<CompletedFormsResponse> CompletedFormNames(CompletedFormsRequest request, ServerCallContext context)
@@ -201,6 +186,7 @@ namespace Server.Services
                 catch (PostgresException pgE)
                 {
                     conn.Close();
+                    Console.WriteLine("CompletedFormService.DeleteForm RPC Postgresql Error State: " + pgE.SqlState);
                     return Task.FromResult(new ServiceStatus { IsSuccessfulOperation = false, StatusMessage = "delete failed" });
                 }
 
@@ -254,7 +240,7 @@ namespace Server.Services
                 }
                 catch (PostgresException pgE)
                 {
-
+                    Console.WriteLine("CompletedFormService.InsertRecord Method Postgresql Error State: " + pgE.SqlState);
                 }
             }
         }
