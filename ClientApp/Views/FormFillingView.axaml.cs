@@ -38,8 +38,6 @@ namespace ClientApp.Views
         }
         public void clickedSumbit(object? sender, RoutedEventArgs e)
         {
-            //GrpcChannel channel = GrpcChannel.ForAddress("https://localhost:7123");
-            //Server.Procedure.ProcedureClient procedureClient procedureClient = new Procedure.ProcedureClient(channel);
             Server.FormFields myFields = new();
             List<TextBox> textBoxesForInput = this.FindControl<StackPanel>("notes").Children.OfType<TextBox>().ToList();
             for (int index = 0; index < textBoxesForInput.Count; index++)
@@ -57,8 +55,7 @@ namespace ClientApp.Views
             FormName fName = new() { FormName_ = FormMenuViewModel.FormName };
             myFields.FName = fName;
             CompleteFormInfo info = new() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id, Form = myFields, EmployeeID = LoginPageViewModel.GlobalEmployeeID };
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var resultStatus = new Procedure.ProcedureClient(channel).completeForm(info);
+            var resultStatus = new Procedure.ProcedureClient(Program.gRPCChannel).completeForm(info);
             MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Status: " + resultStatus).Show();
 
             FormMenuViewModel.ListOfFilledOutFormNames.Add(FormMenuViewModel.FormName);
