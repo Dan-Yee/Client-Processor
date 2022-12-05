@@ -24,19 +24,13 @@
 				<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
 					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Forms" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 50 0 0"/>
 					<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" Command="{Binding GoBackCommand}" Margin="0 50 0 0"/>
-					<Image 
-						Margin="0 10 0 0"
-						
-						Grid.Row="1" Grid.Column="1"
-						Width="850"
-					Height="900"
-					Source="{Binding ImaPath, Converter={StaticResource variableImage}}}">
-					</Image>
+					<StackPanel x:Name="ParentStackPanel" Grid.Row="1" Grid.Column="1">
+					</StackPanel>
+					
 				</Grid>
 			</ScrollViewer>
 		</rxui:RoutedViewHost.DefaultContent>
 		<rxui:RoutedViewHost.ViewLocator>
-			<!-- See ViewLocator.cs section below -->
 			<app:ProcedureReadViewLocator/>
 		</rxui:RoutedViewHost.ViewLocator>
 	</rxui:RoutedViewHost>

@@ -60,7 +60,7 @@ namespace ClientApp.Views
 
             FormMenuViewModel.ListOfFilledOutFormNames.Add(FormMenuViewModel.FormName);
 
-            FormFillingViewModel.NavigateToFormMenu.Execute();
+            //FormFillingViewModel.NavigateToFormMenu.Execute();
         }
         
         

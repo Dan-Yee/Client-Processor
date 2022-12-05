@@ -1,18 +1,11 @@
-﻿using Avalonia.Controls;
-using ClientApp.Models;
-using ClientApp.Views;
-using Grpc.Net.Client;
+﻿using ClientApp.Models;
 using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 using static Server.Procedure;
 
 namespace ClientApp.ViewModels
@@ -66,7 +59,10 @@ namespace ClientApp.ViewModels
                 () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
         }
 
-
+        public void SubmitFormCommand()
+        {
+            NavigateToFormMenu.Execute();
+        }
         public void RaisePropertyChanged(PropertyChangedEventArgs args)
         {
             throw new NotImplementedException();

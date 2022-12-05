@@ -27,20 +27,21 @@ namespace ClientApp.ViewModels
         public ReactiveCommand<Unit, IRoutableViewModel> GoBack { get; }
 
         //public List<FormModel> ListOfForms { get; set; } = new();
-        public List<byte[]> ListOfByteArrays { get; set; } = new();
-
+        //public List<byte[]> ListOfByteArrays { get; set; } = new();
+        
+        /*
         public static class Globals
         {
             public static string GName;
             public static string GExtent;
             public static byte[] GBytes;
         }
-        public FormModel formModel { get; set; } = new();
+        */
         public FormViewingViewModel()
         {
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
-
+            /*
             var client = new CompletedForm.CompletedFormClient(Program.gRPCChannel);
             var response = client.CompletedFormNames(new CompletedFormsRequest() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id });
             foreach(var formInformation in response.FormInfo)
@@ -49,19 +50,19 @@ namespace ClientApp.ViewModels
                 //Convert to pdf
                 Globals.GName = formInformation.FormName;
                 Globals.GExtent = formInformation.FormExtension;
-                formModel = new(formInformation.FormName, formInformation.FormExtension, new byte[0]);
-
                 CallToCompleteForm(formInformation);
+                ImaPath  = $"{Globals.GName}0.bmp";
 
+                //break;
 
-                break;
-        
             }
+            */
         }
-        
+        /*
         public async void CallToCompleteForm(FormInfo formInformation)
         {
             await getCompletedForm(formInformation.FormID);
+            
             if (Globals.GBytes != null && Globals.GBytes.Length > 0)
             {
                 byteArrayToPdf(Globals.GBytes);
@@ -69,17 +70,25 @@ namespace ClientApp.ViewModels
             }
         }
         private global::PdfiumViewer.PdfViewer pdfViewer;
+        public List<string> ImgPaths { get; set; } = new();
         public void ConvertPdfToImage()
         {
             
             string filePath = Globals.GName + Globals.GExtent;
             using (var pdfDocument = PdfiumViewer.PdfDocument.Load(@filePath))
             {
-                var bitmapImage = pdfDocument.Render(0, 300, 300, true);
-                bitmapImage.Save(@Globals.GName+".bmp", ImageFormat.Bmp);
+                
+                for (int i=0;i< pdfDocument.PageCount; i++)
+                {
+                    //MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", pdfDocument.PageCount.ToString()).Show();
+                    System.Drawing.Image bitmapImage = pdfDocument.Render(i, 300, 300, true);
+                    bitmapImage.Save(@Globals.GName+i+".bmp", ImageFormat.Bmp);
+                    ImgPaths.Add(@Globals.GName +i+ ".bmp");
+                }
             }
         }
-        public string ImaPath => Globals.GName + ".bmp";
+        //public string ImaPath => Globals.GName + "0.bmp";
+        public string ImaPath { get; set; }
 
         public static async Task<byte[]> getCompletedForm(int FID)
         {
@@ -119,7 +128,7 @@ namespace ClientApp.ViewModels
         {
             System.IO.File.WriteAllBytes(Globals.GName+ Globals.GExtent, byteArrayIn);
         }
-
+        */
         public void GoBackCommand()
         {
             GoBack.Execute();
