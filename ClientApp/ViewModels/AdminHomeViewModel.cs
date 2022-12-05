@@ -17,7 +17,7 @@ namespace ClientApp.ViewModels
         public IScreen HostScreen { get; }
 
         //Holds onto the selected employee so that other pages can access the employee's information
-        public static EmployeeModel SelectedEmployee { get; set; }
+        public static EmployeeModel? SelectedEmployee { get; set; }
 
         //Current employee selected
         public SelectionModel<EmployeeModel> EmployeeSelection { get; } = new();
@@ -29,6 +29,8 @@ namespace ClientApp.ViewModels
         public RoutingState RouterToImport { get; } = new RoutingState();
 
         public RoutingState RouterRegister { get; } = new RoutingState();
+        public RoutingState RouterToUpdateEmployeeInfo { get; } = new RoutingState();
+
 
 
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateHome { get; }
@@ -37,6 +39,8 @@ namespace ClientApp.ViewModels
 
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegister { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToEmployeeInformation { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToUpdateEmployeeInfo { get; }
+
 
         //Determines if an element has been selected in the list view
         private bool _selectButtonEnabled;
@@ -94,6 +98,9 @@ namespace ClientApp.ViewModels
 
             NavigateToEmployeeInformation = ReactiveCommand.CreateFromObservable(
              () => RouterToViewEmployee.Navigate.Execute(new EmployeeInformationViewModel()));
+
+            NavigateToUpdateEmployeeInfo = ReactiveCommand.CreateFromObservable(
+             () => RouterToUpdateEmployeeInfo.Navigate.Execute(new UpdateEmployeeViewModel()));
         }
 
         /// <summary>
@@ -105,6 +112,7 @@ namespace ClientApp.ViewModels
         {
             // ... handle selection changed
             SelectButtonEnabled = true;
+            SelectedEmployee = EmployeeSelection.SelectedItem;
         }
 
         /// <summary>
@@ -156,8 +164,12 @@ namespace ClientApp.ViewModels
         /// </summary>
         public void GoToReadEmployeeInfoCommand()
         {
-            SelectedEmployee = EmployeeSelection.SelectedItem;
+            
             NavigateToEmployeeInformation.Execute();
+        }
+        public void GoToUpdateEmployeeInfoCommand()
+        {
+            NavigateToUpdateEmployeeInfo.Execute();
         }
     }
 }

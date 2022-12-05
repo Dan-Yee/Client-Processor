@@ -46,8 +46,8 @@
 
 													<StackPanel Grid.Row="2" Grid.Column="1" Width="500" Margin="0 20 0 0">
 														<Label VerticalAlignment="Center" HorizontalAlignment="Center">Client Listing</Label>
-														<ScrollViewer Height="300" VerticalScrollBarVisibility="Auto">
-															<ListBox Name="ClientList" Items="{Binding CustomerItems}" Selection="{Binding ClientSelection}"></ListBox>
+														<ScrollViewer  VerticalScrollBarVisibility="Auto">
+															<ListBox Height="300" Name="ClientList" Items="{Binding CustomerItems}" Selection="{Binding ClientSelection}"></ListBox>
 														</ScrollViewer>
 													</StackPanel>
 
