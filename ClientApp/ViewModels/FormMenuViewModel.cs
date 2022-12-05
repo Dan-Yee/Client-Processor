@@ -48,15 +48,16 @@ namespace ClientApp.ViewModels
         }
         public SelectionModel<FormModel> FormTemplateSelection { get; } = new SelectionModel<FormModel>();
         public RoutingState RouterToMakeProcedure { get; } = new RoutingState();
-        public RoutingState RouterToFillOutForms{ get; } = new RoutingState();
+        public RoutingState RouterToFillOutForms{ get; set; } = new RoutingState();
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToMakeProcedure{ get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFillOutForms{ get; }
 
+        public static string FormName { get; set; }
 
         public FormMenuViewModel()
         {
             CurrentFormSelection.SelectionChanged += SelectionChanged;
-
+            RouterToFillOutForms = new();
 
             TemplatesResponse templates = GetTemplateNames();
 
@@ -85,6 +86,8 @@ namespace ClientApp.ViewModels
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
+            
+
         }
 
         public void SelectFormTemplate()
@@ -93,7 +96,6 @@ namespace ClientApp.ViewModels
             //MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: "+ FormTemplateSelection.SelectedItem).Show();
         }
 
-        public static string FormName { get; set; }
         public void GoToFillOutForm()
         {
             FormName = FormTemplateSelection.SelectedItem.FileName;

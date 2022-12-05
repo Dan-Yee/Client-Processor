@@ -24,7 +24,6 @@ namespace ClientApp.Views
         }
         public FormViewingView()
         {
-
             this.WhenActivated(disposables => { /* Handle interactions etc. */ });
             AvaloniaXamlLoader.Load(this);
             initializetherest();

@@ -40,10 +40,15 @@ namespace ClientApp.ViewModels
 
         public static List<Server.Field> ListOfFields { get; set; } = new();
 
-        public static RoutingState RouterToFormMenu { get; } = new RoutingState();
+        public static RoutingState RouterToFormMenu { get; set; } = new RoutingState();
         public static ReactiveCommand<Unit, IRoutableViewModel> NavigateToFormMenu { get; set; }
         public FormFillingViewModel()
         {
+            ListOfFields = new();
+            RouterToFormMenu = new();
+            NavigateToFormMenu = ReactiveCommand.CreateFromObservable(
+                () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
+
             procedureClient = new Procedure.ProcedureClient(Program.gRPCChannel);
             name = new() { FormName_ = FormMenuViewModel.FormName };
             formFields = procedureClient.getFormFields(name);
@@ -55,8 +60,6 @@ namespace ClientApp.ViewModels
                     ListOfFields.Add(field);
                 }
             }
-            NavigateToFormMenu = ReactiveCommand.CreateFromObservable(
-                () => RouterToFormMenu.Navigate.Execute(new FormMenuViewModel()));
         }
 
         public void SubmitFormCommand()
