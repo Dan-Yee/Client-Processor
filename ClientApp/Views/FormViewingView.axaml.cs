@@ -64,8 +64,6 @@ namespace ClientApp.Views
 
                 for (int i = 0; i < pdfDocument.PageCount; i++)
                 {
-                    string som = pdfDocument.GetPdfText(i);
-                    MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", som).Show();
                     System.Drawing.Image bitmapImage = pdfDocument.Render(i, 300, 300, true);
                     bitmapImage.Save(@Globals.GName + i + ".bmp", ImageFormat.Bmp);
                     ImgPaths.Add(@Globals.GName + i + ".bmp");

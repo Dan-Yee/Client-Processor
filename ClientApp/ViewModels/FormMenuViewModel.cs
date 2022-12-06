@@ -57,6 +57,13 @@ namespace ClientApp.ViewModels
         public FormMenuViewModel()
         {
             CurrentFormSelection.SelectionChanged += SelectionChanged;
+            ListOfFilledOutFormNames.Clear();
+            var client = new CompletedForm.CompletedFormClient(Program.gRPCChannel);
+            var response = client.CompletedFormNames(new CompletedFormsRequest() { ProcedureID = ClientProcedureListingViewModel.Procedure_Id });
+            foreach (var formInformation in response.FormInfo)
+            {
+                ListOfFilledOutFormNames.Add(formInformation.FormName);
+            }
             RouterToFillOutForms = new();
 
             TemplatesResponse templates = GetTemplateNames();

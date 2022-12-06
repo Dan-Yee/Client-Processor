@@ -21,7 +21,11 @@ namespace ClientApp.ViewModels
         public string _ProcedureDescription { get; set; }
 
         public RoutingState RouterToProcedureListing { get; } = new RoutingState();
+        public RoutingState RouterToEditDocuments { get; } = new RoutingState();
+        
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToProcedureListing { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToEditDocuments { get; }
+
 
         public ProcedureUpdateViewModel()
         {
@@ -29,6 +33,8 @@ namespace ClientApp.ViewModels
             _ProcedureDescription = ClientProcedureListingViewModel.ProcedureNotes;
             NavigateToProcedureListing = ReactiveCommand.CreateFromObservable(
               () => RouterToProcedureListing.Navigate.Execute(new ClientProcedureListingViewModel()));
+            NavigateToEditDocuments = ReactiveCommand.CreateFromObservable(
+              () => RouterToEditDocuments.Navigate.Execute(new MakeAProcedureViewModel()));
         }
 
         public void UpdateProcedureCommand()
@@ -51,6 +57,11 @@ namespace ClientApp.ViewModels
         {
             //Route back
             NavigateToProcedureListing.Execute();
+        }
+
+        public void GoToUpdateDocuments()
+        {
+            NavigateToEditDocuments.Execute();
         }
     }
 }
