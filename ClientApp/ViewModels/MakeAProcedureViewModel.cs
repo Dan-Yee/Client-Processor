@@ -132,8 +132,9 @@ namespace ClientApp.ViewModels
                 PhotoMetaData.PhotoExtension = FileExtension;
                 PhotoMetaData.IsBefore = IsBefore;
                 PhotoMetaData.ProcedureID = PID;
+                PhotoMetaData.EmployeeID = LoginPageViewModel.GlobalEmployeeID;
 
-                FileMetaData MetaData = new FileMetaData();
+               FileMetaData MetaData = new FileMetaData();
                 MetaData.PhotoMeta = PhotoMetaData;
 
                 //call the method that sends the files to the server
