@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
@@ -13,5 +14,6 @@ namespace ClientApp.Views
             this.WhenActivated(disposables => { /* Handle interactions etc. */ });
             AvaloniaXamlLoader.Load(this);
         }
+      
     }
 }

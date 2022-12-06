@@ -12,6 +12,8 @@ using Google.Protobuf;
 using Grpc.Net.Client;
 using System.IO;
 using System.Reactive;
+using ClientApp.Models;
+using GrpcServer.Protos;
 
 namespace ClientApp.ViewModels
 {
@@ -186,9 +188,27 @@ namespace ClientApp.ViewModels
         {
             GoToAdminHome = ReactiveCommand.CreateFromObservable(
             () => RouterAdmimHomePageProcedure.Navigate.Execute(new AdminHomeViewModel()));
-            //_importFormView = ifv;
-            FilePaths = "path";
+            //var client = new CompletedForm.CompletedFormClient(Program.gRPCChannel);
+            TemplatesResponse templates = GetTemplateNames();
+
+
+            foreach (var template in templates.TemplateNames)
+            {
+                FormTemplateList.Add(new FormModel(template.FormTemplateName, null, null));
+
+            }
         }
+
+        public static TemplatesResponse GetTemplateNames()
+        {
+            TemplatesResponse templates = new TemplatesResponse();
+            var client = new FormTemplateNames.FormTemplateNamesClient(Program.gRPCChannel);
+            templates = client.GetTemplateNames(new TemplatesRequest { });
+
+            return templates;
+        }
+
+
 
         /// <summary>
         /// Handles importing files
@@ -232,9 +252,28 @@ namespace ClientApp.ViewModels
             }
 
 
-            //This brings you back to last page
-            GoToAdminHome.Execute();
+            
           
         }
+
+
+        public void Back()
+        {
+            //This brings you back to last page
+            GoToAdminHome.Execute();
+        }
+
+        private ObservableCollection<FormModel> _formTemplateList = new();
+        public ObservableCollection<FormModel> FormTemplateList
+        {
+            get => _formTemplateList;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _formTemplateList, value);
+            }
+        }
+
+
+
     }
 }
