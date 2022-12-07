@@ -1,98 +1,48 @@
 ﻿using ClientApp.Views;
 using Grpc.Net.Client;
+using ReactiveUI;
 using Server;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {
-    public class RegisterEmployeeViewModel : ViewModelBase
+    public class RegisterEmployeeViewModel : ViewModelBase,IRoutableViewModel
     {
-        string _user = string.Empty;
-        bool _isAdmin = false;
-        RegisterEmployeeView _registerEmployeeView;
-        public RegisterEmployeeViewModel(RegisterEmployeeView registerEmployeeView, string user, bool isAdmin)
+
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "RegisterEmployee";
+
+        public RoutingState RouterAdmimHomePageProcedure { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoToAdminHome { get; }
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the view
+        /// </summary>
+        public RegisterEmployeeViewModel()
         {
-            _registerEmployeeView = registerEmployeeView;
-            _user = user;
-            _isAdmin = isAdmin;
+            GoToAdminHome = ReactiveCommand.CreateFromObservable(
+             () => RouterAdmimHomePageProcedure.Navigate.Execute(new AdminHomeViewModel()));
         }
+        public event PropertyChangingEventHandler? PropertyChanging;
 
-        private string _employeeFirstName = string.Empty;
+        //Holds first name of employee
+        public string EmployeeFirstName { get; set; } = string.Empty;
+        //Holds last name of employee
+        public string EmployeeLastName { get; set; } = string.Empty;
+        //Holds user name of employee
+        public string EmployeeUserName{ get; set; } = string.Empty;
+        //Holds password of employee
+        public string EmployeePassword { get; set; } = string.Empty;
 
-        public string EmployeeFirstName
-        {
-
-            get
-            {
-                return _employeeFirstName;
-            }
-
-            set
-            {
-                _employeeFirstName = value;
-                OnPropertyChanged(nameof(EmployeeFirstName));
-
-            }
-        }
-
-        private string _employeeLastName = string.Empty;
-
-        public string EmployeeLastName
-        {
-
-            get
-            {
-                return _employeeLastName;
-            }
-
-            set
-            {
-                _employeeLastName = value;
-                OnPropertyChanged(nameof(EmployeeLastName));
-
-            }
-        }
-
-        private string _employeeUserName = string.Empty;
-
-        public string EmployeeUserName
-        {
-
-            get
-            {
-                return _employeeUserName;
-            }
-
-            set
-            {
-                _employeeUserName = value;
-                OnPropertyChanged(nameof(EmployeeUserName));
-
-            }
-        }
-
-        private string _employeePassword = string.Empty;
-
-        public string EmployeePassword
-        {
-
-            get
-            {
-                return _employeePassword;
-            }
-
-            set
-            {
-                _employeePassword = value;
-                OnPropertyChanged(nameof(EmployeePassword));
-
-            }
-        }
-
+        //Holds admin status of employee
         private bool _employeeIsAdmin = false;
         public bool EmployeeIsAdmin
         {
@@ -105,34 +55,53 @@ namespace ClientApp.ViewModels
         }
 
         
-
+        /// <summary>
+        /// Onclick event for registering employee
+        /// </summary>
         public void EmployeeRegisterCommand()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var employee = new Server.Employee.EmployeeClient(channel);
-            var loginCredentials = new LoginCredentials 
+            //If all of the fields are filled in
+            if (EmployeeUserName != null && EmployeeUserName != "" && EmployeePassword != null && EmployeePassword != "" && EmployeeFirstName != null && EmployeeFirstName != "" && EmployeeLastName != null && EmployeeLastName != "")
             {
-                Username = EmployeeUserName,
-                Password = EmployeePassword
-            };
+                var employee = new Server.Employee.EmployeeClient(Program.gRPCChannel);
+                var loginCredentials = new LoginCredentials 
+                {
+                    Username = EmployeeUserName,
+                    Password = EmployeePassword
+                };
 
-            var employeeInfo = new EmployeeInfo
-            {
-                FirstName = EmployeeFirstName,
-                LastName = EmployeeLastName,
-                Credentials = loginCredentials,
-                IsAdmin = EmployeeIsAdmin,
-            };
-            var createResponse = employee.newEmployee(employeeInfo);
+                var employeeInfo = new EmployeeInfo
+                {
+                    FirstName = EmployeeFirstName,
+                    LastName = EmployeeLastName,
+                    Credentials = loginCredentials,
+                    IsAdmin = EmployeeIsAdmin,
+                };
+                //Makes employee in database
+                var createResponse = employee.newEmployee(employeeInfo);
 
-            new AdminHomeView(_user,_isAdmin).Show();
-            _registerEmployeeView.Close();
+
+                //Takes user back to admin home view
+                GoToAdminHome.Execute();
+            }
         }
 
+        /// <summary>
+        /// Takes uesr to admin home view
+        /// </summary>
         public void ToAdminHomeCommand()
         {
-            new AdminHomeView(_user, _isAdmin).Show();
-            _registerEmployeeView.Close();
+            GoToAdminHome.Execute();
+        }
+
+        public void RaisePropertyChanging(PropertyChangingEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaisePropertyChanged(PropertyChangedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

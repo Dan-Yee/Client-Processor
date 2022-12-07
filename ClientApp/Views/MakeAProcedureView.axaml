@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.MakeAProcedureView">
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Width" Value="250"/>
+			<Setter Property="FontSize" Value="15"/>
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
+	
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}" PageTransition="{x:Null}">
+		<rxui:RoutedViewHost.DefaultContent>
+			
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToProcedureListing}" PageTransition="{x:Null}">
+				<rxui:RoutedViewHost.DefaultContent>
+			
+	
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
+			<!--form photos pay-->
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Make Procedure" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
+			<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Command="{Binding GoToFormMenu}"/>
+			<!--<Button Content="Photos" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Command="{Binding GoToPhotosMenu}"/>-->
+			<Button Content="Import Before Picture" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Command="{Binding Before}"/>
+			<Button Content="Import After Picture" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" Command="{Binding After}"/>
+			<Button Content="View Listing" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="1" Command="{Binding BackToListingCommand}"/>
+		</Grid>
+	</ScrollViewer>
+
+			
+			</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:CreateProcedureListingLocator/>
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+			
+			
+	</rxui:RoutedViewHost.DefaultContent>
+	<rxui:RoutedViewHost.ViewLocator>
+		<app:FormMenuViewLocator />
+	</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+			
+</UserControl>

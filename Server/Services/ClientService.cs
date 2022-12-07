@@ -68,38 +68,46 @@ namespace Server.Services
         }
 
         /// <summary>
-        /// Implementation of the getClients RPC that retrieves all records of all Clients from the database.
+        /// Implementation of the searchClientsByName RPC that retrieves all records of all Clients that fulfill a search pattern
         /// </summary>
-        /// <param name="request">Empty. This RPC does not require any arguments</param>
+        /// <param name="request">The phrase being used to search the Client table.</param>
         /// <param name="context"></param>
-        /// <returns>An object of objects where each sub-object represents an entry in the Clients table in the database</returns>
-        public override Task<AllClients> getClients(Empty request, ServerCallContext context)
+        /// <returns>An object of objects where each sub-object represents an entry in the search result of the Client table.</returns>
+        public override Task<AllClients> searchClientsByName(ClientName request, ServerCallContext context)
         {
-            return Task.FromResult(SelectAllClients());
+            return Task.FromResult(searchClients(request));
         }
 
         /// <summary>
-        /// Method <c>SelectAllClients</c> selects all rows from the Clients table and packs it into a message to be sent back.
+        /// Method <c>searchClients</c> searches the database, given a phrase (first name), for records that are similar.
         /// </summary>
-        /// <returns>A protobuf message object containing information about every Client in the database.</returns>
-        private static AllClients SelectAllClients()
+        /// <param name="name">The first name being used to perform the search.</param>
+        /// <returns>A protobuf message containing records for each Client that fulfilled the search criteria.</returns>
+        private static AllClients searchClients(ClientName name)
         {
             AllClients clients = new();
             NpgsqlCommand command;
             NpgsqlDataReader reader;
+            string searchTerm = name.CName + "%";
             string query;
 
             using (NpgsqlConnection conn = GetConnection())
             {
-                query = "SELECT * FROM Clients;";
-                command = new NpgsqlCommand(@query, conn);
+                query = "SELECT * FROM Clients WHERE LOWER(CONCAT(first_name, ' ', last_name)) LIKE LOWER($1);";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = searchTerm}
+                    }
+                };
                 conn.Open();
                 reader = command.ExecuteReader();
                 if(reader.HasRows)
                 {
                     while(reader.Read())
                     {
-                        var current = new ClientInfo
+                        ClientInfo current = new()
                         {
                             ClientId = Convert.ToInt32(reader["client_id"]),
                             FirstName = reader["first_name"].ToString(),
@@ -114,6 +122,73 @@ namespace Server.Services
                 conn.Close();
             }
             return clients;
+        }
+
+        /// <summary>
+        /// Implementation of the updateClient RPC that updates the information stored about a client (name, phone number, etc.).
+        /// </summary>
+        /// <param name="request">An object containing the (possibly) new information of the Client</param>
+        /// <param name="context"></param>
+        /// <returns>An object that states whether or not this operation was successful.</returns>
+        public override Task<ServiceStatus> updateClient(ClientInfo request, ServerCallContext context)
+        {
+            return Task.FromResult(UpdateClient(request));
+        }
+
+        /// <summary>
+        /// Method <c>UpdateClient</c> sends an UPDATE statement to the Clients table and updates information about the client such as their name, phone number and email address.
+        /// </summary>
+        /// <param name="newInfo">An object containing the new information of the Client.</param>
+        /// <returns>An object that states whether or not this operation was successful.</returns>
+        private static ServiceStatus UpdateClient(ClientInfo newInfo)
+        {
+            ServiceStatus sStatus = new();
+            NpgsqlCommand command;
+            string query;
+            int status;
+
+            using (NpgsqlConnection conn = GetConnection())
+            {
+                query = "UPDATE Clients " +
+                    "SET first_name = $1, " +
+                    "last_name = $2, " +
+                    "phone_number = $3, " +
+                    "email_address = $4 " +
+                    "WHERE client_id = $5;";
+                command = new NpgsqlCommand(@query, conn)
+                {
+                    Parameters =
+                    {
+                        new() {Value = newInfo.FirstName},
+                        new() {Value = newInfo.LastName},
+                        new() {Value = newInfo.PhoneNumber},
+                        new() {Value = newInfo.Email},
+                        new() {Value = newInfo.ClientId},
+                    }
+                };
+                conn.Open();
+                try
+                {
+                    status = command.ExecuteNonQuery();
+                } catch (NpgsqlException pgE)
+                {
+                    Console.WriteLine("ClientService.updateClient RPC Postgresql Error State: " + pgE.SqlState);
+                    status = 0;
+                }
+                conn.Close();
+
+                if (status == 1)
+                {
+                    sStatus.IsSuccessfulOperation = true;
+                    sStatus.StatusMessage = "Success: Client information updated.";
+                }
+                else
+                {
+                    sStatus.IsSuccessfulOperation = false;
+                    sStatus.StatusMessage = "Error: Unable to update client information.";
+                }
+            }
+            return sStatus;
         }
     }
 }

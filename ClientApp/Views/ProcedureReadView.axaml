@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ClientApp.Views.ProcedureReadView">
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ViewFormRouter}" >
+		<rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ViewPhotosRouter}" >
+				<rxui:RoutedViewHost.DefaultContent>
+					<rxui:RoutedViewHost Grid.Row="0" Router="{Binding ProcedureViewingRouter}" >
+						<rxui:RoutedViewHost.DefaultContent>
+							<ScrollViewer VerticalScrollBarVisibility="Auto">
+								<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
+									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding NameOfProcedure}" Margin="0 20 0 0" FontSize="30.0" Grid.ColumnSpan="3" Grid.Row="0" Grid.Column="1"/>
+									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Notes:" Margin="0 50 0 0" FontSize="30.0" Grid.Row="1" Grid.Column="1"/>
+
+									<Border BorderBrush="White" BorderThickness="2" CornerRadius="3" Padding="4"  VerticalAlignment="Center" Width="300" Height="100" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1">
+										<ScrollViewer VerticalScrollBarVisibility="Auto">
+											<TextBlock  Text="{Binding NotesOfProcedure}" TextWrapping="Wrap" Margin="10 0 0 0" FontSize="15.0" />
+										</ScrollViewer>
+									</Border>
+
+									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Details:" Margin="0 50 0 0" FontSize="25.0" Grid.Row="3" Grid.Column="1"/>
+									<Button Content="Form" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0 20 0 0" Grid.Row="4" Grid.Column="1" Command="{Binding GoToFormViewingMenu}"/>
+									<Button Content="Photos" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="1" Command="{Binding GoToPhotosViewingMenu}"/>
+									<!--<Button Content="Payment" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Command="{Binding GoToPaymentViewingMenu}"/>-->
+									<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0 50 0 0" Grid.Row="7" Grid.Column="1" Command="{Binding GoToProcedureListingCommand}"/>
+								</Grid>
+							</ScrollViewer>
+						</rxui:RoutedViewHost.DefaultContent>
+						<rxui:RoutedViewHost.ViewLocator>
+							<!-- See ViewLocator.cs section below -->
+							<app:CreateProcedureListingLocator/>
+						</rxui:RoutedViewHost.ViewLocator>
+					</rxui:RoutedViewHost>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<!-- See ViewLocator.cs section below -->
+					<app:PhotosViewingViewLocator/>
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<!-- See ViewLocator.cs section below -->
+			<app:FormViewingViewLocator/>
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

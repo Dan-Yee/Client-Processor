@@ -1,142 +1,81 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using ClientApp.Views;
-using Grpc.Net.Client;
+﻿using Grpc.Net.Client;
+using ReactiveUI;
 using Server;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using System.ComponentModel;
+using System.Reactive;
 
 namespace ClientApp.ViewModels
 {
-    public class CreateCustomerViewModel:ViewModelBase
+    public class CreateCustomerViewModel:ViewModelBase, IRoutableViewModel
     {
-        string _user = string.Empty;
-        bool _isAdmin = false;
-        CreateCustomerPage _createCustomerPage;
+        
+        public IScreen HostScreen { get; }
 
-        public CreateCustomerViewModel(CreateCustomerPage ccp, string user, bool isAdmin)
+        public string UrlPathSegment { get; } = "CreateCustomer";
+        public RoutingState RouterHomePage { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
+        //Holds input for first name of client
+        public string FirstName { get; set; } = string.Empty;
+        
+        //Holds input for last name of client
+        public string LastName { get; set; } = string.Empty;
+
+        //Holds input for email of client
+        public string Email { get; set; } = string.Empty;
+
+        //Holds input for phone number of client
+        public string PhoneNumber { get; set; } = string.Empty;
+        public event PropertyChangingEventHandler? PropertyChanging;
+
+        public CreateCustomerViewModel()
         {
-            _createCustomerPage = ccp;
-            _user = user;
-            _isAdmin = isAdmin;
+            GoHome = ReactiveCommand.CreateFromObservable(
+             () => RouterHomePage.Navigate.Execute(new HomePageViewModel()));
         }
 
-        private string _firstName = string.Empty;
-
-        public string FirstName
-        {
-
-            get
-            {
-                return _firstName;
-            }
-
-            set
-            {
-                _firstName = value;
-                OnPropertyChanged(nameof(FirstName));
-
-            }
-        }
-
-        private string _lastName = string.Empty;
-
-        public string LastName
-        {
-
-            get
-            {
-                return _lastName;
-            }
-
-            set
-            {
-                _lastName = value;
-                OnPropertyChanged(nameof(LastName));
-
-            }
-        }
-
-        /*private string _insuranceCompany = string.Empty;
-
-        public string InsuranceCompany
-        {
-
-            get
-            {
-                return _insuranceCompany;
-            }
-
-            set
-            {
-                _insuranceCompany = value;
-                OnPropertyChanged(nameof(InsuranceCompany));
-
-            }
-        }
-        */
-        private string _phoneNumber = string.Empty;
-
-        public string PhoneNumber
-        {
-
-            get
-            {
-                return _phoneNumber;
-            }
-
-            set
-            {
-                _phoneNumber = value;
-                OnPropertyChanged(nameof(PhoneNumber));
-
-            }
-        }
-
-        private string _email = string.Empty;
-
-        public string Email
-        {
-
-            get
-            {
-                return _email;
-            }
-
-            set
-            {
-                _email = value;
-                OnPropertyChanged(nameof(Email));
-
-            }
-        }
+        /// <summary>
+        /// Onclick event for creating employee.
+        /// </summary>
         public void RegisterCommand()
         {
-
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");                                 // localhost for testing purposes
-            var client = new Client.ClientClient(channel);
-
-            var clientInfo = new ClientInfo
+            //if(FirstName != null && FirstName!="" && LastName!=null && LastName!="" && Email!=null && Email!="" && PhoneNumber!=null && PhoneNumber != "")
+            //Makes sure that required fields have values
+            if(FirstName != null && FirstName!="" && LastName!=null && LastName!="" && PhoneNumber!=null && PhoneNumber != "")
             {
-                FirstName = FirstName,
-                LastName = LastName,
-                PhoneNumber = PhoneNumber,
-                Email = Email
-            };
-            var createResponse = client.newClient(clientInfo);
+                var client = new Client.ClientClient(Program.gRPCChannel);
 
-            new HomePage(_user,_isAdmin).Show();
-            _createCustomerPage.Close();
-            
+                //Initializing the client
+                var clientInfo = new ClientInfo
+                {
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    PhoneNumber = PhoneNumber,
+                    Email = Email
+                };
+                //Creating the client
+                var createResponse = client.newClient(clientInfo);
+
+                GoHome.Execute();
+            }
         }
+        /// <summary>
+        /// Takes user to the home page
+        /// </summary>
         public void ToHomeScreenCommand()
         {
-            new HomePage(_user,_isAdmin).Show();
-            _createCustomerPage.Close();
+            GoHome.Execute();
+        }
+
+        public void RaisePropertyChanging(PropertyChangingEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaisePropertyChanged(PropertyChangedEventArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 }

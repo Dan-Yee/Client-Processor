@@ -11,7 +11,13 @@
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
     <None Remove="Protos\client.proto" />
+    <None Remove="Protos\CompletedForm.proto" />
     <None Remove="Protos\employee.proto" />
+    <None Remove="Protos\FileTransfer.proto" />
+    <None Remove="Protos\FileUpload.proto" />
+    <None Remove="Protos\FormTemplateNames.proto" />
+    <None Remove="Protos\PhotoDownload.proto" />
+    <None Remove="Protos\procedure.proto" />
     <None Remove="Protos\shared.proto" />
   </ItemGroup>
   <ItemGroup>
@@ -34,14 +40,23 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
-    <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
+    <PackageReference Include="PdfiumViewer" Version="2.13.0" />
+    <PackageReference Include="PdfiumViewer.Native.x86.v8-xfa" Version="2018.4.8.256" />
+    <PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
+    <PackageReference Include="XamlNameReferenceGenerator" Version="1.4.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\CompletedForm.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />
-    <Protobuf Include="Protos\shared.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\FileTransfer.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\FileUpload.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\FormTemplateNames.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\PhotoDownload.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\procedure.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\shared.proto" GrpcServices="Client" />
   </ItemGroup>
 </Project>

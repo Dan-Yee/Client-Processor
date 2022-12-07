@@ -1,116 +1,213 @@
 ﻿using ClientApp.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ReactiveUI;
-using Avalonia.Controls.ApplicationLifetimes;
-using System.Windows.Input;
-using ClientApp.Views;
-using Avalonia.Controls;
 using Grpc.Net.Client;
 using Server;
 using Avalonia.Controls.Selection;
+using System.Reactive;
+using System.ComponentModel;
 
 namespace ClientApp.ViewModels
 {
-    public class HomePageViewModel: ReactiveObject
+
+    public class HomePageViewModel : ReactiveObject, IRoutableViewModel
     {
-        string _user = string.Empty;
-        private bool _isAdmin=false;
-        
-        
-        public bool IsAdmin
-        {
-            get => _isAdmin;
-            set => this.RaiseAndSetIfChanged(ref _isAdmin, value);
-        }
+        //Holds whether the user has admin privilages or not
+        public bool ShowAdminButton { get; set; }
 
-        //private ObservableCollection<string> _items = new();
-        private ObservableCollection<Customer> _items = new();
-
-        private HomePage _homePage;
-        public HomePageViewModel(HomePage hp,string user, bool isAdmin)
+        
+        //Determines if an element has been selected in the list view
+        private bool _selectButtonEnabled;
+        public bool SelectButtonEnabled
         {
-            // localhost for testing purposes
-            var channel = GrpcChannel.ForAddress("https://localhost:7123");
-            var client = new Client.ClientClient(channel);
-            
-            AllClients info = client.getClients(new Google.Protobuf.WellKnownTypes.Empty());
-            foreach (ClientInfo c in info.Clients)
+            get
             {
-                _items.Add(new Customer(c.ClientId, c.FirstName, c.LastName, c.PhoneNumber, c.Email));
+                return _selectButtonEnabled;
             }
-            Items = _items;
-
-            Selection = new SelectionModel<Customer>();
-            Selection.SelectionChanged += SelectionChanged;
-
-            _user = user;
-            _isAdmin = isAdmin;
-            //IsAdmin = false;
-            
-
-            _homePage = hp;
-        }
-
-        //Binded onclick event
-        public void CreateCustomerCommand()
-        {
-            new CreateCustomerPage(_user, IsAdmin).Show();
-            _homePage.Close();
-        }
-
-        /*public void GoToAdminLoginCommand()
-        {
-            new AdminLoginView().Show();
-            _homePage.Close();
-        }*/
-
-        public void GoToAdminHomeCommand()
-        {
-            new AdminHomeView(_user, IsAdmin).Show();
-            _homePage.Close();
-        }
-        
-        public ObservableCollection<Customer> Items
-        {
-            get => _items;
             set
             {
-                this.RaiseAndSetIfChanged(ref _items, value);
+                _selectButtonEnabled = value;
+                //Updates that a value has been selected
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectButtonEnabled)));
             }
         }
 
-        public SelectionModel<Customer> Selection { get; }
+        private string searchNameTextInput;
+        public string SearchNameTextInput
+        {
+            get
+            {
+                return searchNameTextInput;
+            }
+            set
+            {
+                searchNameTextInput = value;
+                //Search for the updated string
+                SearchForClientCommand();
+            }
+        }
+
+        //Holds the client name
+        public static string ClientName { get; set; }
+
+        //Holds the client Id
+        public static int Client_ID { get; set; }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        //The client list
+        public ObservableCollection<Customer> CustomerItems { get; set; } = new();
+        
+        //Holds the Ids of the clients that are listed
+        public List<int> ListOfClientIDs { get; set; } = new();
+
+        //Holds the selected client
+        public SelectionModel<Customer> ClientSelection { get; } = new();
+
+        public IScreen HostScreen { get; }
+
+        public string UrlPathSegment { get; } = "Homepage";
+
+        public RoutingState RouterToClientProcedureListing { get; } = new RoutingState();
+
+        public RoutingState RouterToCreateCustomer { get; } = new RoutingState();
+
+        public RoutingState RouterToAdminHome { get; } = new RoutingState();
+
+        public RoutingState RouterToClientInformation { get; } = new RoutingState();
+
+        public RoutingState RouterToLogin { get; } = new RoutingState();
+        public RoutingState RouterToUpdateClientInfo{ get; } = new RoutingState();
+
+
+        // The command that navigates a user to a view model.
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCreateCustomer { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAdminHome { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientProcedures { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToClientInformation { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToLogin { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToUpdateClientInfo { get; }
+
+        
+
+        /// <summary>
+        /// Constructor for the viewmodel. initializes the list of employees
+        /// </summary>
+        public HomePageViewModel()
+        {
+            //Subscribes the selection event listener
+            ClientSelection.SelectionChanged += SelectionChanged;
+            //Sets button to false when page is loaded
+            SelectButtonEnabled = false;
+            //Determines whether or not to show the admin button
+            ShowAdminButton = LoginPageViewModel.GlobalIsAdmin;
+
+
+            NavigateToClientProcedures = ReactiveCommand.CreateFromObservable(
+                () => RouterToClientProcedureListing.Navigate.Execute(new ClientProcedureListingViewModel()));
+            NavigateToCreateCustomer = ReactiveCommand.CreateFromObservable(
+               () => RouterToCreateCustomer.Navigate.Execute(new CreateCustomerViewModel()));
+            NavigateToAdminHome = ReactiveCommand.CreateFromObservable(
+              () => RouterToAdminHome.Navigate.Execute(new AdminHomeViewModel()));
+            NavigateToLogin = ReactiveCommand.CreateFromObservable(
+             () => RouterToLogin.Navigate.Execute(new LoginPageViewModel()));
+            NavigateToClientInformation = ReactiveCommand.CreateFromObservable(
+              () => RouterToClientInformation.Navigate.Execute(new ClientInformationViewModel()));
+            NavigateToUpdateClientInfo = ReactiveCommand.CreateFromObservable(
+              () => RouterToUpdateClientInfo.Navigate.Execute(new UpdateClientViewModel()));
+
+        }
+
+        /* Event Handlers Below */
+        public void SearchForClientCommand()
+        {
+            //Clear displayed list
+            if(CustomerItems!=null)CustomerItems.Clear();
+            //Clear Id list associated with displayed clients
+            ListOfClientIDs.Clear();
+
+            //If there is a name to search
+            if (SearchNameTextInput != null && SearchNameTextInput.Length > 0)
+            {
+                var client = new Client.ClientClient(Program.gRPCChannel);
+                AllClients info = client.searchClientsByName(new ClientName() { CName = SearchNameTextInput });
+                if (info.Clients.Count > 0)
+                {
+                    foreach (var clientInformation in info.Clients)
+                    {
+                        CustomerItems.Add(new Customer(clientInformation.ClientId, clientInformation.FirstName, clientInformation.LastName, clientInformation.PhoneNumber, clientInformation.Email));
+
+                        ListOfClientIDs.Add(clientInformation.ClientId);
+                    }
+                }
+                else
+                {
+                    //There are no clients to pick from, so disables buttons
+                    SelectButtonEnabled = false;
+                }
+            }
+            else
+            {
+                //There are no clients to pick from, so disables buttons
+                SelectButtonEnabled = false;
+            }
+        }
+
+        /// <summary>
+        /// On click event to creating customer button
+        /// </summary>
+        public void CreateCustomerCommand()
+        {
+            NavigateToCreateCustomer.Execute();
+        }
+
+
+        /// <summary>
+        /// Takes user to admin home view
+        /// </summary>
+        public void GoToAdminHomeCommand()
+        {
+            NavigateToAdminHome.Execute();
+        }
+
+        public void GoGoToClientInformationCommand()
+        {
+                NavigateToClientInformation.Execute();
+        }
 
         public void SelectionChanged(object sender, SelectionModelSelectionChangedEventArgs e)
         {
             // ... handle selection changed
+            SelectButtonEnabled = true;
+            Client_ID = ListOfClientIDs[ClientSelection.SelectedIndex];
+            ClientName = ClientSelection.SelectedItem.FirstName;
         }
 
+        /// <summary>
+        /// Logs out user
+        /// </summary>
         public void LogoutCommand()
         {
-            new LoginPage().Show();
-            _homePage.Close();
+            NavigateToLogin.Execute();
         }
+
+        /// <summary>
+        /// Once client is selected, goes to the procedure listing page
+        /// </summary>
         public void GoToClientProceduresCommand()
         {
-            if(Selection != null)
+            //If a client is selected
+            if (ClientSelection != null)
             {
-                new ClientProcedureListingView().Show();
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: " + Selection.SelectedItem.Client_ID);
-                loginSuccessMessage.Show();
-                _homePage.Close();
+                NavigateToClientProcedures.Execute();
             }
-            else
-            {
-                var loginSuccessMessage = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow("title", "Selection: null");
-                loginSuccessMessage.Show();
-            }
-            
+        }
+
+        public void GoToUpdateClientCommand()
+        {
+            NavigateToUpdateClientInfo.Execute();
         }
     }
 }

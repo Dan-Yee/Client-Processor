@@ -1,18 +1,31 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
+using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class RegisterEmployeeView : Window
+    public partial class RegisterEmployeeView : ReactiveUserControl<RegisterEmployeeViewModel>
     {
         public RegisterEmployeeView()
         {
-            InitializeComponent();
+            this.WhenActivated(disposables => { /* Handle interactions etc. */ });
+            AvaloniaXamlLoader.Load(this);
+            //Subscribles click event to button
+            this.FindControl<Button>("EmployeeRegisterBtn").Click += Button_Click;
         }
-        public RegisterEmployeeView(string user,bool isAdmin)
+        /// <summary>
+        /// Onclick event for button. Will display that field(s) are blank
+        /// If the fields are all filled out, the page will move to admin home view, so the user won't see the message.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click(object? sender, RoutedEventArgs e)
         {
-            InitializeComponent();
-            DataContext = new RegisterEmployeeViewModel(this,user,isAdmin);
+            //Sets textblock to display that the user has to fill in empty fields
+            this.FindControl<TextBlock>("Warning").Text = "Please fill in all fields.";
         }
     }
 }

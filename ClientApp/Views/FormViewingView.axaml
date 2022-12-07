@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+			 xmlns:ext="clr-namespace:ClientApp.ViewModels"
+             x:Class="ClientApp.Views.FormViewingView">
+
+	<UserControl.Resources>
+		<ext:BitmapAssetValueConverter x:Key="variableImage"/>
+	</UserControl.Resources>
+
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding BackRouter}" PageTransition="{x:Null}">
+		<rxui:RoutedViewHost.DefaultContent>
+			<ScrollViewer VerticalScrollBarVisibility="Auto">
+				<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,300,Auto" ShowGridLines="False">
+					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Forms" FontSize="30.0" Grid.Row="0" Grid.Column="1" Margin="0 50 0 0"/>
+					<Button Content="Back" VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="2" Command="{Binding GoBackCommand}" Margin="0 50 0 0"/>
+					<StackPanel x:Name="ParentStackPanel" Grid.Row="1" Grid.Column="1">
+					</StackPanel>
+					
+				</Grid>
+			</ScrollViewer>
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<app:ProcedureReadViewLocator/>
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

@@ -9,6 +9,7 @@ namespace ClientApp
     public partial class App : Application
     {
         
+        
         public App()
         {
         }
@@ -21,8 +22,9 @@ namespace ClientApp
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-
-                desktop.MainWindow = new LoginPage();
+                
+                desktop.MainWindow = new MainWindow();
+                
                 /*
                 {
                     DataContext = new LoginPageViewModel(desktop),

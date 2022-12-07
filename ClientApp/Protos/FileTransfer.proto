@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option csharp_namespace = "Server";
+import "Protos/shared.proto";
+
+
+// The greeting service definition.
+service FileTransfer {
+  // Uploads a file
+  rpc UploadFile(stream UploadFileRequest) returns (ServiceStatus) {}
+  // Downloads a file
+  rpc DownloadFile(DownloadRequest) returns (stream FileResponse) {}
+}
+
+
+/*message StringResponse {
+  string message = 1;
+}*/
+
+message FileResponse {
+  oneof response{
+    bytes chunkData = 1;
+    string ErrorMessage = 2;
+    DownloadMeataData newFile = 3;
+  }
+}
+
+message MetaData {
+  string filename = 1;
+  string extension = 2;
+  int32 ProcedureID = 3;
+  int32 StorageLocation = 4;
+}
+
+message DownloadMeataData{
+  string filename = 1;
+  string extension = 2;
+}
+
+message DownloadRequest{
+  int32 ProcedureID = 1;
+  int32 StorageLocation = 2;
+}
+
+
+message UploadFileRequest {
+  oneof request {
+    MetaData metadata = 1;
+    bytes chunkData = 2;
+  }
+}
+
+ 

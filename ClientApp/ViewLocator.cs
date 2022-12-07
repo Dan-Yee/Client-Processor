@@ -1,10 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using ClientApp.ViewModels;
+using ClientApp.Views;
+using ReactiveUI;
 using System;
 
 namespace ClientApp
 {
+    /*
     public class ViewLocator : IDataTemplate
     {
         public IControl Build(object data)
@@ -27,4 +30,18 @@ namespace ClientApp
             return data is ViewModelBase;
         }
     }
+    */
+    public class ViewLocator : ReactiveUI.IViewLocator
+    {
+
+        IViewFor? IViewLocator.ResolveView<T>(T viewModel, string? contract) => viewModel switch
+        {
+            HomePageViewModel context => new HomePage { DataContext = context },
+            _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
+
+
+        };
+
+    }
+
 }

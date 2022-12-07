@@ -1,18 +1,19 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
+using ReactiveUI;
 
 namespace ClientApp.Views
 {
-    public partial class HomePage : Window
+    public partial class HomePage : ReactiveUserControl<HomePageViewModel>
     {
         public HomePage()
         {
-            InitializeComponent();
+
+            this.WhenActivated(disposables => { /* Handle interactions etc. */ });
+            AvaloniaXamlLoader.Load(this);
         }
-        public HomePage(string user,bool isAdmin)
-        {
-            InitializeComponent();
-            DataContext = new HomePageViewModel(this,user,isAdmin);
-        }
+
     }
 }

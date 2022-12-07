@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+             xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.UpdateEmployeeView">
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToAdminHomePage}" PageTransition="{x:Null}">
+		<rxui:RoutedViewHost.DefaultContent>
+			<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto,Auto, Auto, Auto, Auto,Auto,Auto" ColumnDefinitions="*,Auto,Auto,Auto" ShowGridLines="False">
+				<TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Text="Edit Client Info" FontSize="20" Margin="0 50 0 0"/>
+
+				<TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Width="100" Text="First Name" Margin="0 20 0 0" />
+				<TextBox Grid.Row="1" Grid.Column="2" x:Name="FirstNameInput" HorizontalAlignment="Center" Text="{Binding EmployeeFirstNameInfo}" Margin="10 10 0 0" Width="200"/>
+				<Button Grid.Row="1" Grid.Column="3" x:Name="btnToResetFirstName" Command="{Binding ResetFirstName}" Content="Reset" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10 10 0 0"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Width="100" Text="Last Name" Margin="0 20 0 0" />
+				<TextBox Grid.Row="2" Grid.Column="2" x:Name="LastNameInput" HorizontalAlignment="Center" Text="{Binding EmployeeLastNameInfo}" Margin="10 10 0 0" Width="200"/>
+				<Button Grid.Row="2" Grid.Column="3" x:Name="btnToResetLastName" Command="{Binding ResetLastName}" Content="Reset" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10 10 0 0"/>
+
+				<TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Width="100" Text="User name" Margin="0 20 0 0" />
+				<TextBox Grid.Row="3" Grid.Column="2" x:Name="UserNameInput" HorizontalAlignment="Center" Text="{Binding EmployeeUserNameInfo}" Margin="10 10 0 0" Width="200"/>
+				<Button Grid.Row="3" Grid.Column="3" x:Name="btnToResetUserName" Command="{Binding ResetUserName}" Content="Reset" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10 10 0 0"/>
+
+				<TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" Width="100" Text="Password" Margin="0 20 0 0" />
+				<TextBox Grid.Row="4" Grid.Column="2" x:Name="PasswordInput" HorizontalAlignment="Center" Text="{Binding EmployeePasswordInfo}" PasswordChar="*" Margin="10 10 0 0" Width="200"/>
+				<Button Grid.Row="4" Grid.Column="3" x:Name="btnToResetPassword" Command="{Binding ResetPassword}" Content="Reset" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10 10 0 0"/>
+
+				<TextBlock Grid.Row="5" Grid.Column="1" Text="Is Admin" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
+				<ToggleButton Grid.Row="5" Grid.Column="2"  CornerRadius="100" Width="30" Height="30" IsChecked="{Binding EmployeeIsAdminInfo}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20 20 0 0"/>
+
+				<Button Content="Update" Grid.Row="6" Grid.Column="2" Command="{Binding UpdateCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="0 20 0 0"/>
+				<Button Content="Home" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding GoToHomePageCommand}" Margin="0 20 0 0"/>
+			</Grid>
+
+		</rxui:RoutedViewHost.DefaultContent>
+		<rxui:RoutedViewHost.ViewLocator>
+			<app:AdminHomeViewLocator/>
+		</rxui:RoutedViewHost.ViewLocator>
+	</rxui:RoutedViewHost>
+</UserControl>

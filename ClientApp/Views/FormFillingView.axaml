@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
+			 xmlns:app="clr-namespace:ClientApp"
+             x:Class="ClientApp.Views.FormFillingView">
+	<UserControl.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#161616"/>
+		</Style>
+	</UserControl.Styles>
+		
+		
+	<rxui:RoutedViewHost Grid.Row="0" Router="{Binding RouterToFormMenu}" PageTransition="{x:Null}">
+		<rxui:RoutedViewHost.DefaultContent>
+		<ScrollViewer>
+
+		<Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+			<StackPanel Grid.Row="0" Grid.Column="1" x:Name="notes" x:FieldModifier="public" Orientation="Vertical" Margin="0 50 0 0">
+
+
+			</StackPanel>
+			<!--
+			<Button Grid.Row="1" Grid.Column="1" Content="Submit" Command="{Binding SubmitFormCommand}" Margin="0 50 0 0"/>
+			-->
+			<Button Name="SubmitBtn" Command="{Binding SubmitFormCommand}" Grid.Row="1" Grid.Column="1" Content="Submit"  Margin="0 50 0 0"/>
+		</Grid>
+	</ScrollViewer>
+	
+		</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:FormMenuViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+</UserControl>
