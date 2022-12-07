@@ -48,6 +48,8 @@ namespace ClientApp.ViewModels
 
             GoBack = ReactiveCommand.CreateFromObservable(
              () => BackRouter.Navigate.Execute(new ProcedureReadViewModel()));
+            ImageBefore.Clear();
+            ImageAfter.Clear();
             CallToDownloadPhotos();
             
         }
