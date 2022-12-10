@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using Grpc.Net.Client;
 using System;

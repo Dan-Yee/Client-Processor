@@ -3,10 +3,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
-using System;
-using System.Windows.Input;
 
 namespace ClientApp.Views
 {

@@ -1,24 +1,13 @@
 ﻿using Avalonia.Controls.Selection;
-using AvaloniaEdit.Editing;
 using ClientApp.Models;
-using ClientApp.Views;
-using DynamicData;
-using Grpc.Net.Client;
-using GrpcServer.Protos;
 using MessageBox.Avalonia.Enums;
-using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
 using Server;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 using Procedure = Server.Procedure;
 
 
@@ -153,7 +142,7 @@ namespace ClientApp.ViewModels
 
         public void GoToReadProcedurePageCommand()
         {
-            
+
             GoToReadProcedureView.Execute();
         }
 

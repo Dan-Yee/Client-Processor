@@ -46,9 +46,6 @@
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.4.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Server\Server.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Protobuf Include="Protos\client.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\CompletedForm.proto" GrpcServices="Client" />
     <Protobuf Include="Protos\employee.proto" GrpcServices="Client" />

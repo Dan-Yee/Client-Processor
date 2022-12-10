@@ -1,5 +1,3 @@
-using Avalonia.Controls;
-using Avalonia.Controls.Templates;
 using ClientApp.ViewModels;
 using ClientApp.Views;
 using ReactiveUI;

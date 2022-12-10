@@ -1,5 +1,4 @@
-﻿using Grpc.Net.Client;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Server;
 using System.Reactive;
 

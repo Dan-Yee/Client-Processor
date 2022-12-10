@@ -3,7 +3,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
 using GrpcServer.Protos;
-using iText.Kernel.XMP.Impl.XPath;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Drawing.Imaging;

@@ -1,13 +1,7 @@
-﻿using Avalonia.Controls;
-using Google.Protobuf;
-using Grpc.Net.Client;
-using GrpcClient;
+﻿using GrpcClient;
 using GrpcServer.Protos;
-using JetBrains.Annotations;
 //using GrpcServer.Protos;
-using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
-using Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +9,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Image = System.Drawing.Image;
@@ -33,15 +26,6 @@ namespace ClientApp.ViewModels
         public static int ProcedureID { get; set; }
 
         public ReactiveCommand<Unit, IRoutableViewModel> GoBack { get; }
-        public static class Globals
-        {
-            public static string GName;
-            public static string GName2;
-            public static string GExtent;
-            public static string GExtent2;
-            public static byte[] GBytes;
-            public static byte[] GBytes2;
-        }
         public PhotosViewingViewModel()
         {
             ProcedureID = ClientProcedureListingViewModel.Procedure_Id;
@@ -54,7 +38,7 @@ namespace ClientApp.ViewModels
             
         }
 
-        public async void CallToDownloadPhotos()
+        public async static void CallToDownloadPhotos()
         {
             //procedure ID is now implented will show the after photo
             await PhotosViewingViewModel.DownloadPhoto(ProcedureID, false);
@@ -81,12 +65,12 @@ namespace ClientApp.ViewModels
             var client = new PhotoDownload.PhotoDownloadClient(Program.gRPCChannel);
             var response = client.PhotosDownload(new PhotosRequest() { ProcedureID = PID, IsBefore = IsBefore });
 
-            String name = "";
-            String extension = "";
+            String name = string.Empty;
+            String extension = string.Empty;
             var ByteList = new List<byte>();
             int i = 0;//counter to keep track of first message
 
-            List<Photo> photos = new List<Photo>();//list to hold photos received from the server
+            List<Photo> photos = new();//list to hold photos received from the server
 
             //iterate while the server is still sending messages
             while (await response.ResponseStream.MoveNext(CancellationToken.None))
@@ -102,9 +86,7 @@ namespace ClientApp.ViewModels
                     if (i == 0)
                     {
                         name = response.ResponseStream.Current.NameAndExtention.PhotoName;
-                        Globals.GName = name;
                         extension = response.ResponseStream.Current.NameAndExtention.PhotoExtension;
-                        Globals.GExtent = extension;
                         i++;
                     }
                     else //if not first save the received bytes(ie. previous file was fully sent)
@@ -115,8 +97,6 @@ namespace ClientApp.ViewModels
                             photos.Add(new Photo(name, extension, ByteList.ToArray()));
 
                             //clear the variables
-                            name = String.Empty;
-                            extension = String.Empty;
                             ByteList.Clear();
 
                             //set the variables to the new values
@@ -141,12 +121,14 @@ namespace ClientApp.ViewModels
                 }
 
             }
-            photos.Add(new Photo(name, extension, ByteList.ToArray()));
-            Globals.GBytes = ByteList.ToArray();
+            if (ByteList.ToArray().Length != 0)
+            {
+                photos.Add(new Photo(name, extension, ByteList.ToArray()));
+            }
 
             foreach (Photo x in photos)
             {
-                await byteArrayToImage(x.PhotoBytes.ToArray(), x.PhotoName, x.PhotoExtension);
+                await ByteArrayToImage(x.PhotoBytes.ToArray(), x.PhotoName, x.PhotoExtension);
 
             }
 
@@ -175,12 +157,12 @@ namespace ClientApp.ViewModels
             var client = new PhotoDownload.PhotoDownloadClient(Program.gRPCChannel);
             var response = client.PhotosDownload(new PhotosRequest { ProcedureID = PID, IsBefore = IsBefore });
 
-            String name = String.Empty;
-            String extension = String.Empty;
+            String name = string.Empty;
+            String extension = string.Empty;
             var ByteList = new List<byte>();
             int i = 0;//counter to keep track of first message
 
-            List<Photo> photos = new List<Photo>();//list to hold photos received from the server
+            List<Photo> photos = new();//list to hold photos received from the server
 
             //iterate while the server is still sending messages
             while (await response.ResponseStream.MoveNext(CancellationToken.None))
@@ -196,9 +178,7 @@ namespace ClientApp.ViewModels
                     if (i == 0)
                     {
                         name = response.ResponseStream.Current.NameAndExtention.PhotoName;
-                        Globals.GName2 = name;
                         extension = response.ResponseStream.Current.NameAndExtention.PhotoExtension;
-                        Globals.GExtent2 = extension;
                         i++;
                     }
                     else //if not first save the received bytes(ie. previous file was fully sent)
@@ -209,8 +189,6 @@ namespace ClientApp.ViewModels
                             photos.Add(new Photo(name, extension, ByteList.ToArray()));
 
                             //clear the variables
-                            name = String.Empty;
-                            extension = String.Empty;
                             ByteList.Clear();
 
                             //set the variables to the new values
@@ -238,13 +216,15 @@ namespace ClientApp.ViewModels
 
             //the last photo bytes were sent
             //create the last file
-            photos.Add(new Photo(name, extension, ByteList.ToArray()));
-            Globals.GBytes2 = ByteList.ToArray();
+            if (ByteList.ToArray().Length != 0)
+            {
+                photos.Add(new Photo(name, extension, ByteList.ToArray()));
+            }
             
 
             foreach (Photo x in photos)
             {
-                await byteArrayToImage2(x.PhotoBytes.ToArray(),x.PhotoName,x.PhotoExtension);
+                await ByteArrayToImage2(x.PhotoBytes.ToArray(),x.PhotoName,x.PhotoExtension);
 
             }
 
@@ -271,7 +251,7 @@ namespace ClientApp.ViewModels
         /// takes a byte array and converts it to an image
         /// </summary>
         /// <param name="byteArrayIn"></param>
-        public static async Task<int> byteArrayToImage(byte[] byteArrayIn, string Name, string Exte)
+        public static async Task<int> ByteArrayToImage(byte[] byteArrayIn, string Name, string Exte)
         {
             using (Image image = Image.FromStream(new MemoryStream(byteArrayIn)))
             {
@@ -281,7 +261,7 @@ namespace ClientApp.ViewModels
         }
 
 
-        public static async Task<int> byteArrayToImage2(byte[] byteArrayIn,string Name,string Exte)
+        public static async Task<int> ByteArrayToImage2(byte[] byteArrayIn,string Name,string Exte)
         {
             using (Image image = Image.FromStream(new MemoryStream(byteArrayIn)))
             {
