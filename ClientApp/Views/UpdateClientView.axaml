@@ -10,7 +10,7 @@
 		<rxui:RoutedViewHost.DefaultContent>
 
 			<Grid HorizontalAlignment="Center" RowDefinitions="Auto,Auto, Auto, Auto, Auto,Auto,Auto" ColumnDefinitions="*,Auto,Auto,Auto" ShowGridLines="False">
-				<TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" Text="Edit Client Info" FontSize="20" Margin="0 50 0 0"/>
+				<TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" Text="Edit Client Info" FontSize="20" Margin="0 50 0 0"/>
 				
 				<TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Width="100" Text="First Name" Margin="0 20 0 0" />
 				<TextBox Grid.Row="1" Grid.Column="2" x:Name="FirstNameInput" HorizontalAlignment="Center" Text="{Binding ClientFirstNameInfo}" Margin="10 10 0 0" Width="200"/>
@@ -28,8 +28,8 @@
 				<TextBox Grid.Row="4" Grid.Column="2" x:Name="EmailInput" HorizontalAlignment="Center" Text="{Binding ClientEmailInfo}" Margin="10 10 0 0" Width="200"/>
 				<Button Grid.Row="4" Grid.Column="3" x:Name="btnToResetEmail" Command="{Binding ResetEmail}" Content="Reset" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="10 10 0 0"/>
 
-				<Button Content="Update" Grid.Row="5" Grid.Column="1" Command="{Binding UpdateCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" Margin="0 20 0 0"/>
-				<Button Content="Home" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Command="{Binding goToHomePageCommand}" Margin="0 20 0 0"/>
+				<Button Content="Save Changes" Grid.Row="5" Grid.Column="2" Width="175" Command="{Binding UpdateCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				<Button Content="Home" Grid.Row="6" Grid.Column="2" HorizontalAlignment="Center" Command="{Binding goToHomePageCommand}" Margin="0 20 0 0"/>
 			</Grid>
 		
 		</rxui:RoutedViewHost.DefaultContent>

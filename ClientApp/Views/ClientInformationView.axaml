@@ -29,7 +29,7 @@
 					<TextBlock Grid.Row="3" Grid.Column="1" Text="Email" Margin="0 10 0 0" />
 					<TextBox Grid.Row="3" Grid.Column="2" Text="{Binding ClientEmailInfo}" Margin="100 0 0 0" Width="200"/>
 
-					<Button Content="Home" Grid.Row="4" Grid.Column="2" Command="{Binding goToHomePageCommand}"/>
+					<Button Content="Back" Grid.Row="4" Grid.Column="2" Command="{Binding goToHomePageCommand}"/>
 				</Grid>
 			</StackPanel>
 		</rxui:RoutedViewHost.DefaultContent>
