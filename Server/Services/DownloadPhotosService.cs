@@ -4,9 +4,6 @@ using Grpc.Core;
 using GrpcClient;
 using GrpcServer.Protos;
 using Npgsql;
-using Server;
-using System.Linq.Expressions;
-using System.Text;
 //using GrpcServer.classes;
 
 namespace Server.Services

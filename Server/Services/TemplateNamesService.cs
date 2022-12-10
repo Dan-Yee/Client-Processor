@@ -1,11 +1,8 @@
 ﻿using DotNetEnv;
 using Google.Protobuf;
 using Grpc.Core;
-using GrpcClient;
 using GrpcServer.Protos;
 using Npgsql;
-using Server;
-using System;
 
 namespace Server.Services
 {

@@ -1,12 +1,8 @@
 ﻿using DotNetEnv;
 using Google.Protobuf;
 using Grpc.Core;
-using GrpcClient;
 using GrpcServer.Protos;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.SqlServer.Server;
 using Npgsql;
-using Server;
 
 
 namespace Server.Services
