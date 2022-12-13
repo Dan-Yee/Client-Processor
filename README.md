@@ -16,6 +16,8 @@ Repository for ICSI 499, Capstone Project in Computer Science at UAlbany, Fall 2
 
 If running using AWS: 
 1) Ensure a .env file is saved as ".env" at the top-level of the "Server" directory. This file contains the credentials for connecting to the PostgreSQL database hosted on AWS RDS. Note: This database will be terminated after grades come out.
+2) Connect to the AWS RDS database using pgadmin and execute all the .sql files included. You may need to execute them in a specific order due to foreign key constraints.
+3) Edit the .env file with the database credentials and make sure the file is saved as ".env" in the top-level of the "Server" directory.
 
 If running using localhost PostgreSQL Server:
 1) Create a new database and execute all the .sql files that are included. You may need to execute them in a specific order due to foreign key constraints.
