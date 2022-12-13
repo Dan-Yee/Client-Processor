@@ -1,9 +1,4 @@
-using Avalonia.Controls;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace ClientApp.ViewModels
 {
@@ -12,8 +7,8 @@ namespace ClientApp.ViewModels
     {
     }
     */
-    
-    
+
+
     public class ViewModelBase : INotifyPropertyChanged//,IControl
     {
         public event PropertyChangedEventHandler PropertyChanged;

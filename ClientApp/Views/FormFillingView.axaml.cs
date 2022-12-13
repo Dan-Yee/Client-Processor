@@ -1,18 +1,12 @@
 using Avalonia.Controls;
-using Avalonia.Controls.Selection;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
-using Grpc.Net.Client;
 using ReactiveUI;
 using Server;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Channels;
-using System.Windows.Input;
-using static Server.Procedure;
 
 namespace ClientApp.Views
 {

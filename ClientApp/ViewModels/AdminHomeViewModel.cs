@@ -1,12 +1,9 @@
-﻿using ClientApp.Views;
-using Grpc.Net.Client;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System.Collections.ObjectModel;
 using Server;
 using System.Reactive;
 using System.ComponentModel;
 using Avalonia.Controls.Selection;
-using AvaloniaEdit.Editing;
 using ClientApp.Models;
 using MessageBox.Avalonia.Enums;
 

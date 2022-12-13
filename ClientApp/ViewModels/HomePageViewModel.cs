@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ReactiveUI;
-using Grpc.Net.Client;
 using Server;
 using Avalonia.Controls.Selection;
 using System.Reactive;

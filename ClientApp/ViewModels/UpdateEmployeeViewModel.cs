@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Server;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {

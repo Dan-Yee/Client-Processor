@@ -1,19 +1,5 @@
-﻿using Avalonia.Native;
-using ClientApp.Models;
-using Grpc.Net.Client;
-using GrpcServer.Protos;
-using iText.Kernel.Pdf;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Org.BouncyCastle.Crypto.Paddings;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Linq;
+﻿using ReactiveUI;
 using System.Reactive;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {

@@ -30,8 +30,8 @@
 				<TextBlock Grid.Row="5" Grid.Column="1" Text="Is Admin" HorizontalAlignment="Center" FontSize="20" Margin="0 20 0 0"/>
 				<ToggleButton Grid.Row="5" Grid.Column="2"  CornerRadius="100" Width="30" Height="30" IsChecked="{Binding EmployeeIsAdminInfo}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="20 20 0 0"/>
 
-				<Button Content="Update" Grid.Row="6" Grid.Column="2" Command="{Binding UpdateCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="0 20 0 0"/>
-				<Button Content="Home" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Left" Command="{Binding GoToHomePageCommand}" Margin="0 20 0 0"/>
+				<Button Content="Save Changes" Width="175" Grid.Row="6" Grid.Column="2" Command="{Binding UpdateCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" Margin="0 20 0 0"/>
+				<Button Content="Home" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Center" Command="{Binding GoToHomePageCommand}" Margin="0 20 0 0"/>
 			</Grid>
 
 		</rxui:RoutedViewHost.DefaultContent>

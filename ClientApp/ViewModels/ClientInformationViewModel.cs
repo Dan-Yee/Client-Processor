@@ -1,14 +1,6 @@
-﻿using ClientApp.Views;
-using Grpc.Net.Client;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Server;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels
 {

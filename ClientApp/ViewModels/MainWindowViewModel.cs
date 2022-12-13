@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reactive;
-using System.Text;
-using Microsoft.AspNetCore.Components.Routing;
 using ReactiveUI;
 
 namespace ClientApp.ViewModels

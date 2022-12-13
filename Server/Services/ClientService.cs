@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using DotNetEnv;
 using Npgsql;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Server.Services
 {

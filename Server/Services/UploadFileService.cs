@@ -3,7 +3,6 @@ using DotNetEnv;
 using Grpc.Core;
 using GrpcServer.Protos;
 using Npgsql;
-using Server;
 //using Server;
 
 namespace Server.Services

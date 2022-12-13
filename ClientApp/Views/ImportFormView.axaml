@@ -15,11 +15,10 @@
 
 	<UserControl.Styles>
 		<Style Selector="Button">
-			<Setter Property="FontSize" Value="30"/>
-			<Setter Property="Width" Value="125"/>
+			<Setter Property="FontSize" Value="20"/>
+			<Setter Property="Width" Value="140"/>
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalContentAlignment" Value="Center"/>
-			<Setter Property="CornerRadius" Value="0"/>
 			<Setter Property="Background" Value="#161616"/>
 		</Style>
 	</UserControl.Styles>
@@ -47,12 +46,12 @@
 				
 				
 				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import Form" FontSize="30.0" Grid.Row="0" Grid.Column="1"/>
-				<Button Content="Import" Command="{Binding Files}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"></Button>
+				<Button Content="Import Form" Command="{Binding Files}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"></Button>
 				<TextBlock Text="Selected File(s): " Grid.Row="2" Grid.Column="1" Margin="0 0 0 0"></TextBlock>
 				<TextBlock Text="{Binding FilePaths}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0, 20, 0, 0"></TextBlock>
 				
 				<!--<TextBox Text="{Binding FilePaths}" Grid.Row="3" Grid.Column="1" Height="50" Margin="0, 50, 0, 0"/>-->
-				<Button Content="Store" Command="{Binding StoreFileCommand}" Grid.Row="3" Grid.Column="1" Margin="0, 150, 0, 0" HorizontalAlignment="Center"/>
+				<Button Content="Save Form" Command="{Binding StoreFileCommand}" Grid.Row="3" Grid.Column="1" Margin="0, 150, 0, 0" HorizontalAlignment="Center"/>
 				<Button Content="Back" Command="{Binding Back}" Grid.Row="4" Grid.Column="1" Margin="0, 350, 0, 0" HorizontalAlignment="Center"/>
 			</Grid>
 		</rxui:RoutedViewHost.DefaultContent>

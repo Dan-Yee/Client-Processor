@@ -1,9 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Selection;
 using ClientApp.Models;
-using ClientApp.Views;
 using Google.Protobuf;
-using Grpc.Net.Client;
 using GrpcServer.Protos;
 using ReactiveUI;
 using Server;
@@ -11,9 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ClientApp.ViewModels

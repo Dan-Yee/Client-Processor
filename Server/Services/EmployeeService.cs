@@ -178,7 +178,7 @@ namespace Server.Services
                     else
                         info.Credentials.Password = GetHashed(info.Credentials.Password, passwordSalt);
 
-                    isUsernameDiff = !reader["employee_username"].ToString().Equals(info.Credentials.Username);
+                    isUsernameDiff = !((reader["employee_username"]?.ToString()) ?? string.Empty).Equals(info.Credentials.Username);
                 }
                 conn.Close();
                 reader.Close();

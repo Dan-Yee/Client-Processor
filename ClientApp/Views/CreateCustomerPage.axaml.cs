@@ -1,12 +1,9 @@
-using Avalonia.Animation;
-using Avalonia.Animation.Animators;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ClientApp.ViewModels;
 using ReactiveUI;
-using System;
 
 namespace ClientApp.Views
 {
